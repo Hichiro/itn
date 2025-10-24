@@ -2,15 +2,21 @@ name: Sync Google Sheet to GitHub
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # tự động chạy mỗi 6 giờ
-  workflow_dispatch:         # cho phép chạy thủ công từ tab Actions
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # 🔹 Cho phép Actions ghi vào repo
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout branch main
         uses: actions/checkout@v4
+        with:
+          ref: main           # 🔹 Đảm bảo checkout branch main
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download CSV from Google Sheets (Secret URL)
         env:
@@ -27,4 +33,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add hosts.csv
           git commit -m "Auto update from Google Sheets" || echo "Không có thay đổi"
-          git push
+          git push origin main
