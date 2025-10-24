@@ -1,3 +1,9 @@
+0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
+0.0.0.0 asia-st-exappupgrade.vivoglobal.com
+0.0.0.0 asia-vcode-od.vivoglobal.com
+0.0.0.0 centralized.zaloapp.com
+0.0.0.0 log.api.zaloapp.com
+0.0.0.0 qos-talk.123c.vn
 0.0.0.0 ravm.tv
 0.0.0.0 3px.axp.amazon-adsystem.com
 0.0.0.0 cstat.g.aaplimg.com
@@ -213,7 +219,6 @@
 0.0.0.0 conn-service-in-07.allawnos.com
 0.0.0.0 admon.acr.roku.com
 0.0.0.0 fast.samsung-france.demdex.net
-0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 dc.applicationinsights.azure.cn
 0.0.0.0 si.ptqy.gitv.tv
 0.0.0.0 ut.iadsdk.apple.com
@@ -396,7 +401,6 @@
 0.0.0.0 fourier-videoclip-sg.allawnos.com
 0.0.0.0 login.ads.roku.com
 0.0.0.0 samsungcanada.demdex.net
-0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 centralus.in.applicationinsights.azure.com
 0.0.0.0 ads.mi.com
 0.0.0.0 ad.br.doubleclick.net
@@ -461,7 +465,6 @@
 0.0.0.0 gui-server-in.allawnos.com
 0.0.0.0 info.advertising.roku.com
 0.0.0.0 fast.samsungelectronicsamericainc.demdex.net
-0.0.0.0 asia-vcode-od.vivoglobal.com
 0.0.0.0 eastasia-0.in.applicationinsights.azure.com
 0.0.0.0 video.kts.g.mi.com
 0.0.0.0 ad.fr.doubleclick.net
@@ -14866,7 +14869,6 @@
 0.0.0.0 page.widget.zalo.me
 0.0.0.0 stats.lab.zalo.ai
 0.0.0.0 log.zalo.video
-0.0.0.0 centralized.zaloapp.com
 0.0.0.0 px.dmp.zaloapp.com
 0.0.0.0 px.za.zaloapp.com
 0.0.0.0 stats.dev.zaloapp.com
@@ -14880,7 +14882,6 @@
 0.0.0.0 media-ads.zaloapp.com
 0.0.0.0 photo-ads.zaloapp.com
 0.0.0.0 static-ads.zaloapp.com
-0.0.0.0 log.api.zaloapp.com
 0.0.0.0 trk-pcweb.api.zaloapp.com
 0.0.0.0 adtima-common.zadn.vn
 0.0.0.0 adtima-media-td.zadn.vn
