@@ -4,6 +4,12 @@
 0.0.0.0 centralized.zaloapp.com
 0.0.0.0 log.api.zaloapp.com
 0.0.0.0 qos-talk.123c.vn
+0.0.0.0 api.bugsnag.com
+0.0.0.0 app.bugsnag.com
+0.0.0.0 browser.sentry-cdn.com
+0.0.0.0 app.getsentry.com
+0.0.0.0 udcm.yahoo.com
+0.0.0.0 weather-analytics-events.apple.com
 0.0.0.0 ravm.tv
 0.0.0.0 3px.axp.amazon-adsystem.com
 0.0.0.0 cstat.g.aaplimg.com
@@ -124,7 +130,6 @@
 0.0.0.0 vhs.wwstat.com.eo.dnse0.com
 0.0.0.0 js0.tst.applicationinsights.io
 0.0.0.0 mixer.cupid.ptqy.gitv.tv
-0.0.0.0 weather-analytics-events.apple.com
 0.0.0.0 aax-adx.us-east.3px.axp.amazon-adsystem.com
 0.0.0.0 securemetrics.v.aaplimg.com
 0.0.0.0 hisearch-drcn.dt.dbankcloud.com
