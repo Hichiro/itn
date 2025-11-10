@@ -1,4 +1,4 @@
-#sl: 24022 | Time: 10/11/2025 22:21:13
+#sl: 24026 | Time: 11/11/2025 01:28:01
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -12,6 +12,7 @@
 0.0.0.0 udcm.yahoo.com
 0.0.0.0 weather-analytics-events.apple.com
 0.0.0.0 ravm.tv
+0.0.0.0 stsdk.vivo.com.cn
 0.0.0.0 3px.axp.amazon-adsystem.com
 0.0.0.0 cstat.g.aaplimg.com
 0.0.0.0 browsercfg-drcn.cloud.dbankcloud.cn
@@ -22,6 +23,7 @@
 0.0.0.0 vhs.wwstat.com.eo.unicomcdn.com.cn
 0.0.0.0 c-bingapis-com.dual-a-0034.a-msedge.net
 0.0.0.0 traffic-media.co.uk
+0.0.0.0 onrt-stsdk.vivo.com.cn
 0.0.0.0 aan.amazon.co.jp
 0.0.0.0 diagassets.g.aaplimg.com
 0.0.0.0 ubacollect-drcn.cloud.dbankcloud.cn
@@ -32,6 +34,7 @@
 0.0.0.0 adxlog-adnet.vivo.com.cn
 0.0.0.0 measure.office.com.akamaized.net
 0.0.0.0 mistat.india.xiaomi.com.edgesuite.net
+0.0.0.0 err-up.vivo.com.cn
 0.0.0.0 api-adservices.apple.com
 0.0.0.0 aan.amazon.co.uk
 0.0.0.0 cdn-xp-ingest-ab.v.aaplimg.com
@@ -43,6 +46,7 @@
 0.0.0.0 az.appstore.vivo.com.cn
 0.0.0.0 fp.measure.office.com.akamaized.net
 0.0.0.0 ad.intl.xiaomi.com.edgesuite.net
+0.0.0.0 settings-win.data.microsoft.com
 0.0.0.0 books-analytics-events.apple.com
 0.0.0.0 aan.amazon.com
 0.0.0.0 iphonesubmissions.v.aaplimg.com
