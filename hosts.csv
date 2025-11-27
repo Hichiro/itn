@@ -1,4 +1,4 @@
-#sl: 24582 | Time: 27/11/2025 10:44:11
+#sl: 24581 | Time: 27/11/2025 13:30:07
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -23933,7 +23933,6 @@
 0.0.0.0 cdn.lr-ingest.io
 0.0.0.0 cdn.onesignal.com
 0.0.0.0 cdn.promotionengine.com
-0.0.0.0 cdn.pubnub.com
 0.0.0.0 cdn.retailads.net
 0.0.0.0 cdn.shoplytics.com
 0.0.0.0 cdn.traffic60s.xyz
