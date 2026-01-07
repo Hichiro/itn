@@ -1,4 +1,4 @@
-#sl: 25142 | Time: 07/01/2026 19:44:08
+#sl: 25143 | Time: 07/01/2026 22:24:58
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -480,6 +480,7 @@
 0.0.0.0 migc.g.mi.com
 0.0.0.0 ad.fr.doubleclick.net
 0.0.0.0 aax-events-cell01-cf.eu-west.ono.axp.amazon-adsystem.com
+0.0.0.0 graffiti-tags.apple.com
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc.dbankedge.cn
 0.0.0.0 dmkfppbdav49.alphonso.tv
 0.0.0.0 gui-server-sg.allawnos.com
@@ -489,7 +490,6 @@
 0.0.0.0 account.migc.g.mi.com
 0.0.0.0 ad.il.doubleclick.net
 0.0.0.0 aax-events-cell01-cf.fe.us-west.ono.axp.amazon-adsystem.com
-0.0.0.0 iadcontent.apple.com
 0.0.0.0 events-dra-op-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dqfui3.alphonso.tv
 0.0.0.0 gui-server-us.allawnos.com
@@ -500,7 +500,7 @@
 0.0.0.0 app.migc.g.mi.com
 0.0.0.0 ad.mo.doubleclick.net
 0.0.0.0 aax-events-cell01-cf.us-east.3px.axp.amazon-adsystem.com
-0.0.0.0 iadmoo.apple.com
+0.0.0.0 iadcontent.apple.com
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dqtcg35.alphonso.tv
 0.0.0.0 icosa-service-eu.allawnos.com
@@ -511,6 +511,7 @@
 0.0.0.0 oss.migc.g.mi.com
 0.0.0.0 ad.nl.doubleclick.net
 0.0.0.0 aax-events-cell01-cf.us-east.aps.axp.amazon-adsystem.com
+0.0.0.0 iadmoo.apple.com
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dqzljjhryn04.alphonso.tv
 0.0.0.0 icosa-service-in.allawnos.com
@@ -551,7 +552,6 @@
 0.0.0.0 a.hl.mi.com
 0.0.0.0 ad2.doubleclick.net
 0.0.0.0 aax-events-cell01.us-east.aps.axp.amazon-adsystem.com
-0.0.0.0 iadworkbench.apple.com
 0.0.0.0 grs-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dufqih18.alphonso.tv
 0.0.0.0 icota-service-in.allawnos.com
@@ -562,7 +562,7 @@
 0.0.0.0 idm.iot.mi.com
 0.0.0.0 ad-apac.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.ap-southeast.3px.axp.amazon-adsystem.com
-0.0.0.0 idiagnostics.apple.com
+0.0.0.0 iadworkbench.apple.com
 0.0.0.0 grs-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dwbrhfm60.alphonso.tv
 0.0.0.0 lockcard-service-in.allawnos.com
@@ -573,7 +573,7 @@
 0.0.0.0 api.jr.mi.com
 0.0.0.0 adclick.g.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.ap-southeast.aps.axp.amazon-adsystem.com
-0.0.0.0 idiagnostics-mdn1.apple.com
+0.0.0.0 idiagnostics.apple.com
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dzhsiasru67.alphonso.tv
 0.0.0.0 moa-upload-in.allawnos.com
@@ -584,7 +584,7 @@
 0.0.0.0 pandora.mi.com
 0.0.0.0 ad-emea.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.eu-central.3px.axp.amazon-adsystem.com
-0.0.0.0 internalcheck.apple.com
+0.0.0.0 idiagnostics-mdn1.apple.com
 0.0.0.0 openlocation-drcn-platform-dbankcloud-com-drcn.appacc.dbankedge.cn
 0.0.0.0 dzqkrgamr75.alphonso.tv
 0.0.0.0 moa-upload-sg.allawnos.com
@@ -595,7 +595,7 @@
 0.0.0.0 adx.tv.mi.com
 0.0.0.0 ad-g.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.eu-south.ono.axp.amazon-adsystem.com
-0.0.0.0 iphonesubmissions.apple.com
+0.0.0.0 internalcheck.apple.com
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc-region.dbankedge.cn
 0.0.0.0 ebgyjue7.alphonso.tv
 0.0.0.0 opex-service-eu.allawnos.com
@@ -606,7 +606,7 @@
 0.0.0.0 h5.tv.mi.com
 0.0.0.0 ads-bid.l.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.eu-west.3px.axp.amazon-adsystem.com
-0.0.0.0 iphonesubmissions-old.apple.com
+0.0.0.0 iphonesubmissions.apple.com
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 ecbmtltfbu47.alphonso.tv
 0.0.0.0 opex-service-in.allawnos.com
@@ -617,7 +617,7 @@
 0.0.0.0 a.union.mi.com
 0.0.0.0 adx.g.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.us-east.3px.axp.amazon-adsystem.com
-0.0.0.0 partiality.itunes.apple.com
+0.0.0.0 iphonesubmissions-old.apple.com
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 edqsadx4.alphonso.tv
 0.0.0.0 opex-service-sg.allawnos.com
@@ -628,7 +628,7 @@
 0.0.0.0 stat.youpin.mi.com
 0.0.0.0 apac.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.us-east.aps.axp.amazon-adsystem.com
-0.0.0.0 launch.apple.com
+0.0.0.0 partiality.itunes.apple.com
 0.0.0.0 events-op-hicloud-com-drcn.appacc-region.dbankedge.net
 0.0.0.0 efovduk59.alphonso.tv
 0.0.0.0 ostorage-ocloud-in.allawnos.com
@@ -639,7 +639,7 @@
 0.0.0.0 resolver.gslb.mi-idc.com
 0.0.0.0 bid.g.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.us-east.ono.axp.amazon-adsystem.com
-0.0.0.0 metrics.apple.com
+0.0.0.0 launch.apple.com
 0.0.0.0 grs-dbankcloud-asia-dra.appacc-region.dbankedge.cn
 0.0.0.0 egmfuqki23.alphonso.tv
 0.0.0.0 ostorage-ocloud-sg.allawnos.com
@@ -650,7 +650,7 @@
 0.0.0.0 miui.net
 0.0.0.0 cm.g.doubleclick.net
 0.0.0.0 aax-events-cell02-cf.us-west.3px.axp.amazon-adsystem.com
-0.0.0.0 msc-dct-prod.msc.apple.com
+0.0.0.0 metrics.apple.com
 0.0.0.0 grs-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 ennef96.alphonso.tv
 0.0.0.0 rus-service-eu.allawnos.com
@@ -661,7 +661,7 @@
 0.0.0.0 app.miui.com
 0.0.0.0 dart.l.doubleclick.net
 0.0.0.0 aax-events-cell02.ap-southeast.aps.axp.amazon-adsystem.com
-0.0.0.0 news-app-events.apple.com
+0.0.0.0 msc-dct-prod.msc.apple.com
 0.0.0.0 grs-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 eoydhe10.alphonso.tv
 0.0.0.0 rus-service-in.allawnos.com
@@ -672,7 +672,7 @@
 0.0.0.0 api.bbs.miui.com
 0.0.0.0 dart-apac.l.doubleclick.net
 0.0.0.0 aax-events-cell02.us-west.3px.axp.amazon-adsystem.com
-0.0.0.0 news-events.apple.com
+0.0.0.0 news-app-events.apple.com
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 eqdrews7.alphonso.tv
 0.0.0.0 rus-service-sg.allawnos.com
@@ -683,7 +683,7 @@
 0.0.0.0 browser.miui.com
 0.0.0.0 dfp.doubleclick.net
 0.0.0.0 aax-events-dedicated.eu-west.ono.axp.amazon-adsystem.com
-0.0.0.0 news-notification-events.apple.com
+0.0.0.0 news-events.apple.com
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 erafukhaie3.alphonso.tv
 0.0.0.0 rus-service-us.allawnos.com
@@ -694,7 +694,7 @@
 0.0.0.0 hd.browser.miui.com
 0.0.0.0 dmp.doubleclick.net
 0.0.0.0 aax-events-dedicated.us-east.ono.axp.amazon-adsystem.com
-0.0.0.0 news-sports-events.apple.com
+0.0.0.0 news-notification-events.apple.com
 0.0.0.0 adx-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu1.alphonso.tv
 0.0.0.0 sau-server-eu.allawnos.com
@@ -705,6 +705,7 @@
 0.0.0.0 hot.browser.miui.com
 0.0.0.0 dp.g.doubleclick.net
 0.0.0.0 aax-events-mobile.us-west.3px.axp.amazon-adsystem.com
+0.0.0.0 news-sports-events.apple.com
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu2.alphonso.tv
 0.0.0.0 sau-server-in.allawnos.com
@@ -715,7 +716,6 @@
 0.0.0.0 httpdns.browser.miui.com
 0.0.0.0 dsengine.doubleclick.net
 0.0.0.0 aax-events-wt.ap-southeast.aps.axp.amazon-adsystem.com
-0.0.0.0 odin-signals.apple.com
 0.0.0.0 events-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu3.alphonso.tv
 0.0.0.0 sau-server-sg.allawnos.com
@@ -726,7 +726,7 @@
 0.0.0.0 nav.browser.miui.com
 0.0.0.0 emea.doubleclick.net
 0.0.0.0 aax-events-wt.us-west.ono.axp.amazon-adsystem.com
-0.0.0.0 performance-partners.apple.com
+0.0.0.0 odin-signals.apple.com
 0.0.0.0 events-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu4.alphonso.tv
 0.0.0.0 sau-server-us.allawnos.com
@@ -737,7 +737,7 @@
 0.0.0.0 r.browser.miui.com
 0.0.0.0 feedads.g.doubleclick.net
 0.0.0.0 aax-fe-rtb.amazon-adsystem.com
-0.0.0.0 phonesubmissions.apple.com
+0.0.0.0 performance-partners.apple.com
 0.0.0.0 grs-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu5.alphonso.tv
 0.0.0.0 sidebar-apps-eu.allawnos.com
@@ -748,7 +748,7 @@
 0.0.0.0 reader.browser.miui.com
 0.0.0.0 fls.uk.doubleclick.net
 0.0.0.0 aax-fe-sin-rtb-adx.amazon-adsystem.com
-0.0.0.0 prd-usw2-requestattribution-iad.apple.com
+0.0.0.0 phonesubmissions.apple.com
 0.0.0.0 grs-dbankcloud-com-dre.edge.dbankedge.cn
 0.0.0.0 eu-acr10.alphonso.tv
 0.0.0.0 sidebar-apps-in.allawnos.com
@@ -759,6 +759,7 @@
 0.0.0.0 security.browser.miui.com
 0.0.0.0 g.doubleclick.net
 0.0.0.0 aax-fe-sin-rtb.amazon-adsystem.com
+0.0.0.0 prd-usw2-requestattribution-iad.apple.com
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr100.alphonso.tv
 0.0.0.0 sidebar-apps-sg.allawnos.com
@@ -769,7 +770,6 @@
 0.0.0.0 api.comm.miui.com
 0.0.0.0 gan.doubleclick.net
 0.0.0.0 aax-fe-sin.amazon-adsystem.com
-0.0.0.0 radarsubmissions.apple.com
 0.0.0.0 metrics1-data-hicloud-com.ge.dbankedge.cn
 0.0.0.0 eu-acr101.alphonso.tv
 0.0.0.0 smartcard-apps-in.allawnos.com
@@ -780,7 +780,7 @@
 0.0.0.0 tracking.eu.miui.com
 0.0.0.0 googleads.g.doubleclick.net
 0.0.0.0 aax-fe.amazon-adsystem.com
-0.0.0.0 searchads.apple.com
+0.0.0.0 radarsubmissions.apple.com
 0.0.0.0 metrics1-drcn-dt-dbankcloud-cn.ge.dbankedge.cn
 0.0.0.0 eu-acr102.alphonso.tv
 0.0.0.0 smartcard-apps-sg.allawnos.com
@@ -791,6 +791,7 @@
 0.0.0.0 events.miui.com
 0.0.0.0 googleads2.g.doubleclick.net
 0.0.0.0 aax-gamma-us-east.axp.amazon-adsystem.com
+0.0.0.0 searchads.apple.com
 0.0.0.0 0001-metrics1-data-hicloud-com.geac.dbankedge.cn
 0.0.0.0 eu-acr103.alphonso.tv
 0.0.0.0 smartcard-apps-us.allawnos.com
@@ -801,7 +802,6 @@
 0.0.0.0 feedback.miui.com
 0.0.0.0 googleads4.g.doubleclick.net
 0.0.0.0 aax-ott-c2s.amazon-adsystem.com
-0.0.0.0 securemvt.apple.com
 0.0.0.0 0001-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr104.alphonso.tv
 0.0.0.0 sticker-service-in.allawnos.com
@@ -812,7 +812,7 @@
 0.0.0.0 native.feedback.miui.com
 0.0.0.0 ir.doubleclick.net
 0.0.0.0 aax-ott-sdk.amazon-adsystem.amazon.com
-0.0.0.0 fbs.smoot.apple.com
+0.0.0.0 securemvt.apple.com
 0.0.0.0 0002-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr105.alphonso.tv
 0.0.0.0 wallpaper-service-sg.allawnos.com
@@ -823,6 +823,7 @@
 0.0.0.0 cdn1.static.home.miui.com
 0.0.0.0 iv.doubleclick.net
 0.0.0.0 aax-ott-sdk.amazon-adsystem.com
+0.0.0.0 fbs.smoot.apple.com
 0.0.0.0 metrics1-data-hicloud-com.gere.dbankedge.cn
 0.0.0.0 eu-acr106.alphonso.tv
 0.0.0.0 zen-core-fr.allawnos.com
@@ -853,7 +854,6 @@
 0.0.0.0 tracking.india.miui.com
 0.0.0.0 mediavisor.doubleclick.net
 0.0.0.0 aax-us-east-1-ott.amazon-adsystem.amazon.com
-0.0.0.0 xp.apple.com
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.region.dbankedge.cn
 0.0.0.0 eu-acr109.alphonso.tv
 0.0.0.0 zen-core-us.allawnos.com
@@ -864,7 +864,7 @@
 0.0.0.0 mitv.tracking.india.miui.com
 0.0.0.0 mobile-displayads.l.doubleclick.net
 0.0.0.0 aax-us-east-dtb-mobile.amazon-adsystem.com
-0.0.0.0 xp-cdn.apple.com
+0.0.0.0 xp.apple.com
 0.0.0.0 events-dra-op-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr11.alphonso.tv
 0.0.0.0 conn-service-cn-01.allawntech.com
@@ -875,7 +875,7 @@
 0.0.0.0 inf.miui.com
 0.0.0.0 n4052ad.doubleclick.net
 0.0.0.0 aax-us-east-dtb.amazon-adsystem.com
-0.0.0.0 feedbackws.fe.apple-dns.cn
+0.0.0.0 xp-cdn.apple.com
 0.0.0.0 grs-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr110.alphonso.tv
 0.0.0.0 conn-service-cn-03.allawntech.com
@@ -886,7 +886,7 @@
 0.0.0.0 apm-rum-ind.inf.miui.com
 0.0.0.0 n4403ad.doubleclick.net
 0.0.0.0 aax-us-east-ott.amazon-adsystem.com
-0.0.0.0 feedbackws.fe2.apple-dns.net
+0.0.0.0 feedbackws.fe.apple-dns.cn
 0.0.0.0 grs-dbankcloud-com-dre.region.dbankedge.cn
 0.0.0.0 eu-acr111.alphonso.tv
 0.0.0.0 conn-service-cn-04.allawntech.com
@@ -897,7 +897,7 @@
 0.0.0.0 mcc.intl.inf.miui.com
 0.0.0.0 pagead.l.doubleclick.net
 0.0.0.0 aax-us-east-rtb-adx.amazon-adsystem.com
-0.0.0.0 me.apple-dns.net
+0.0.0.0 feedbackws.fe2.apple-dns.net
 0.0.0.0 grs-dbankcloud-com-drcn.wec.dbankedge.cn
 0.0.0.0 eu-acr112.alphonso.tv
 0.0.0.0 conn-service-cn-05.allawntech.com
@@ -908,7 +908,7 @@
 0.0.0.0 api.accelerator.intl.miui.com
 0.0.0.0 pagead46.l.doubleclick.net
 0.0.0.0 aax-us-east-rtb.amazon-adsystem.com
-0.0.0.0 probe.me.apple-dns.net
+0.0.0.0 me.apple-dns.net
 0.0.0.0 adx-dre.op.dbankcloud.com.edgekey.net
 0.0.0.0 eu-acr113.alphonso.tv
 0.0.0.0 conn-service-cn-07.allawntech.com
@@ -919,7 +919,7 @@
 0.0.0.0 api.aurogon.intl.miui.com
 0.0.0.0 partnerad.l.doubleclick.net
 0.0.0.0 aax-us-east-test.amazon-adsystem.com
-0.0.0.0 applemediaservices.com
+0.0.0.0 probe.me.apple-dns.net
 0.0.0.0 data.hicloud.com
 0.0.0.0 eu-acr114.alphonso.tv
 0.0.0.0 conn-service-cn-08.allawntech.com
@@ -930,7 +930,7 @@
 0.0.0.0 activity.browser.intl.miui.com
 0.0.0.0 paypalssl.doubleclick.net
 0.0.0.0 aax-us-east-test1.amazon-adsystem.com
-0.0.0.0 cstat.cdn-apple.com
+0.0.0.0 applemediaservices.com
 0.0.0.0 metrics.data.hicloud.com
 0.0.0.0 eu-acr115.alphonso.tv
 0.0.0.0 conn-service-gl-01.allawntech.com
@@ -941,7 +941,7 @@
 0.0.0.0 api.activity.browser.intl.miui.com
 0.0.0.0 pubads.g.doubleclick.net
 0.0.0.0 aax-us-east-test2.amazon-adsystem.com
-0.0.0.0 feedbackws.icloud.com.cn
+0.0.0.0 cstat.cdn-apple.com
 0.0.0.0 metrics1.data.hicloud.com
 0.0.0.0 eu-acr116.alphonso.tv
 0.0.0.0 conn-service-gl-03.allawntech.com
@@ -952,7 +952,7 @@
 0.0.0.0 india.activity.browser.intl.miui.com
 0.0.0.0 publisherportal.doubleclick.net
 0.0.0.0 aax-us-east-test3.amazon-adsystem.com
-0.0.0.0 cdn-xp-ingest.edge.apple
+0.0.0.0 feedbackws.icloud.com.cn
 0.0.0.0 metrics2.data.hicloud.com
 0.0.0.0 eu-acr117.alphonso.tv
 0.0.0.0 conn-service-gl-04.allawntech.com
@@ -963,7 +963,7 @@
 0.0.0.0 sandbox.activity.browser.intl.miui.com
 0.0.0.0 reportcentral.doubleclick.net
 0.0.0.0 aax-us-east-test4.amazon-adsystem.com
-0.0.0.0 experiments.apple.com.edgekey.net
+0.0.0.0 cdn-xp-ingest.edge.apple
 0.0.0.0 metrics3.data.hicloud.com
 0.0.0.0 eu-acr118.alphonso.tv
 0.0.0.0 smartcard.apps.coloros.com
@@ -974,7 +974,7 @@
 0.0.0.0 api.browser.intl.miui.com
 0.0.0.0 s0.doubleclick.net
 0.0.0.0 aax-us-east-test5.amazon-adsystem.com
-0.0.0.0 iadsdk.apple.com.edgekey.net
+0.0.0.0 experiments.apple.com.edgekey.net
 0.0.0.0 metrics5.data.hicloud.com
 0.0.0.0 eu-acr119.alphonso.tv
 0.0.0.0 smartcardf.apps.coloros.com
@@ -985,7 +985,7 @@
 0.0.0.0 hot.browser.intl.miui.com
 0.0.0.0 s1.doubleclick.net
 0.0.0.0 aax-us-east-test6.amazon-adsystem.com
-0.0.0.0 partiality.itunes.apple.com.edgekey.net
+0.0.0.0 iadsdk.apple.com.edgekey.net
 0.0.0.0 dnkeeper.hicloud.com
 0.0.0.0 eu-acr12.alphonso.tv
 0.0.0.0 smartcardf-eu.apps.coloros.com
@@ -996,7 +996,7 @@
 0.0.0.0 r.browser.intl.miui.com
 0.0.0.0 secureframe.doubleclick.net
 0.0.0.0 aax-us-east.amazon-adsystem.com
-0.0.0.0 xp.apple.com.edgekey.net
+0.0.0.0 partiality.itunes.apple.com.edgekey.net
 0.0.0.0 dt.hicloud.com
 0.0.0.0 eu-acr120.alphonso.tv
 0.0.0.0 conn1.coloros.com
@@ -1007,7 +1007,7 @@
 0.0.0.0 api.brs.intl.miui.com
 0.0.0.0 securepubads.g.doubleclick.net
 0.0.0.0 aax-us-ott.amazon-adsystem.amazon.com
-0.0.0.0 cstat.apple.com.edgesuite.net
+0.0.0.0 xp.apple.com.edgekey.net
 0.0.0.0 datacollector-dra.dt.hicloud.com
 0.0.0.0 eu-acr121.alphonso.tv
 0.0.0.0 conn2.coloros.com
@@ -1018,7 +1018,7 @@
 0.0.0.0 api.calendar.intl.miui.com
 0.0.0.0 static.doubleclick.net
 0.0.0.0 aax-us-pdx-rtb-adx.amazon-adsystem.com
-0.0.0.0 searchads.apple.com.edgesuite.net
+0.0.0.0 cstat.apple.com.edgesuite.net
 0.0.0.0 datacollector-drcn.dt.hicloud.com
 0.0.0.0 eu-acr122.alphonso.tv
 0.0.0.0 conn3.coloros.com
@@ -1029,7 +1029,7 @@
 0.0.0.0 abroad.api.comm.intl.miui.com
 0.0.0.0 stats.g.doubleclick.net
 0.0.0.0 aax-us-pdx-rtb.amazon-adsystem.com
-0.0.0.0 acfeedbackws.icloud.com
+0.0.0.0 searchads.apple.com.edgesuite.net
 0.0.0.0 datacollector-dre.dt.hicloud.com
 0.0.0.0 eu-acr123.alphonso.tv
 0.0.0.0 conn4.coloros.com
@@ -1040,7 +1040,7 @@
 0.0.0.0 api.competition.intl.miui.com
 0.0.0.0 stats.l.doubleclick.net
 0.0.0.0 aax-us-pdx.amazon-adsystem.com
-0.0.0.0 feedbackws.icloud.com
+0.0.0.0 acfeedbackws.icloud.com
 0.0.0.0 datacollector-drru.dt.hicloud.com
 0.0.0.0 eu-acr124.alphonso.tv
 0.0.0.0 conn5.coloros.com
@@ -1051,6 +1051,7 @@
 0.0.0.0 api.content.intl.miui.com
 0.0.0.0 survey.g.doubleclick.net
 0.0.0.0 aax-us-west-2-ott.amazon-adsystem.amazon.com
+0.0.0.0 feedbackws.icloud.com
 0.0.0.0 logservice-drru.dt.hicloud.com
 0.0.0.0 eu-acr125.alphonso.tv
 0.0.0.0 foreign.coloros.com
@@ -1071,7 +1072,6 @@
 0.0.0.0 api.game.intl.miui.com
 0.0.0.0 www3.doubleclick.net
 0.0.0.0 aax-us-west-dtb-mobile.amazon-adsystem.com
-0.0.0.0 qwapi.com
 0.0.0.0 metrics-dra.dt.hicloud.com
 0.0.0.0 eu-acr127.alphonso.tv
 0.0.0.0 i.rus.foreign.coloros.com
@@ -1082,7 +1082,7 @@
 0.0.0.0 gtglobal.intl.miui.com
 0.0.0.0 fls.doubleclick.net
 0.0.0.0 aax-us-west-ott-events.amazon-adsystem.com
-0.0.0.0 www.qwapi.com
+0.0.0.0 qwapi.com
 0.0.0.0 metrics-drcn.dt.hicloud.com
 0.0.0.0 eu-acr128.alphonso.tv
 0.0.0.0 i.sau.foreign.coloros.com
@@ -1093,7 +1093,7 @@
 0.0.0.0 m.beehive.in.intl.miui.com
 0.0.0.0 undefined.fls.doubleclick.net
 0.0.0.0 aax-us-west-ott.amazon-adsystem.com
-0.0.0.0 marketing.services.apple
+0.0.0.0 www.qwapi.com
 0.0.0.0 metrics6.dt.hicloud.com
 0.0.0.0 eu-acr129.alphonso.tv
 0.0.0.0 guif.coloros.com
@@ -1103,7 +1103,7 @@
 0.0.0.0 westus2-4.in.applicationinsights.azure.com
 0.0.0.0 api.launcher.intl.miui.com
 0.0.0.0 aax-us-west-rtb.amazon-adsystem.com
-0.0.0.0 beacon.shazam.com
+0.0.0.0 marketing.services.apple
 0.0.0.0 grs.hicloud.com
 0.0.0.0 eu-acr13.alphonso.tv
 0.0.0.0 guif-eu.coloros.com
@@ -1114,7 +1114,7 @@
 0.0.0.0 api.mintbrs.intl.miui.com
 0.0.0.0 adservice.google.ca
 0.0.0.0 aax-us.amazon-adsystem.amazon.com
-0.0.0.0 h4g3z1-native.apple.web.app
+0.0.0.0 beacon.shazam.com
 0.0.0.0 logbak.hicloud.com
 0.0.0.0 eu-acr130.alphonso.tv
 0.0.0.0 icosa-sg.coloros.com
@@ -1125,6 +1125,7 @@
 0.0.0.0 api.muc.intl.miui.com
 0.0.0.0 adservice.google.co.jp
 0.0.0.0 aax-us.amazon-adsystem.com
+0.0.0.0 h4g3z1-native.apple.web.app
 0.0.0.0 logservice.hicloud.com
 0.0.0.0 eu-acr131.alphonso.tv
 0.0.0.0 icota-eu.coloros.com
