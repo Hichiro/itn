@@ -1,4 +1,4 @@
-#sl: 24023 | Time: 11/01/2026 22:19:23
+#sl: 24027 | Time: 12/01/2026 01:28:36
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -15368,6 +15368,10 @@
 0.0.0.0 browser-intake-ddog-gov.com
 0.0.0.0 beacon-api.aliyuncs.com
 0.0.0.0 adash.man.aliyuncs.com
+0.0.0.0 log.aliyuncs.com
+0.0.0.0 alivc-aio-sgp.ap-southeast-1.log.aliyuncs.com
+0.0.0.0 videocloud-sgp.ap-southeast-1.log.aliyuncs.com
+0.0.0.0 vod-newplayer-sg.ap-southeast-1.log.aliyuncs.com
 0.0.0.0 analytics.userreport.com
 0.0.0.0 bapi.userreport.com
 0.0.0.0 cdn.userreport.com
