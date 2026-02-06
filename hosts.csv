@@ -1,4 +1,4 @@
-#sl: 26575 | Time: 07/02/2026 01:50:59
+#sl: 26420 | Time: 07/02/2026 04:30:08
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -17,7 +17,6 @@
 0.0.0.0 browsercfg-drcn.cloud.dbankcloud.cn
 0.0.0.0 alphonso.tv
 0.0.0.0 calculator-api-fr.allawnos.com
-0.0.0.0 ravm.tv
 0.0.0.0 samsung-com.112.2o7.net
 0.0.0.0 vhs.wwstat.com.eo.unicomcdn.com.cn
 0.0.0.0 c-bingapis-com.dual-a-0034.a-msedge.net
@@ -28,7 +27,6 @@
 0.0.0.0 ubacollect-drcn.cloud.dbankcloud.cn
 0.0.0.0 acpwdoni13.alphonso.tv
 0.0.0.0 calculator-api-in.allawnos.com
-0.0.0.0 cdn.ravm.tv
 0.0.0.0 metric.account-samsung.com
 0.0.0.0 adxlog-adnet.vivo.com.cn
 0.0.0.0 measure.office.com.akamaized.net
@@ -40,7 +38,6 @@
 0.0.0.0 metrics-dre.data.dbankcloud.cn
 0.0.0.0 ad-inserter.alphonso.tv
 0.0.0.0 calculator-api-sg.allawnos.com
-0.0.0.0 display.ravm.tv
 0.0.0.0 samsungcard.data.adobedc.net
 0.0.0.0 az.appstore.vivo.com.cn
 0.0.0.0 fp.measure.office.com.akamaized.net
@@ -52,7 +49,6 @@
 0.0.0.0 metrics1.data.dbankcloud.cn
 0.0.0.0 aeihat46.alphonso.tv
 0.0.0.0 calculator-api-us.allawnos.com
-0.0.0.0 p.ravm.tv
 0.0.0.0 samsungads.adsmeasurement.com
 0.0.0.0 appstore-trace-h5sdk.vivo.com.cn
 0.0.0.0 upload2.fp.measure.office.com.akamaized.net
@@ -63,7 +59,6 @@
 0.0.0.0 dnkeeper.dbankcloud.com
 0.0.0.0 afaprrnbzl1.alphonso.tv
 0.0.0.0 classify-app-eu.allawnos.com
-0.0.0.0 raps.ravm.tv
 0.0.0.0 samsung.appnext.com
 0.0.0.0 dsplog-adnet.vivo.com.cn
 0.0.0.0 in.appcenter.ms
@@ -74,7 +69,6 @@
 0.0.0.0 dt.dbankcloud.ru
 0.0.0.0 aknbxhzyd1.alphonso.tv
 0.0.0.0 classify-app-in.allawnos.com
-0.0.0.0 cnames.raps.ravm.tv
 0.0.0.0 samsung.attn.tv
 0.0.0.0 trace-h5sdk.vivo.com.cn
 0.0.0.0 ingest.appcenter.ms
@@ -85,7 +79,6 @@
 0.0.0.0 datacollector-dra.dt.dbankcloud.cn
 0.0.0.0 aqvqsekdpw89.alphonso.tv
 0.0.0.0 classify-app-sg.allawnos.com
-0.0.0.0 demo.raps.ravm.tv
 0.0.0.0 samsungrum.beusable.net
 0.0.0.0 tracking-adnet.vivo.com.cn
 0.0.0.0 js.cdn.applicationinsights.io
@@ -96,7 +89,6 @@
 0.0.0.0 datacollector-drcn.dt.dbankcloud.cn
 0.0.0.0 atzcxw9.alphonso.tv
 0.0.0.0 classify-app-us.allawnos.com
-0.0.0.0 hb-4y7w.raps.ravm.tv
 0.0.0.0 samsungscript.beusable.net
 0.0.0.0 vhs.wwstat.com.ctdns.cn
 0.0.0.0 js0.cdn.applicationinsights.io
@@ -107,7 +99,6 @@
 0.0.0.0 datacollector-dre.dt.dbankcloud.cn
 0.0.0.0 bbhobjaopy4.alphonso.tv
 0.0.0.0 conn-service-eu-01.allawnos.com
-0.0.0.0 hb-e8zk.raps.ravm.tv
 0.0.0.0 samsung.bimtrackapp.co
 0.0.0.0 trackercollect.ddxq.mobi
 0.0.0.0 js1.cdn.applicationinsights.io
@@ -117,7 +108,6 @@
 0.0.0.0 datacollector-drru.dt.dbankcloud.ru
 0.0.0.0 behilbct57.alphonso.tv
 0.0.0.0 conn-service-eu-02.allawnos.com
-0.0.0.0 hb-gf26.raps.ravm.tv
 0.0.0.0 cn-api.mcsvc.samsung.com.cn
 0.0.0.0 trackerfeed.ddxq.mobi
 0.0.0.0 js2.cdn.applicationinsights.io
@@ -127,7 +117,6 @@
 0.0.0.0 hisearch-dra.dt.dbankcloud.com
 0.0.0.0 birjox8.alphonso.tv
 0.0.0.0 conn-service-eu-03.allawnos.com
-0.0.0.0 hb-kl5v.raps.ravm.tv
 0.0.0.0 smetrics.samsung.com.cn
 0.0.0.0 vhs.wwstat.com.eo.dnse0.com
 0.0.0.0 js0.tst.applicationinsights.io
@@ -138,7 +127,6 @@
 0.0.0.0 hisearch-drcn.dt.dbankcloud.com
 0.0.0.0 bkhwgq8.alphonso.tv
 0.0.0.0 conn-service-eu-04.allawnos.com
-0.0.0.0 hb-m9sn.raps.ravm.tv
 0.0.0.0 push.samsungosp.com.cn
 0.0.0.0 ads-api.vivo.com
 0.0.0.0 js1.tst.applicationinsights.io
@@ -149,7 +137,6 @@
 0.0.0.0 hisearch-dre.dt.dbankcloud.com
 0.0.0.0 bl-server.alphonso.tv
 0.0.0.0 conn-service-eu-05.allawnos.com
-0.0.0.0 hb-njub.raps.ravm.tv
 0.0.0.0 china-gld.push.samsungosp.com.cn
 0.0.0.0 asia-abeacdataonrt-stsdk.vivoglobal.com
 0.0.0.0 js2.tst.applicationinsights.io
@@ -160,7 +147,6 @@
 0.0.0.0 hisearch-drru.dt.dbankcloud.com
 0.0.0.0 bmkoqxogtv40.alphonso.tv
 0.0.0.0 conn-service-eu-07.allawnos.com
-0.0.0.0 hb-r93v.raps.ravm.tv
 0.0.0.0 samsungott.sora.yoyi.com.cn
 0.0.0.0 asia-abeacdataort-stsdk.vivoglobal.com
 0.0.0.0 applicationinsights.azure.com
@@ -171,7 +157,6 @@
 0.0.0.0 hisearch-drru.dt.dbankcloud.ru
 0.0.0.0 bnkis3.alphonso.tv
 0.0.0.0 conn-service-eu-08.allawnos.com
-0.0.0.0 hb-t5u9.raps.ravm.tv
 0.0.0.0 samsung.demdex.net
 0.0.0.0 asia-ad-mkt-vivofs.vivoglobal.com
 0.0.0.0 aimon.applicationinsights.azure.com
@@ -182,7 +167,6 @@
 0.0.0.0 metrics.dt.dbankcloud.cn
 0.0.0.0 bnwhgdi66.alphonso.tv
 0.0.0.0 conn-service-in-01.allawnos.com
-0.0.0.0 hb-tm7d.raps.ravm.tv
 0.0.0.0 fast.samsung.demdex.net
 0.0.0.0 asia-adlog.vivoglobal.com
 0.0.0.0 in.aimon.applicationinsights.azure.com
@@ -193,7 +177,6 @@
 0.0.0.0 metrics.dt.dbankcloud.ru
 0.0.0.0 bphcuxntp31.alphonso.tv
 0.0.0.0 conn-service-in-03.allawnos.com
-0.0.0.0 hb-w4a8.raps.ravm.tv
 0.0.0.0 samsung-benelux.demdex.net
 0.0.0.0 asia-adsjssdk.vivoglobal.com
 0.0.0.0 westcentralus-0.in.aimon.applicationinsights.azure.com
@@ -204,7 +187,6 @@
 0.0.0.0 metrics-dra.dt.dbankcloud.cn
 0.0.0.0 bsdvjjug6.alphonso.tv
 0.0.0.0 conn-service-in-04.allawnos.com
-0.0.0.0 hb-xd54.raps.ravm.tv
 0.0.0.0 fast.samsung-benelux.demdex.net
 0.0.0.0 asia-album-api.vivoglobal.com
 0.0.0.0 westcentralus-global.in.aimon.applicationinsights.azure.com
@@ -215,7 +197,6 @@
 0.0.0.0 metrics-dra.dt.dbankcloud.com
 0.0.0.0 bsndk8.alphonso.tv
 0.0.0.0 conn-service-in-05.allawnos.com
-0.0.0.0 www.ravm.tv
 0.0.0.0 samsung-france.demdex.net
 0.0.0.0 asia-analyzer-appstore.vivoglobal.com
 0.0.0.0 api.applicationinsights.azure.com
@@ -225,7 +206,6 @@
 0.0.0.0 metrics-drcn.dt.dbankcloud.cn
 0.0.0.0 bucyhq2.alphonso.tv
 0.0.0.0 conn-service-in-07.allawnos.com
-0.0.0.0 acr.roku.com
 0.0.0.0 fast.samsung-france.demdex.net
 0.0.0.0 asia-commonitor-stsdk.vivoglobal.com
 0.0.0.0 dc.applicationinsights.azure.cn
@@ -236,7 +216,6 @@
 0.0.0.0 metrics-drcn.dt.dbankcloud.com
 0.0.0.0 budwoc80.alphonso.tv
 0.0.0.0 conn-service-in-08.allawnos.com
-0.0.0.0 admon.acr.roku.com
 0.0.0.0 samsung-germany.demdex.net
 0.0.0.0 dc.applicationinsights.azure.com
 0.0.0.0 static.ptqy.gitv.tv
@@ -245,7 +224,6 @@
 0.0.0.0 metrics-dre.dt.dbankcloud.cn
 0.0.0.0 burmsde90.alphonso.tv
 0.0.0.0 conn-service-us-03.allawnos.com
-0.0.0.0 admon-api.acr.roku.com
 0.0.0.0 fast.samsung-germany.demdex.net
 0.0.0.0 asia-comort-stsdk.vivoglobal.com
 0.0.0.0 dc.applicationinsights.azure.us
@@ -256,7 +234,6 @@
 0.0.0.0 metrics1-drcn.dt.dbankcloud.cn
 0.0.0.0 bwezic7.alphonso.tv
 0.0.0.0 conn-service-us-04.allawnos.com
-0.0.0.0 adview.acr.roku.com
 0.0.0.0 samsung-italy.demdex.net
 0.0.0.0 asia-compnrt-stsdk.vivoglobal.com
 0.0.0.0 www.dc.applicationinsights.azure.com
@@ -267,7 +244,6 @@
 0.0.0.0 metrics3.dt.dbankcloud.ru
 0.0.0.0 bzgjx81.alphonso.tv
 0.0.0.0 conn-service-us-05.allawnos.com
-0.0.0.0 admon.ca.acr.roku.com
 0.0.0.0 fast.samsung-italy.demdex.net
 0.0.0.0 asia-comprt-stsdk.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.cn
@@ -277,7 +253,6 @@
 0.0.0.0 metrics5.dt.dbankcloud.ru
 0.0.0.0 ccxspcacy49.alphonso.tv
 0.0.0.0 conn-service-us-07.allawnos.com
-0.0.0.0 ca-service.acr.roku.com
 0.0.0.0 samsung-mena.demdex.net
 0.0.0.0 asia-cota.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.com
@@ -288,7 +263,6 @@
 0.0.0.0 grs.dbankcloud.asia
 0.0.0.0 cdgzrfrcrk9.alphonso.tv
 0.0.0.0 conn-service-us-08.allawnos.com
-0.0.0.0 channels.acr.roku.com
 0.0.0.0 fast.samsung-mena.demdex.net
 0.0.0.0 asia-err-up.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.us
@@ -299,7 +273,6 @@
 0.0.0.0 grs.dbankcloud.cn
 0.0.0.0 cdn-aas-campaigns.alphonso.tv
 0.0.0.0 cota-service-sg.allawnos.com
-0.0.0.0 grafana.acr.roku.com
 0.0.0.0 samsung-nordics.demdex.net
 0.0.0.0 asia-ex-adlog.vivoglobal.com
 0.0.0.0 australiaeast-0.in.applicationinsights.azure.com
@@ -310,7 +283,6 @@
 0.0.0.0 grs.dbankcloud.com
 0.0.0.0 cdn-aas-ssai.alphonso.tv
 0.0.0.0 crypto-dsf-fr.allawnos.com
-0.0.0.0 tvacr-tools.acr.roku.com
 0.0.0.0 fast.samsung-nordics.demdex.net
 0.0.0.0 asia-exstsdk.vivoglobal.com
 0.0.0.0 australiaeast-1.in.applicationinsights.azure.com
@@ -321,7 +293,6 @@
 0.0.0.0 grs.dbankcloud.eu
 0.0.0.0 cekftfosrg84.alphonso.tv
 0.0.0.0 crypto-dsf-in.allawnos.com
-0.0.0.0 us-service.acr.roku.com
 0.0.0.0 samsung-poland.demdex.net
 0.0.0.0 asia-monitor-stsdk.vivoglobal.com
 0.0.0.0 australiaeast-global.in.applicationinsights.azure.com
@@ -332,7 +303,6 @@
 0.0.0.0 logservice1.dbankcloud.com
 0.0.0.0 ckbjtnu46.alphonso.tv
 0.0.0.0 crypto-dsf-sg.allawnos.com
-0.0.0.0 ads.roku.com
 0.0.0.0 fast.samsung-poland.demdex.net
 0.0.0.0 asia-news-abroad-backstage-interface.vivoglobal.com
 0.0.0.0 australiasoutheast-0.in.applicationinsights.azure.com
@@ -343,7 +313,6 @@
 0.0.0.0 adx-dra.op.dbankcloud.com
 0.0.0.0 clockskew.alphonso.tv
 0.0.0.0 crypto-dsf-us.allawnos.com
-0.0.0.0 api.ads.roku.com
 0.0.0.0 samsungafrica.demdex.net
 0.0.0.0 asia-onrt-stsdk.vivoglobal.com
 0.0.0.0 brazilsouth-0.in.applicationinsights.azure.com
@@ -354,7 +323,6 @@
 0.0.0.0 adx-drcn.op.dbankcloud.cn
 0.0.0.0 cmsqd1.alphonso.tv
 0.0.0.0 eap-log-in.allawnos.com
-0.0.0.0 delta-staging.ads.roku.com
 0.0.0.0 fast.samsungafrica.demdex.net
 0.0.0.0 asia-ort-stsdk.vivoglobal.com
 0.0.0.0 brazilsouth-1.in.applicationinsights.azure.com
@@ -365,7 +333,6 @@
 0.0.0.0 adx-dre.op.dbankcloud.com
 0.0.0.0 config-overlay-ads.alphonso.tv
 0.0.0.0 eap-log-sg.allawnos.com
-0.0.0.0 i.ads.roku.com
 0.0.0.0 samsungau.demdex.net
 0.0.0.0 asia-os-config-appstore.vivoglobal.com
 0.0.0.0 brazilsoutheast-0.in.applicationinsights.azure.com
@@ -375,7 +342,6 @@
 0.0.0.0 adx-drru.op.dbankcloud.com
 0.0.0.0 config-overlay-ads-staging.alphonso.tv
 0.0.0.0 featureinfo-service-sg.allawnos.com
-0.0.0.0 identity.ads.roku.com
 0.0.0.0 fast.samsungau.demdex.net
 0.0.0.0 asia-p.vivoglobal.com
 0.0.0.0 canadacentral-0.in.applicationinsights.azure.com
@@ -385,7 +351,6 @@
 0.0.0.0 events-drcn.op.dbankcloud.cn
 0.0.0.0 crgyirwbq42.alphonso.tv
 0.0.0.0 fourier-videoclip-eu.allawnos.com
-0.0.0.0 identity-dev.ads.roku.com
 0.0.0.0 samsungbrazil.demdex.net
 0.0.0.0 asia-pnrt-stsdk.vivoglobal.com
 0.0.0.0 canadacentral-1.in.applicationinsights.azure.com
@@ -396,7 +361,6 @@
 0.0.0.0 events-drcn.op.dbankcloud.com
 0.0.0.0 crmjqv9.alphonso.tv
 0.0.0.0 fourier-videoclip-in.allawnos.com
-0.0.0.0 info.ads.roku.com
 0.0.0.0 fast.samsungbrazil.demdex.net
 0.0.0.0 asia-prt-stsdk.vivoglobal.com
 0.0.0.0 canadaeast-0.in.applicationinsights.azure.com
@@ -407,7 +371,6 @@
 0.0.0.0 events-dre.op.dbankcloud.com
 0.0.0.0 crpsh8.alphonso.tv
 0.0.0.0 fourier-videoclip-sg.allawnos.com
-0.0.0.0 login.ads.roku.com
 0.0.0.0 samsungcanada.demdex.net
 0.0.0.0 asia-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 centralindia-0.in.applicationinsights.azure.com
@@ -418,7 +381,6 @@
 0.0.0.0 dnkeeper.platform.dbankcloud.cn
 0.0.0.0 cssmps40.alphonso.tv
 0.0.0.0 fourier-videoclip-us.allawnos.com
-0.0.0.0 p.ads.roku.com
 0.0.0.0 fast.samsungcanada.demdex.net
 0.0.0.0 centralus.in.applicationinsights.azure.com
 0.0.0.0 e.mi.com
@@ -428,7 +390,6 @@
 0.0.0.0 grs.platform.dbankcloud.ru
 0.0.0.0 csxnc89.alphonso.tv
 0.0.0.0 globalcolor-service-eu.allawnos.com
-0.0.0.0 preferences.ads.roku.com
 0.0.0.0 samsungcard.demdex.net
 0.0.0.0 asia-st-sl.vivoglobal.com
 0.0.0.0 centralus-0.in.applicationinsights.azure.com
@@ -439,7 +400,6 @@
 0.0.0.0 logservice-dre.platform.dbankcloud.cn
 0.0.0.0 cxlqmxzemg54.alphonso.tv
 0.0.0.0 globalcolor-service-in.allawnos.com
-0.0.0.0 cdn.tcom.ads.roku.com
 0.0.0.0 samsungcis.demdex.net
 0.0.0.0 asia-stsdk.vivoglobal.com
 0.0.0.0 centralus-2.in.applicationinsights.azure.com
@@ -450,7 +410,6 @@
 0.0.0.0 openlocation-drcn.platform.dbankcloud.com
 0.0.0.0 cyijq72.alphonso.tv
 0.0.0.0 globalcolor-service-sg.allawnos.com
-0.0.0.0 adservices.roku.com
 0.0.0.0 fast.samsungcis.demdex.net
 0.0.0.0 asia-third-appstore.vivoglobal.com
 0.0.0.0 centralus-3.in.applicationinsights.azure.com
@@ -461,7 +420,6 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dar-pix-prod-lb.alphonso.tv
 0.0.0.0 gui-server-eu.allawnos.com
-0.0.0.0 advertising.roku.com
 0.0.0.0 samsungelectronicsamericainc.demdex.net
 0.0.0.0 asia-timesync.vivoglobal.com
 0.0.0.0 chinaeast2-0.in.applicationinsights.azure.cn
@@ -472,7 +430,6 @@
 0.0.0.0 adx-dra-op-hicloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dkpae73.alphonso.tv
 0.0.0.0 gui-server-in.allawnos.com
-0.0.0.0 info.advertising.roku.com
 0.0.0.0 fast.samsungelectronicsamericainc.demdex.net
 0.0.0.0 asia-vcode-api.vivoglobal.com
 0.0.0.0 chinanorth3-0.in.applicationinsights.azure.cn
@@ -483,7 +440,6 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc.dbankedge.cn
 0.0.0.0 dmkfppbdav49.alphonso.tv
 0.0.0.0 gui-server-sg.allawnos.com
-0.0.0.0 advertising-v3.roku.com
 0.0.0.0 samsungeu.demdex.net
 0.0.0.0 eastasia-0.in.applicationinsights.azure.com
 0.0.0.0 account.migc.g.mi.com
@@ -493,7 +449,6 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dqfui3.alphonso.tv
 0.0.0.0 gui-server-us.allawnos.com
-0.0.0.0 analytics.roku.com
 0.0.0.0 samsungeucdm.demdex.net
 0.0.0.0 asia-vcode-or.vivoglobal.com
 0.0.0.0 eastus-0.in.applicationinsights.azure.com
@@ -504,7 +459,6 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dqtcg35.alphonso.tv
 0.0.0.0 icosa-service-eu.allawnos.com
-0.0.0.0 adeng-identity-prod3.bdp.roku.com
 0.0.0.0 samsungeverland.demdex.net
 0.0.0.0 asia-vpushonrt-stsdk.vivoglobal.com
 0.0.0.0 eastus-1.in.applicationinsights.azure.com
@@ -515,7 +469,6 @@
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dqzljjhryn04.alphonso.tv
 0.0.0.0 icosa-service-in.allawnos.com
-0.0.0.0 adeng-looker-bi-oneview-prod-1001.bdp.roku.com
 0.0.0.0 fast.samsungeverland.demdex.net
 0.0.0.0 asia-vpushort-stsdk.vivoglobal.com
 0.0.0.0 eastus-2.in.applicationinsights.azure.com
@@ -525,7 +478,6 @@
 0.0.0.0 events-dre-op-hicloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dtsif22.alphonso.tv
 0.0.0.0 icosa-service-sg.allawnos.com
-0.0.0.0 adeng-looker-dev-1001.bdp.roku.com
 0.0.0.0 samsunghq.demdex.net
 0.0.0.0 br-p.vivoglobal.com
 0.0.0.0 eastus-3.in.applicationinsights.azure.com
@@ -535,7 +487,6 @@
 0.0.0.0 events-op-hicloud-com-drcn.appacc.dbankedge.net
 0.0.0.0 dtyjiik06.alphonso.tv
 0.0.0.0 icosa-service-us.allawnos.com
-0.0.0.0 adeng-looker-dev-1003.bdp.roku.com
 0.0.0.0 samsungindiaelectronics.demdex.net
 0.0.0.0 cl-vcode-od.vivoglobal.com
 0.0.0.0 eastus-4.in.applicationinsights.azure.com
@@ -545,7 +496,6 @@
 0.0.0.0 grs-dbankcloud-asia-dra.appacc.dbankedge.cn
 0.0.0.0 dueypce56.alphonso.tv
 0.0.0.0 icota-service-eu.allawnos.com
-0.0.0.0 adi-airflow.bdp.roku.com
 0.0.0.0 fast.samsungindiaelectronics.demdex.net
 0.0.0.0 cname-ali-asia-stsdk.vivoglobal.com
 0.0.0.0 eastus-5.in.applicationinsights.azure.com
@@ -555,7 +505,6 @@
 0.0.0.0 grs-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dufqih18.alphonso.tv
 0.0.0.0 icota-service-in.allawnos.com
-0.0.0.0 ads.beta.roku.com
 0.0.0.0 samsungindonesia.demdex.net
 0.0.0.0 cname-asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 eastus-6.in.applicationinsights.azure.com
@@ -566,7 +515,6 @@
 0.0.0.0 grs-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dwbrhfm60.alphonso.tv
 0.0.0.0 lockcard-service-in.allawnos.com
-0.0.0.0 api.ads.beta.roku.com
 0.0.0.0 fast.samsungindonesia.demdex.net
 0.0.0.0 cname-asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 eastus-8.in.applicationinsights.azure.com
@@ -577,7 +525,6 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dzhsiasru67.alphonso.tv
 0.0.0.0 moa-upload-in.allawnos.com
-0.0.0.0 cloudservices.roku.com
 0.0.0.0 samsungjapan.demdex.net
 0.0.0.0 cname-asia-stsdk09.vivoglobal.com
 0.0.0.0 eastus-global.in.applicationinsights.azure.com
@@ -588,7 +535,6 @@
 0.0.0.0 openlocation-drcn-platform-dbankcloud-com-drcn.appacc.dbankedge.cn
 0.0.0.0 dzqkrgamr75.alphonso.tv
 0.0.0.0 moa-upload-sg.allawnos.com
-0.0.0.0 samples.voice.cti.roku.com
 0.0.0.0 samsunglatam.demdex.net
 0.0.0.0 cname-asia02-stsdk.vivoglobal.com
 0.0.0.0 eastus2-0.in.applicationinsights.azure.com
@@ -599,7 +545,6 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc-region.dbankedge.cn
 0.0.0.0 ebgyjue7.alphonso.tv
 0.0.0.0 opex-service-eu.allawnos.com
-0.0.0.0 ravm-staging.data.roku.com
 0.0.0.0 fast.samsunglatam.demdex.net
 0.0.0.0 cname-de-stsdk.vivoglobal.com
 0.0.0.0 eastus2-3.in.applicationinsights.azure.com
@@ -610,7 +555,6 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 ecbmtltfbu47.alphonso.tv
 0.0.0.0 opex-service-in.allawnos.com
-0.0.0.0 ads-aka-us-east-1.delivery.roku.com
 0.0.0.0 samsunglevant.demdex.net
 0.0.0.0 cname-in-apport-stsdk.vivoglobal.com
 0.0.0.0 eastus2-4.in.applicationinsights.azure.com
@@ -621,7 +565,6 @@
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 edqsadx4.alphonso.tv
 0.0.0.0 opex-service-sg.allawnos.com
-0.0.0.0 ads-aka-us-west-2.delivery.roku.com
 0.0.0.0 fast.samsunglevant.demdex.net
 0.0.0.0 cname-in-bom01-nginxpool03.vivoglobal.com
 0.0.0.0 francecentral-1.in.applicationinsights.azure.com
@@ -632,7 +575,6 @@
 0.0.0.0 events-op-hicloud-com-drcn.appacc-region.dbankedge.net
 0.0.0.0 efovduk59.alphonso.tv
 0.0.0.0 ostorage-ocloud-in.allawnos.com
-0.0.0.0 ads-cf-us-east-1.delivery.roku.com
 0.0.0.0 samsunglife.demdex.net
 0.0.0.0 cname-in-ctdbonrt-stsdk.vivoglobal.com
 0.0.0.0 germanywestcentral-0.in.applicationinsights.azure.com
@@ -643,7 +585,6 @@
 0.0.0.0 grs-dbankcloud-asia-dra.appacc-region.dbankedge.cn
 0.0.0.0 egmfuqki23.alphonso.tv
 0.0.0.0 ostorage-ocloud-sg.allawnos.com
-0.0.0.0 ads-cf-us-west-2.delivery.roku.com
 0.0.0.0 fast.samsunglife.demdex.net
 0.0.0.0 cname-sin01-stsdk09.vivoglobal.com
 0.0.0.0 germanywestcentral-1.in.applicationinsights.azure.com
@@ -654,7 +595,6 @@
 0.0.0.0 grs-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 ennef96.alphonso.tv
 0.0.0.0 rus-service-eu.allawnos.com
-0.0.0.0 ads-us-east-1.delivery.roku.com
 0.0.0.0 samsungseao.demdex.net
 0.0.0.0 co-cota.vivoglobal.com
 0.0.0.0 italynorth-0.in.applicationinsights.azure.com
@@ -665,7 +605,6 @@
 0.0.0.0 grs-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 eoydhe10.alphonso.tv
 0.0.0.0 rus-service-in.allawnos.com
-0.0.0.0 ads-us-east-2.delivery.roku.com
 0.0.0.0 fast.samsungseao.demdex.net
 0.0.0.0 co-domaincfg.vivoglobal.com
 0.0.0.0 japaneast-0.in.applicationinsights.azure.com
@@ -676,7 +615,6 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 eqdrews7.alphonso.tv
 0.0.0.0 rus-service-sg.allawnos.com
-0.0.0.0 ads-us-west-2.delivery.roku.com
 0.0.0.0 samsungsec.demdex.net
 0.0.0.0 co-err-up.vivoglobal.com
 0.0.0.0 japaneast-1.in.applicationinsights.azure.com
@@ -687,7 +625,6 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 erafukhaie3.alphonso.tv
 0.0.0.0 rus-service-us.allawnos.com
-0.0.0.0 ads-cf-us-east-1.dev.delivery.roku.com
 0.0.0.0 fast.samsungsec.demdex.net
 0.0.0.0 co-onrt-stsdk.vivoglobal.com
 0.0.0.0 japanwest-0.in.applicationinsights.azure.com
@@ -698,7 +635,6 @@
 0.0.0.0 adx-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu1.alphonso.tv
 0.0.0.0 sau-server-eu.allawnos.com
-0.0.0.0 ads.gcp.roku.com
 0.0.0.0 fast.samsungsingapore.demdex.net
 0.0.0.0 co-ort-stsdk.vivoglobal.com
 0.0.0.0 northcentralus-0.in.applicationinsights.azure.com
@@ -709,7 +645,6 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu2.alphonso.tv
 0.0.0.0 sau-server-in.allawnos.com
-0.0.0.0 dev.ads.gcp.roku.com
 0.0.0.0 samsungspain.demdex.net
 0.0.0.0 co-pnrt-stsdk.vivoglobal.com
 0.0.0.0 northeurope-0.in.applicationinsights.azure.com
@@ -719,7 +654,6 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu3.alphonso.tv
 0.0.0.0 sau-server-sg.allawnos.com
-0.0.0.0 europe-west3.dev.ads.gcp.roku.com
 0.0.0.0 fast.samsungspain.demdex.net
 0.0.0.0 co-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 northeurope-2.in.applicationinsights.azure.com
@@ -730,7 +664,6 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu4.alphonso.tv
 0.0.0.0 sau-server-us.allawnos.com
-0.0.0.0 us-east4.dev.ads.gcp.roku.com
 0.0.0.0 samsungthailand.demdex.net
 0.0.0.0 co-st-sl.vivoglobal.com
 0.0.0.0 northeurope-3.in.applicationinsights.azure.com
@@ -741,7 +674,6 @@
 0.0.0.0 grs-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu5.alphonso.tv
 0.0.0.0 sidebar-apps-eu.allawnos.com
-0.0.0.0 adeng-qa-device.us-east4.dev.ads.gcp.roku.com
 0.0.0.0 fast.samsungthailand.demdex.net
 0.0.0.0 co-stsdk.vivoglobal.com
 0.0.0.0 northeurope-4.in.applicationinsights.azure.com
@@ -752,7 +684,6 @@
 0.0.0.0 grs-dbankcloud-com-dre.edge.dbankedge.cn
 0.0.0.0 eu-acr10.alphonso.tv
 0.0.0.0 sidebar-apps-in.allawnos.com
-0.0.0.0 adeng-staging.us-east4.dev.ads.gcp.roku.com
 0.0.0.0 samsungturkey.demdex.net
 0.0.0.0 co-timesync.vivoglobal.com
 0.0.0.0 northeurope-5.in.applicationinsights.azure.com
@@ -763,7 +694,6 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr100.alphonso.tv
 0.0.0.0 sidebar-apps-sg.allawnos.com
-0.0.0.0 us-west1.dev.ads.gcp.roku.com
 0.0.0.0 fast.samsungturkey.demdex.net
 0.0.0.0 co-vcode-api.vivoglobal.com
 0.0.0.0 northeurope-global.in.applicationinsights.azure.com
@@ -773,7 +703,6 @@
 0.0.0.0 metrics1-data-hicloud-com.ge.dbankedge.cn
 0.0.0.0 eu-acr101.alphonso.tv
 0.0.0.0 smartcard-apps-in.allawnos.com
-0.0.0.0 us-east4.ads.gcp.roku.com
 0.0.0.0 clientapi-samsung.dtignite.com
 0.0.0.0 co-vcode-od.vivoglobal.com
 0.0.0.0 norwayeast-0.in.applicationinsights.azure.com
@@ -784,7 +713,6 @@
 0.0.0.0 metrics1-drcn-dt-dbankcloud-cn.ge.dbankedge.cn
 0.0.0.0 eu-acr102.alphonso.tv
 0.0.0.0 smartcard-apps-sg.allawnos.com
-0.0.0.0 adeng-staging-device.us-east4.ads.gcp.roku.com
 0.0.0.0 download-samsung.dtignite.com
 0.0.0.0 co-vcode-or.vivoglobal.com
 0.0.0.0 qatarcentral-0.in.applicationinsights.azure.com
@@ -795,7 +723,6 @@
 0.0.0.0 0001-metrics1-data-hicloud-com.geac.dbankedge.cn
 0.0.0.0 eu-acr103.alphonso.tv
 0.0.0.0 smartcard-apps-us.allawnos.com
-0.0.0.0 us-west1.ads.gcp.roku.com
 0.0.0.0 akcjasamsung.e-kei.pl
 0.0.0.0 de-gdpr-err-up.vivoglobal.com
 0.0.0.0 southafricanorth-0.in.applicationinsights.azure.com
@@ -805,7 +732,6 @@
 0.0.0.0 0001-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr104.alphonso.tv
 0.0.0.0 sticker-service-in.allawnos.com
-0.0.0.0 ad.prod.rpay.int.roku.com
 0.0.0.0 samsung-akcja.e-kei.pl
 0.0.0.0 de-gdpr-vcode-od.vivoglobal.com
 0.0.0.0 southafricanorth-1.in.applicationinsights.azure.com
@@ -816,7 +742,6 @@
 0.0.0.0 0002-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr105.alphonso.tv
 0.0.0.0 wallpaper-service-sg.allawnos.com
-0.0.0.0 ad-bl.prod.rpay.int.roku.com
 0.0.0.0 samsung.ecorebates.com
 0.0.0.0 err-up.vivoglobal.com
 0.0.0.0 southcentralus-0.in.applicationinsights.azure.com
@@ -827,7 +752,6 @@
 0.0.0.0 metrics1-data-hicloud-com.gere.dbankedge.cn
 0.0.0.0 eu-acr106.alphonso.tv
 0.0.0.0 zen-core-fr.allawnos.com
-0.0.0.0 ad-eng.prod.rpay.int.roku.com
 0.0.0.0 samsung.telemetry.eyeo.com
 0.0.0.0 eu-album-api.vivoglobal.com
 0.0.0.0 southcentralus-3.in.applicationinsights.azure.com
@@ -837,7 +761,6 @@
 0.0.0.0 metrics1-drcn-dt-dbankcloud-cn.gere.dbankedge.cn
 0.0.0.0 eu-acr107.alphonso.tv
 0.0.0.0 zen-core-in.allawnos.com
-0.0.0.0 ad-eng-pci.prod.rpay.int.roku.com
 0.0.0.0 ehg-samsungusa.hitbox.com
 0.0.0.0 eu-cota.vivoglobal.com
 0.0.0.0 southeastasia-0.in.applicationinsights.azure.com
@@ -847,7 +770,6 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr108.alphonso.tv
 0.0.0.0 zen-core-sg.allawnos.com
-0.0.0.0 ad-eng-pci-bl.prod.rpay.int.roku.com
 0.0.0.0 moai-dev-samsung.com
 0.0.0.0 eu-domaincfg.vivoglobal.com
 0.0.0.0 southeastasia-1.in.applicationinsights.azure.com
@@ -857,7 +779,6 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.region.dbankedge.cn
 0.0.0.0 eu-acr109.alphonso.tv
 0.0.0.0 zen-core-us.allawnos.com
-0.0.0.0 ad-eng-bl.use1.prod.rpay.int.roku.com
 0.0.0.0 www.moai-dev-samsung.com
 0.0.0.0 eu-errup.vivoglobal.com
 0.0.0.0 swedencentral-0.in.applicationinsights.azure.com
@@ -868,7 +789,6 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr11.alphonso.tv
 0.0.0.0 conn-service-cn-01.allawntech.com
-0.0.0.0 ad-eng-pci-bl.use1.prod.rpay.int.roku.com
 0.0.0.0 samsungcard.sc.omtrdc.net
 0.0.0.0 eu-onrt-stsdk.vivoglobal.com
 0.0.0.0 switzerlandnorth-0.in.applicationinsights.azure.com
@@ -879,7 +799,6 @@
 0.0.0.0 grs-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr110.alphonso.tv
 0.0.0.0 conn-service-cn-03.allawntech.com
-0.0.0.0 ad-eng-bl.usw2.prod.rpay.int.roku.com
 0.0.0.0 samsungnorthamerica.sc.omtrdc.net
 0.0.0.0 eu-ort-stsdk.vivoglobal.com
 0.0.0.0 uksouth-0.in.applicationinsights.azure.com
@@ -890,7 +809,6 @@
 0.0.0.0 grs-dbankcloud-com-dre.region.dbankedge.cn
 0.0.0.0 eu-acr111.alphonso.tv
 0.0.0.0 conn-service-cn-04.allawntech.com
-0.0.0.0 ad-eng-pci-bl.usw2.prod.rpay.int.roku.com
 0.0.0.0 samsung.com.ssl.sc.omtrdc.net
 0.0.0.0 eu-p.vivoglobal.com
 0.0.0.0 uksouth-1.in.applicationinsights.azure.com
@@ -901,7 +819,6 @@
 0.0.0.0 grs-dbankcloud-com-drcn.wec.dbankedge.cn
 0.0.0.0 eu-acr112.alphonso.tv
 0.0.0.0 conn-service-cn-05.allawntech.com
-0.0.0.0 ad.staging.rpay.int.roku.com
 0.0.0.0 samsungafrica.tt.omtrdc.net
 0.0.0.0 eu-pnrt-stsdk.vivoglobal.com
 0.0.0.0 ukwest-0.in.applicationinsights.azure.com
@@ -912,7 +829,6 @@
 0.0.0.0 adx-dre.op.dbankcloud.com.edgekey.net
 0.0.0.0 eu-acr113.alphonso.tv
 0.0.0.0 conn-service-cn-07.allawntech.com
-0.0.0.0 ad-eng.staging.rpay.int.roku.com
 0.0.0.0 samsungbenelux.tt.omtrdc.net
 0.0.0.0 eu-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 usgovarizona-0.in.applicationinsights.azure.us
@@ -923,7 +839,6 @@
 0.0.0.0 data.hicloud.com
 0.0.0.0 eu-acr114.alphonso.tv
 0.0.0.0 conn-service-cn-08.allawntech.com
-0.0.0.0 ad-bl.usw2.staging.rpay.int.roku.com
 0.0.0.0 samsungcanada.tt.omtrdc.net
 0.0.0.0 eu-st-sl.vivoglobal.com
 0.0.0.0 usgovarizona-global.in.applicationinsights.azure.us
@@ -934,7 +849,6 @@
 0.0.0.0 metrics.data.hicloud.com
 0.0.0.0 eu-acr115.alphonso.tv
 0.0.0.0 conn-service-gl-01.allawntech.com
-0.0.0.0 logs.roku.com
 0.0.0.0 samsungchina.tt.omtrdc.net
 0.0.0.0 eu-stsdk.vivoglobal.com
 0.0.0.0 usgovvirginia-0.in.applicationinsights.azure.us
@@ -945,7 +859,6 @@
 0.0.0.0 metrics1.data.hicloud.com
 0.0.0.0 eu-acr116.alphonso.tv
 0.0.0.0 conn-service-gl-03.allawntech.com
-0.0.0.0 austin.logs.roku.com
 0.0.0.0 samsungcis.tt.omtrdc.net
 0.0.0.0 eu-timesync.vivoglobal.com
 0.0.0.0 usgovvirginia-1.in.applicationinsights.azure.us
@@ -956,7 +869,6 @@
 0.0.0.0 metrics2.data.hicloud.com
 0.0.0.0 eu-acr117.alphonso.tv
 0.0.0.0 conn-service-gl-04.allawntech.com
-0.0.0.0 bailey.logs.roku.com
 0.0.0.0 samsungeucdm.tt.omtrdc.net
 0.0.0.0 eu-vcode-api.vivoglobal.com
 0.0.0.0 usgovvirginia-global.in.applicationinsights.azure.us
@@ -967,7 +879,6 @@
 0.0.0.0 metrics3.data.hicloud.com
 0.0.0.0 eu-acr118.alphonso.tv
 0.0.0.0 smartcard.apps.coloros.com
-0.0.0.0 benjamin.logs.roku.com
 0.0.0.0 samsungkorea.tt.omtrdc.net
 0.0.0.0 eu-vcode-od.vivoglobal.com
 0.0.0.0 westeurope.in.applicationinsights.azure.com
@@ -978,7 +889,6 @@
 0.0.0.0 metrics5.data.hicloud.com
 0.0.0.0 eu-acr119.alphonso.tv
 0.0.0.0 smartcardf.apps.coloros.com
-0.0.0.0 benjamin-w.logs.roku.com
 0.0.0.0 samsunglatam.tt.omtrdc.net
 0.0.0.0 eu-vcode-or.vivoglobal.com
 0.0.0.0 westeurope-0.in.applicationinsights.azure.com
@@ -989,7 +899,6 @@
 0.0.0.0 dnkeeper.hicloud.com
 0.0.0.0 eu-acr12.alphonso.tv
 0.0.0.0 smartcardf-eu.apps.coloros.com
-0.0.0.0 brewster.logs.roku.com
 0.0.0.0 samsungmena.tt.omtrdc.net
 0.0.0.0 ex-adreq-asia.vivoglobal.com
 0.0.0.0 westeurope-1.in.applicationinsights.azure.com
@@ -1000,7 +909,6 @@
 0.0.0.0 dt.hicloud.com
 0.0.0.0 eu-acr120.alphonso.tv
 0.0.0.0 conn1.coloros.com
-0.0.0.0 cooper.logs.roku.com
 0.0.0.0 samsungseao.tt.omtrdc.net
 0.0.0.0 ex-adreq-in.vivoglobal.com
 0.0.0.0 westeurope-2.in.applicationinsights.azure.com
@@ -1011,7 +919,6 @@
 0.0.0.0 datacollector-dra.dt.hicloud.com
 0.0.0.0 eu-acr121.alphonso.tv
 0.0.0.0 conn2.coloros.com
-0.0.0.0 digdug.logs.roku.com
 0.0.0.0 samsungturkey.tt.omtrdc.net
 0.0.0.0 ex-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 westeurope-3.in.applicationinsights.azure.com
@@ -1021,7 +928,6 @@
 0.0.0.0 datacollector-drcn.dt.hicloud.com
 0.0.0.0 eu-acr122.alphonso.tv
 0.0.0.0 conn3.coloros.com
-0.0.0.0 digdug-g2.logs.roku.com
 0.0.0.0 samsungus.tt.omtrdc.net
 0.0.0.0 id-analyzer-appstore.vivoglobal.com
 0.0.0.0 westeurope-4.in.applicationinsights.azure.com
@@ -1032,7 +938,6 @@
 0.0.0.0 datacollector-dre.dt.hicloud.com
 0.0.0.0 eu-acr123.alphonso.tv
 0.0.0.0 conn4.coloros.com
-0.0.0.0 esp.logs.roku.com
 0.0.0.0 samsungtv-d.openx.net
 0.0.0.0 id-third-appstore.vivoglobal.com
 0.0.0.0 westeurope-5.in.applicationinsights.azure.com
@@ -1043,7 +948,6 @@
 0.0.0.0 datacollector-drru.dt.hicloud.com
 0.0.0.0 eu-acr124.alphonso.tv
 0.0.0.0 conn5.coloros.com
-0.0.0.0 external.logs.roku.com
 0.0.0.0 qmds-dev-samsung.com
 0.0.0.0 in-ad-mkt-vivofs.vivoglobal.com
 0.0.0.0 westeurope-global.in.applicationinsights.azure.com
@@ -1054,7 +958,6 @@
 0.0.0.0 logservice-drru.dt.hicloud.com
 0.0.0.0 eu-acr125.alphonso.tv
 0.0.0.0 foreign.coloros.com
-0.0.0.0 aws.external.logs.roku.com
 0.0.0.0 www.qmds-dev-samsung.com
 0.0.0.0 in-adlog.vivoglobal.com
 0.0.0.0 westus-0.in.applicationinsights.azure.com
@@ -1065,7 +968,6 @@
 0.0.0.0 metrics.dt.hicloud.com
 0.0.0.0 eu-acr126.alphonso.tv
 0.0.0.0 i.ota.foreign.coloros.com
-0.0.0.0 use1.aws.external.logs.roku.com
 0.0.0.0 zn8qwjgdslpyjq5n3-samsungcustomerboard.siteintercept.qualtrics.com
 0.0.0.0 in-adreq.vivoglobal.com
 0.0.0.0 westus2-0.in.applicationinsights.azure.com
@@ -1075,7 +977,6 @@
 0.0.0.0 metrics-dra.dt.hicloud.com
 0.0.0.0 eu-acr127.alphonso.tv
 0.0.0.0 i.rus.foreign.coloros.com
-0.0.0.0 g3.logs.roku.com
 0.0.0.0 zn9xowqszdbqtbfwx-seasamsung.siteintercept.qualtrics.com
 0.0.0.0 in-adsjssdk.vivoglobal.com
 0.0.0.0 westus2-1.in.applicationinsights.azure.com
@@ -1085,7 +986,6 @@
 0.0.0.0 metrics-drcn.dt.hicloud.com
 0.0.0.0 eu-acr128.alphonso.tv
 0.0.0.0 i.sau.foreign.coloros.com
-0.0.0.0 giga.logs.roku.com
 0.0.0.0 znewylzpqds1jt1sh-samsunggdc.siteintercept.qualtrics.com
 0.0.0.0 in-analyzer-appstore.vivoglobal.com
 0.0.0.0 westus2-2.in.applicationinsights.azure.com
@@ -1096,7 +996,6 @@
 0.0.0.0 metrics6.dt.hicloud.com
 0.0.0.0 eu-acr129.alphonso.tv
 0.0.0.0 guif.coloros.com
-0.0.0.0 griffin.logs.roku.com
 0.0.0.0 znexudtrhw0nwrmga-seasamsung.siteintercept.qualtrics.com
 0.0.0.0 in-apponrt-stsdk.vivoglobal.com
 0.0.0.0 westus2-4.in.applicationinsights.azure.com
@@ -1107,7 +1006,6 @@
 0.0.0.0 grs.hicloud.com
 0.0.0.0 eu-acr13.alphonso.tv
 0.0.0.0 guif-eu.coloros.com
-0.0.0.0 lagrange.logs.roku.com
 0.0.0.0 zneysvtqyfhzf6n4p-samsungeurope.siteintercept.qualtrics.com
 0.0.0.0 in-apport-stsdk.vivoglobal.com
 0.0.0.0 westus2-5.in.applicationinsights.azure.com
@@ -1117,7 +1015,6 @@
 0.0.0.0 logbak.hicloud.com
 0.0.0.0 eu-acr130.alphonso.tv
 0.0.0.0 icosa-sg.coloros.com
-0.0.0.0 liberty.logs.roku.com
 0.0.0.0 sia.internet.apps.samsung.com
 0.0.0.0 in-apppnrt-stsdk.vivoglobal.com
 0.0.0.0 westus2-global.in.applicationinsights.azure.com
@@ -1128,7 +1025,6 @@
 0.0.0.0 logservice.hicloud.com
 0.0.0.0 eu-acr131.alphonso.tv
 0.0.0.0 icota-eu.coloros.com
-0.0.0.0 littlefield.logs.roku.com
 0.0.0.0 dc.di.atlas.samsung.com
 0.0.0.0 in-appprt-stsdk.vivoglobal.com
 0.0.0.0 westus3.in.applicationinsights.azure.com
@@ -1139,7 +1035,6 @@
 0.0.0.0 logservice1.hicloud.com
 0.0.0.0 eu-acr132.alphonso.tv
 0.0.0.0 ifrus.coloros.com
-0.0.0.0 lockhart.logs.roku.com
 0.0.0.0 dls-account.di.atlas.samsung.com
 0.0.0.0 in-cfg-stsdk.vivoglobal.com
 0.0.0.0 westus3-1.in.applicationinsights.azure.com
@@ -1149,7 +1044,6 @@
 0.0.0.0 adx-dra.op.hicloud.com
 0.0.0.0 eu-acr133.alphonso.tv
 0.0.0.0 ifrus-eu.coloros.com
-0.0.0.0 logan.logs.roku.com
 0.0.0.0 dqa-auth.di.atlas.samsung.com
 0.0.0.0 in-cota.vivoglobal.com
 0.0.0.0 live.applicationinsights.azure.cn
@@ -1159,7 +1053,6 @@
 0.0.0.0 adx-dre.op.hicloud.com
 0.0.0.0 eu-acr134.alphonso.tv
 0.0.0.0 ifrus-in.coloros.com
-0.0.0.0 longview.logs.roku.com
 0.0.0.0 regi.di.atlas.samsung.com
 0.0.0.0 in-ctdbonrt-stsdk.vivoglobal.com
 0.0.0.0 live.applicationinsights.azure.com
@@ -1169,7 +1062,6 @@
 0.0.0.0 adx-drru.op.hicloud.com
 0.0.0.0 eu-acr135.alphonso.tv
 0.0.0.0 ifsau.coloros.com
-0.0.0.0 lt.logs.roku.com
 0.0.0.0 analytics.bigdata.samsung.com
 0.0.0.0 in-ctdbort-stsdk.vivoglobal.com
 0.0.0.0 www.live.applicationinsights.azure.com
@@ -1179,7 +1071,6 @@
 0.0.0.0 events-dra.op.hicloud.com
 0.0.0.0 eu-acr136.alphonso.tv
 0.0.0.0 ifsau-eu.coloros.com
-0.0.0.0 madison.logs.roku.com
 0.0.0.0 lp.americas.business.samsung.com
 0.0.0.0 in-ctdbpnrt-stsdk.vivoglobal.com
 0.0.0.0 inference-app-gateway.eastus2.cloudapp.azure.com
@@ -1189,7 +1080,6 @@
 0.0.0.0 events-dre.op.hicloud.com
 0.0.0.0 eu-acr137.alphonso.tv
 0.0.0.0 ifsau-in.coloros.com
-0.0.0.0 marlin.logs.roku.com
 0.0.0.0 tracking.americas.business.samsung.com
 0.0.0.0 in-ctdbprt-stsdk.vivoglobal.com
 0.0.0.0 inference-app-gateway.koreacentral.cloudapp.azure.com
@@ -1199,7 +1089,6 @@
 0.0.0.0 logservice-dra.platform.hicloud.com
 0.0.0.0 eu-acr138.alphonso.tv
 0.0.0.0 log-eap.coloros.com
-0.0.0.0 midland.logs.roku.com
 0.0.0.0 lp.apac.business.samsung.com
 0.0.0.0 in-domaincfg.vivoglobal.com
 0.0.0.0 inference-app-gateway.northeurope.cloudapp.azure.com
@@ -1209,7 +1098,6 @@
 0.0.0.0 logservice-dre.platform.hicloud.com
 0.0.0.0 eu-acr139.alphonso.tv
 0.0.0.0 log-eap-in.coloros.com
-0.0.0.0 mobile.logs.roku.com
 0.0.0.0 tracking.apac.business.samsung.com
 0.0.0.0 in-errup.vivoglobal.com
 0.0.0.0 azsc-edge-bingads-westeurope.westeurope.cloudapp.azure.com
@@ -1218,7 +1106,6 @@
 0.0.0.0 dt.hihonorcloud.com
 0.0.0.0 eu-acr14.alphonso.tv
 0.0.0.0 log-eap-sg.coloros.com
-0.0.0.0 mustang.logs.roku.com
 0.0.0.0 tracking.europe.business.samsung.com
 0.0.0.0 in-ex-adlog.vivoglobal.com
 0.0.0.0 collector.azure.cn
@@ -1228,7 +1115,6 @@
 0.0.0.0 logservice.dt.hihonorcloud.com
 0.0.0.0 eu-acr140.alphonso.tv
 0.0.0.0 moa-upload-online.coloros.com
-0.0.0.0 nemo.logs.roku.com
 0.0.0.0 images.it.business.samsung.com
 0.0.0.0 in-monitor-stsdk.vivoglobal.com
 0.0.0.0 js.monitor.azure.com
@@ -1238,7 +1124,6 @@
 0.0.0.0 logservice-dra.dt.hihonorcloud.com
 0.0.0.0 eu-acr141.alphonso.tv
 0.0.0.0 moa-upload-online-in.coloros.com
-0.0.0.0 os-12-5-alpha.logs.roku.com
 0.0.0.0 seao.business.samsung.com
 0.0.0.0 in-news-abroad-backstage-interface.vivoglobal.com
 0.0.0.0 adsdkpreprod.azureedge.net
@@ -1247,7 +1132,6 @@
 0.0.0.0 logservice-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr142.alphonso.tv
 0.0.0.0 storedl1.nearme.com.cn
-0.0.0.0 paolo.logs.roku.com
 0.0.0.0 channelusa.samsung.com
 0.0.0.0 in-onrt-stsdk.vivoglobal.com
 0.0.0.0 adsdkprod.azureedge.net
@@ -1257,7 +1141,6 @@
 0.0.0.0 logservice-dre.dt.hihonorcloud.com
 0.0.0.0 eu-acr143.alphonso.tv
 0.0.0.0 storedl3f.nearme.com.cn
-0.0.0.0 pico.logs.roku.com
 0.0.0.0 images.chbusiness.samsung.com
 0.0.0.0 in-ort-stsdk.vivoglobal.com
 0.0.0.0 adsdkpreprod.afd.azureedge.net
@@ -1267,7 +1150,6 @@
 0.0.0.0 logservice-drru.dt.hihonorcloud.com
 0.0.0.0 eu-acr144.alphonso.tv
 0.0.0.0 storedl4f.nearme.com.cn
-0.0.0.0 richmond.logs.roku.com
 0.0.0.0 dc.dqa.samsung.com
 0.0.0.0 in-os-config-appstore.vivoglobal.com
 0.0.0.0 adsdkprod.afd.azureedge.net
@@ -1276,7 +1158,6 @@
 0.0.0.0 metrics.dt.hihonorcloud.com
 0.0.0.0 eu-acr145.alphonso.tv
 0.0.0.0 storedl5f.nearme.com.cn
-0.0.0.0 rockett.logs.roku.com
 0.0.0.0 dls-ddc.dqa.samsung.com
 0.0.0.0 in-pnrt-stsdk.vivoglobal.com
 0.0.0.0 msadsscale.azureedge.net
@@ -1286,7 +1167,6 @@
 0.0.0.0 metrics-ad-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr15.alphonso.tv
 0.0.0.0 finosfin.com
-0.0.0.0 scribe.logs.roku.com
 0.0.0.0 dls-udc.dqa.samsung.com
 0.0.0.0 in-prt-stsdk.vivoglobal.com
 0.0.0.0 cjs-diagnostics-office-com-gvdhgwfwbbfsd9g3.z01.azurefd.net
@@ -1296,7 +1176,6 @@
 0.0.0.0 metrics-appdistribute-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr16.alphonso.tv
 0.0.0.0 www.finosfin.com
-0.0.0.0 sugarland.logs.roku.com
 0.0.0.0 event-tracking.samsung.com
 0.0.0.0 in-third-appstore.vivoglobal.com
 0.0.0.0 location-microsoft-com.b-0005.b-msedge.net
@@ -1306,7 +1185,6 @@
 0.0.0.0 metrics-basecloud-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr17.alphonso.tv
 0.0.0.0 appconf-ocs-eu.heytapdl.com
-0.0.0.0 tyler.logs.roku.com
 0.0.0.0 eumarketing.event-tracking.samsung.com
 0.0.0.0 in-timesync.vivoglobal.com
 0.0.0.0 a4.bing.com
@@ -1316,7 +1194,6 @@
 0.0.0.0 metrics-dra.dt.hihonorcloud.com
 0.0.0.0 eu-acr18.alphonso.tv
 0.0.0.0 appconf-ocs-in.heytapdl.com
-0.0.0.0 victoria.logs.roku.com
 0.0.0.0 europe.event-tracking.samsung.com
 0.0.0.0 in-vcode-api.vivoglobal.com
 0.0.0.0 ads.bing.com
@@ -1326,7 +1203,6 @@
 0.0.0.0 metrics-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr19.alphonso.tv
 0.0.0.0 appconf-ocs-sgp.heytapdl.com
-0.0.0.0 weighted.logs.roku.com
 0.0.0.0 marketing.event-tracking.samsung.com
 0.0.0.0 in-vcode-od.vivoglobal.com
 0.0.0.0 adserver.bing.com
@@ -1336,7 +1212,6 @@
 0.0.0.0 metrics-dre.dt.hihonorcloud.com
 0.0.0.0 eu-acr2.alphonso.tv
 0.0.0.0 appconf-ocs-us.heytapdl.com
-0.0.0.0 windsor.logs.roku.com
 0.0.0.0 images.frbusiness.samsung.com
 0.0.0.0 in-vcode-or.vivoglobal.com
 0.0.0.0 bat.bing.com
@@ -1346,7 +1221,6 @@
 0.0.0.0 metrics-drru.dt.hihonorcloud.com
 0.0.0.0 eu-acr20.alphonso.tv
 0.0.0.0 appconf-sgp.heytapdl.com
-0.0.0.0 blog-advertising.msc.roku.com
 0.0.0.0 bldr.mkt.samsung.com
 0.0.0.0 in-vpushonrt-stsdk.vivoglobal.com
 0.0.0.0 r.bat.bing.com
@@ -1356,7 +1230,6 @@
 0.0.0.0 metrics-test-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr21.alphonso.tv
 0.0.0.0 conf-in-dc.heytapdl.com
-0.0.0.0 advertising-qa.us-east-1.dev.msc.roku.com
 0.0.0.0 analytics.mpay.samsung.com
 0.0.0.0 in-vpushort-stsdk.vivoglobal.com
 0.0.0.0 2539951.r.bat.bing.com
@@ -1366,7 +1239,6 @@
 0.0.0.0 grs.hihonorcloud.com
 0.0.0.0 eu-acr22.alphonso.tv
 0.0.0.0 conf-sg-dc.heytapdl.com
-0.0.0.0 advertising-v3-qa.us-east-1.dev.msc.roku.com
 0.0.0.0 nmetrics.samsung.com
 0.0.0.0 kz-cname-sin01-bigdata.vivoglobal.com
 0.0.0.0 c.bing.com
@@ -1375,7 +1247,6 @@
 0.0.0.0 honorsearch-dra.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr23.alphonso.tv
 0.0.0.0 mdp-appconf-ae.heytapdl.com
-0.0.0.0 blog-advertising-qa.us-east-1.dev.msc.roku.com
 0.0.0.0 images.partnersupport.samsung.com
 0.0.0.0 kz-err-up.vivoglobal.com
 0.0.0.0 www.c.bing.com
@@ -1385,7 +1256,6 @@
 0.0.0.0 honorsearch-drcn.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr24.alphonso.tv
 0.0.0.0 mdp-appconf-af.heytapdl.com
-0.0.0.0 blog-advertising-v2-qa.us-east-1.dev.msc.roku.com
 0.0.0.0 plbusiness.samsung.com
 0.0.0.0 kz-monitor-stsdk.vivoglobal.com
 0.0.0.0 commerce.bing.com
@@ -1395,7 +1265,6 @@
 0.0.0.0 honorsearch-dre.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr25.alphonso.tv
 0.0.0.0 mdp-appconf-apc.heytapdl.com
-0.0.0.0 advertising.qa.us-east-1.dev.msc.roku.com
 0.0.0.0 api.runestone.samsung.com
 0.0.0.0 kz-onrt-stsdk.vivoglobal.com
 0.0.0.0 g.bing.com
@@ -1404,7 +1273,6 @@
 0.0.0.0 ads-drcn.platform.hihonorcloud.com
 0.0.0.0 eu-acr26.alphonso.tv
 0.0.0.0 mdp-appconf-ar.heytapdl.com
-0.0.0.0 advertising.us-east-1.msc.roku.com
 0.0.0.0 di.runestone.samsung.com
 0.0.0.0 kz-ort-stsdk.vivoglobal.com
 0.0.0.0 r.g.bing.com
@@ -1414,7 +1282,6 @@
 0.0.0.0 log-dra.platform.hihonorcloud.com
 0.0.0.0 eu-acr27.alphonso.tv
 0.0.0.0 mdp-appconf-at.heytapdl.com
-0.0.0.0 advertising-v3.us-east-1.msc.roku.com
 0.0.0.0 cc.di.runestone.samsung.com
 0.0.0.0 kz-pnrt-stsdk.vivoglobal.com
 0.0.0.0 raka.bing.com
@@ -1424,7 +1291,6 @@
 0.0.0.0 log-drcn.platform.hihonorcloud.com
 0.0.0.0 eu-acr28.alphonso.tv
 0.0.0.0 mdp-appconf-au.heytapdl.com
-0.0.0.0 blog-advertising-v2.us-east-1.msc.roku.com
 0.0.0.0 dc.di.runestone.samsung.com
 0.0.0.0 kz-prt-stsdk.vivoglobal.com
 0.0.0.0 c.bingapis.com
@@ -1434,7 +1300,6 @@
 0.0.0.0 log-dre.platform.hihonorcloud.com
 0.0.0.0 eu-acr29.alphonso.tv
 0.0.0.0 mdp-appconf-ba.heytapdl.com
-0.0.0.0 ad-eng-pci-bl.geoproximity.rpay.roku.com
 0.0.0.0 dls.di.runestone.samsung.com
 0.0.0.0 kz-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 insights.cloud.microsoft
@@ -1444,7 +1309,6 @@
 0.0.0.0 log-drru.platform.hihonorcloud.com
 0.0.0.0 eu-acr3.alphonso.tv
 0.0.0.0 mdp-appconf-bd.heytapdl.com
-0.0.0.0 ad-bl.geoproximity.staging.rpay.roku.com
 0.0.0.0 lcs.di.runestone.samsung.com
 0.0.0.0 kz-st-exappupgrade.vivoglobal.com
 0.0.0.0 analysis.insights.cloud.microsoft
@@ -1454,7 +1318,6 @@
 0.0.0.0 ads.cloud.huawei.com
 0.0.0.0 eu-acr30.alphonso.tv
 0.0.0.0 mdp-appconf-be.heytapdl.com
-0.0.0.0 ad-eng-bl.geoproximity.staging.rpay.roku.com
 0.0.0.0 orsdls.di.runestone.samsung.com
 0.0.0.0 kz-st-sl.vivoglobal.com
 0.0.0.0 westus-0.in.applicationinsights.azure.com.drandts.co.uk
@@ -1464,7 +1327,6 @@
 0.0.0.0 ads-drru.cloud.huawei.ru
 0.0.0.0 eu-acr31.alphonso.tv
 0.0.0.0 mdp-appconf-bg.heytapdl.com
-0.0.0.0 ad-eng-pci-bl.geoproximity.staging.rpay.roku.com
 0.0.0.0 orsfs.di.runestone.samsung.com
 0.0.0.0 kz-st-sysupgrade.vivoglobal.com
 0.0.0.0 measure.office.net.edgesuite.net
@@ -1474,7 +1336,6 @@
 0.0.0.0 rnd-cbgpas01.huawei.com
 0.0.0.0 eu-acr32.alphonso.tv
 0.0.0.0 mdp-appconf-bh.heytapdl.com
-0.0.0.0 assets.sr.roku.com
 0.0.0.0 orsplc.di.runestone.samsung.com
 0.0.0.0 kz-stsdk.vivoglobal.com
 0.0.0.0 nel.measure.office.net.edgesuite.net
@@ -1483,7 +1344,6 @@
 0.0.0.0 uba.huaweicloud.com
 0.0.0.0 eu-acr33.alphonso.tv
 0.0.0.0 mdp-appconf-bo.heytapdl.com
-0.0.0.0 item-tracking.dev.sr.roku.com
 0.0.0.0 sca.samsung.com
 0.0.0.0 kz-timesync.vivoglobal.com
 0.0.0.0 nelsdf.measure.office.net.edgesuite.net
@@ -1493,7 +1353,6 @@
 0.0.0.0 nsp-logservice-hiview-p05-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr34.alphonso.tv
 0.0.0.0 mdp-appconf-br.heytapdl.com
-0.0.0.0 logs.dev.sr.roku.com
 0.0.0.0 gear.sca.samsung.com
 0.0.0.0 kz-vcode-api.vivoglobal.com
 0.0.0.0 collector.azure.eaglex.ic.gov
@@ -1503,7 +1362,6 @@
 0.0.0.0 nsp-logservice-hiview-p06-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr35.alphonso.tv
 0.0.0.0 mdp-appconf-by.heytapdl.com
-0.0.0.0 traces.dev.sr.roku.com
 0.0.0.0 prd.sca.samsung.com
 0.0.0.0 kz-vcode-od.vivoglobal.com
 0.0.0.0 analytics.live.com
@@ -1513,7 +1371,6 @@
 0.0.0.0 nsp-logservice-hiview-p07-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr36.alphonso.tv
 0.0.0.0 mdp-appconf-ca.heytapdl.com
-0.0.0.0 traces-us-east-1.dev.sr.roku.com
 0.0.0.0 shome.sca.samsung.com
 0.0.0.0 kz-vcode-or.vivoglobal.com
 0.0.0.0 digg.analytics.live.com
@@ -1523,7 +1380,6 @@
 0.0.0.0 nsp-logservice-hiview-p08-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr37.alphonso.tv
 0.0.0.0 mdp-appconf-ch.heytapdl.com
-0.0.0.0 traces-us-west-2.dev.sr.roku.com
 0.0.0.0 lp.smartbusiness.samsung.com
 0.0.0.0 monitor-stsdk.vivoglobal.com
 0.0.0.0 ms.analytics.live.com
@@ -1533,7 +1389,6 @@
 0.0.0.0 nsp-logservice-hiview-p40-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr38.alphonso.tv
 0.0.0.0 mdp-appconf-chl.heytapdl.com
-0.0.0.0 userdata.dev.sr.roku.com
 0.0.0.0 tracking.smartbusiness.samsung.com
 0.0.0.0 mx-cota.vivoglobal.com
 0.0.0.0 c.live.com
@@ -1543,7 +1398,6 @@
 0.0.0.0 nsp-logservice-hiview-p41-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr39.alphonso.tv
 0.0.0.0 mdp-appconf-cn.heytapdl.com
-0.0.0.0 logs.sr.roku.com
 0.0.0.0 smetrics.samsung.com
 0.0.0.0 mx-domaincfg.vivoglobal.com
 0.0.0.0 location.live.net
@@ -1553,7 +1407,6 @@
 0.0.0.0 nsp-logservice-hiview-p43-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr4.alphonso.tv
 0.0.0.0 mdp-appconf-co.heytapdl.com
-0.0.0.0 traces.sr.roku.com
 0.0.0.0 images.ssbusiness.samsung.com
 0.0.0.0 mx-err-up.vivoglobal.com
 0.0.0.0 agps.location.live.net
@@ -1562,7 +1415,6 @@
 0.0.0.0 nsp-logservice-hiview-p50-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr40.alphonso.tv
 0.0.0.0 mdp-appconf-cr.heytapdl.com
-0.0.0.0 userdata.sr.roku.com
 0.0.0.0 bigdata.ssp.samsung.com
 0.0.0.0 mx-onrt-stsdk.vivoglobal.com
 0.0.0.0 collection.location.live.net
@@ -1572,7 +1424,6 @@
 0.0.0.0 nsp-logservice-weardevice-p42-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr41.alphonso.tv
 0.0.0.0 mdp-appconf-cz.heytapdl.com
-0.0.0.0 ads.staging.roku.com
 0.0.0.0 target-us.samsung.com
 0.0.0.0 mx-ort-stsdk.vivoglobal.com
 0.0.0.0 inference.location.live.net
@@ -1582,7 +1433,6 @@
 0.0.0.0 nsp-logservice-weardevice-p51-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr42.alphonso.tv
 0.0.0.0 mdp-appconf-de.heytapdl.com
-0.0.0.0 login.ads.staging.roku.com
 0.0.0.0 samsungacr.com
 0.0.0.0 mx-p.vivoglobal.com
 0.0.0.0 nexusrules.live.com
@@ -1592,7 +1442,6 @@
 0.0.0.0 nsp-logservice-hiview-p01-drru.obs.ru-northwest-2.myhuaweicloud.ru
 0.0.0.0 eu-acr43.alphonso.tv
 0.0.0.0 mdp-appconf-dk.heytapdl.com
-0.0.0.0 wwwimg.staging.roku.com
 0.0.0.0 log-config.samsungacr.com
 0.0.0.0 mx-pnrt-stsdk.vivoglobal.com
 0.0.0.0 aec-visio-telemetry.officeapps.live.com
@@ -1601,7 +1450,6 @@
 0.0.0.0 logserver.nzxcloud.cn
 0.0.0.0 eu-acr44.alphonso.tv
 0.0.0.0 mdp-appconf-do.heytapdl.com
-0.0.0.0 customer-feedbacks.web.roku.com
 0.0.0.0 log-ingestion.samsungacr.com
 0.0.0.0 mx-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 auc-visio-telemetry.officeapps.live.com
@@ -1611,7 +1459,6 @@
 0.0.0.0 logservice.vmall.com
 0.0.0.0 eu-acr45.alphonso.tv
 0.0.0.0 mdp-appconf-dz.heytapdl.com
-0.0.0.0 pixel.web.roku.com
 0.0.0.0 log-ingestion-ap2.samsungacr.com
 0.0.0.0 mx-st-sl.vivoglobal.com
 0.0.0.0 brc-visio-telemetry.officeapps.live.com
@@ -1621,7 +1468,6 @@
 0.0.0.0 h4g3z1-native.huawei.web.app
 0.0.0.0 eu-acr46.alphonso.tv
 0.0.0.0 mdp-appconf-ec.heytapdl.com
-0.0.0.0 pixel.staging.web.roku.com
 0.0.0.0 log-ingestion-eu.samsungacr.com
 0.0.0.0 mx-stsdk.vivoglobal.com
 0.0.0.0 cac-visio-telemetry.officeapps.live.com
@@ -1630,7 +1476,6 @@
 0.0.0.0 alexa-hybrid-interaction-log-config-prod-na.s3.amazonaws.com
 0.0.0.0 eu-acr47.alphonso.tv
 0.0.0.0 mdp-appconf-eg.heytapdl.com
-0.0.0.0 wwwimg.roku.com
 0.0.0.0 log-ingestion-kr.samsungacr.com
 0.0.0.0 mx-timesync.vivoglobal.com
 0.0.0.0 dec-visio-telemetry.officeapps.live.com
@@ -1639,7 +1484,6 @@
 0.0.0.0 alexa-mobile-analytics-configuration-prod.s3.amazonaws.com
 0.0.0.0 eu-acr48.alphonso.tv
 0.0.0.0 mdp-appconf-es.heytapdl.com
-0.0.0.0 h4g3z1-native.roku.web.app
 0.0.0.0 log-ingestion-sa.samsungacr.com
 0.0.0.0 mx-vcode-api.vivoglobal.com
 0.0.0.0 euc-excel-telemetry.officeapps.live.com
@@ -23901,6 +23745,7 @@
 0.0.0.0 lockerdomecdn.com
 0.0.0.0 log.btopenworld.com
 0.0.0.0 logger.snackly.co
+0.0.0.0 logs.roku.com
 0.0.0.0 logua.com
 0.0.0.0 longingtrees.com
 0.0.0.0 loopme.com
