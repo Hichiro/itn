@@ -1,4 +1,4 @@
-#sl: 31383 | Time: 26/03/2026 20:14:43
+#sl: 31790 | Time: 26/03/2026 23:10:48
 0.0.0.0 asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 asia-vcode-od.vivoglobal.com
@@ -17,6 +17,8 @@
 0.0.0.0 browsercfg-drcn.cloud.dbankcloud.cn
 0.0.0.0 alphonso.tv
 0.0.0.0 calculator-api-fr.allawnos.com
+0.0.0.0 ravm.tv
+0.0.0.0 samsung-com.112.2o7.net
 0.0.0.0 vhs.wwstat.com.eo.unicomcdn.com.cn
 0.0.0.0 c-bingapis-com.dual-a-0034.a-msedge.net
 0.0.0.0 traffic-media.co.uk
@@ -26,6 +28,8 @@
 0.0.0.0 ubacollect-drcn.cloud.dbankcloud.cn
 0.0.0.0 acpwdoni13.alphonso.tv
 0.0.0.0 calculator-api-in.allawnos.com
+0.0.0.0 cdn.ravm.tv
+0.0.0.0 metric.account-samsung.com
 0.0.0.0 adxlog-adnet.vivo.com.cn
 0.0.0.0 measure.office.com.akamaized.net
 0.0.0.0 mistat.india.xiaomi.com.edgesuite.net
@@ -36,6 +40,8 @@
 0.0.0.0 connect-dra.dbankcloud.cn
 0.0.0.0 ad-inserter.alphonso.tv
 0.0.0.0 calculator-api-sg.allawnos.com
+0.0.0.0 display.ravm.tv
+0.0.0.0 samsungcard.data.adobedc.net
 0.0.0.0 az.appstore.vivo.com.cn
 0.0.0.0 fp.measure.office.com.akamaized.net
 0.0.0.0 ad.intl.xiaomi.com.edgesuite.net
@@ -46,6 +52,8 @@
 0.0.0.0 connect-drcn.dbankcloud.cn
 0.0.0.0 aeihat46.alphonso.tv
 0.0.0.0 calculator-api-us.allawnos.com
+0.0.0.0 p.ravm.tv
+0.0.0.0 samsungads.adsmeasurement.com
 0.0.0.0 appstore-trace-h5sdk.vivo.com.cn
 0.0.0.0 upload2.fp.measure.office.com.akamaized.net
 0.0.0.0 mistat.intl.xiaomi.com.edgesuite.net
@@ -55,6 +63,8 @@
 0.0.0.0 connect-dre.dbankcloud.cn
 0.0.0.0 afaprrnbzl1.alphonso.tv
 0.0.0.0 classify-app-eu.allawnos.com
+0.0.0.0 raps.ravm.tv
+0.0.0.0 samsung.appnext.com
 0.0.0.0 dsplog-adnet.vivo.com.cn
 0.0.0.0 in.appcenter.ms
 0.0.0.0 mistat.rus.xiaomi.com.edgesuite.net
@@ -64,6 +74,8 @@
 0.0.0.0 connect-drru.dbankcloud.cn
 0.0.0.0 aknbxhzyd1.alphonso.tv
 0.0.0.0 classify-app-in.allawnos.com
+0.0.0.0 cnames.raps.ravm.tv
+0.0.0.0 samsung.attn.tv
 0.0.0.0 trace-h5sdk.vivo.com.cn
 0.0.0.0 ingest.appcenter.ms
 0.0.0.0 auth.api.gitv.tv
@@ -73,6 +85,8 @@
 0.0.0.0 metrics-dre.data.dbankcloud.cn
 0.0.0.0 aqvqsekdpw89.alphonso.tv
 0.0.0.0 classify-app-sg.allawnos.com
+0.0.0.0 demo.raps.ravm.tv
+0.0.0.0 samsungrum.beusable.net
 0.0.0.0 tracking-adnet.vivo.com.cn
 0.0.0.0 js.cdn.applicationinsights.io
 0.0.0.0 pb.bi.gitv.tv
@@ -82,6 +96,8 @@
 0.0.0.0 metrics1.data.dbankcloud.cn
 0.0.0.0 atzcxw9.alphonso.tv
 0.0.0.0 classify-app-us.allawnos.com
+0.0.0.0 hb-4y7w.raps.ravm.tv
+0.0.0.0 samsungscript.beusable.net
 0.0.0.0 vhs.wwstat.com.ctdns.cn
 0.0.0.0 js0.cdn.applicationinsights.io
 0.0.0.0 appstore.ptmi.gitv.tv
@@ -91,6 +107,8 @@
 0.0.0.0 dnkeeper.dbankcloud.com
 0.0.0.0 bbhobjaopy4.alphonso.tv
 0.0.0.0 conn-service-eu-01.allawnos.com
+0.0.0.0 hb-e8zk.raps.ravm.tv
+0.0.0.0 samsung.bimtrackapp.co
 0.0.0.0 trackercollect.ddxq.mobi
 0.0.0.0 js1.cdn.applicationinsights.io
 0.0.0.0 cupid.ptqy.gitv.tv
@@ -99,6 +117,8 @@
 0.0.0.0 dt.dbankcloud.ru
 0.0.0.0 behilbct57.alphonso.tv
 0.0.0.0 conn-service-eu-02.allawnos.com
+0.0.0.0 hb-gf26.raps.ravm.tv
+0.0.0.0 cn-api.mcsvc.samsung.com.cn
 0.0.0.0 trackerfeed.ddxq.mobi
 0.0.0.0 js2.cdn.applicationinsights.io
 0.0.0.0 api.cupid.ptqy.gitv.tv
@@ -107,6 +127,8 @@
 0.0.0.0 datacollector-dra.dt.dbankcloud.cn
 0.0.0.0 bhpnvx15.alphonso.tv
 0.0.0.0 conn-service-eu-03.allawnos.com
+0.0.0.0 hb-kl5v.raps.ravm.tv
+0.0.0.0 smetrics.samsung.com.cn
 0.0.0.0 vhs.wwstat.com.eo.dnse0.com
 0.0.0.0 js0.tst.applicationinsights.io
 0.0.0.0 mixer.cupid.ptqy.gitv.tv
@@ -116,6 +138,8 @@
 0.0.0.0 datacollector-drcn.dt.dbankcloud.cn
 0.0.0.0 birjox8.alphonso.tv
 0.0.0.0 conn-service-eu-04.allawnos.com
+0.0.0.0 hb-m9sn.raps.ravm.tv
+0.0.0.0 push.samsungosp.com.cn
 0.0.0.0 ads-api.vivo.com
 0.0.0.0 js1.tst.applicationinsights.io
 0.0.0.0 t7z.cupid.ptqy.gitv.tv
@@ -125,6 +149,8 @@
 0.0.0.0 datacollector-dre.dt.dbankcloud.cn
 0.0.0.0 bkhwgq8.alphonso.tv
 0.0.0.0 conn-service-eu-05.allawnos.com
+0.0.0.0 hb-njub.raps.ravm.tv
+0.0.0.0 china-gld.push.samsungosp.com.cn
 0.0.0.0 asia-abeacdataonrt-stsdk.vivoglobal.com
 0.0.0.0 js2.tst.applicationinsights.io
 0.0.0.0 ip.ptqy.gitv.tv
@@ -134,6 +160,8 @@
 0.0.0.0 datacollector-drru.dt.dbankcloud.ru
 0.0.0.0 bl-server.alphonso.tv
 0.0.0.0 conn-service-eu-07.allawnos.com
+0.0.0.0 hb-r93v.raps.ravm.tv
+0.0.0.0 samsungott.sora.yoyi.com.cn
 0.0.0.0 asia-abeacdataort-stsdk.vivoglobal.com
 0.0.0.0 applicationinsights.azure.com
 0.0.0.0 msg.ptqy.gitv.tv
@@ -143,6 +171,8 @@
 0.0.0.0 hisearch-dra.dt.dbankcloud.com
 0.0.0.0 bmkoqxogtv40.alphonso.tv
 0.0.0.0 conn-service-eu-08.allawnos.com
+0.0.0.0 hb-t5u9.raps.ravm.tv
+0.0.0.0 samsung.demdex.net
 0.0.0.0 asia-ad-mkt-vivofs.vivoglobal.com
 0.0.0.0 aimon.applicationinsights.azure.com
 0.0.0.0 msga.ptqy.gitv.tv
@@ -152,6 +182,8 @@
 0.0.0.0 hisearch-drcn.dt.dbankcloud.com
 0.0.0.0 bnkis3.alphonso.tv
 0.0.0.0 conn-service-in-01.allawnos.com
+0.0.0.0 hb-tm7d.raps.ravm.tv
+0.0.0.0 fast.samsung.demdex.net
 0.0.0.0 asia-adlog.vivoglobal.com
 0.0.0.0 in.aimon.applicationinsights.azure.com
 0.0.0.0 ota.ptqy.gitv.tv
@@ -161,6 +193,8 @@
 0.0.0.0 hisearch-dre.dt.dbankcloud.com
 0.0.0.0 bnwhgdi66.alphonso.tv
 0.0.0.0 conn-service-in-03.allawnos.com
+0.0.0.0 hb-w4a8.raps.ravm.tv
+0.0.0.0 samsung-benelux.demdex.net
 0.0.0.0 asia-adsjssdk.vivoglobal.com
 0.0.0.0 westcentralus-0.in.aimon.applicationinsights.azure.com
 0.0.0.0 puma-api.ptqy.gitv.tv
@@ -170,6 +204,8 @@
 0.0.0.0 hisearch-drru.dt.dbankcloud.com
 0.0.0.0 bphcuxntp31.alphonso.tv
 0.0.0.0 conn-service-in-04.allawnos.com
+0.0.0.0 hb-xd54.raps.ravm.tv
+0.0.0.0 fast.samsung-benelux.demdex.net
 0.0.0.0 asia-album-api.vivoglobal.com
 0.0.0.0 westcentralus-global.in.aimon.applicationinsights.azure.com
 0.0.0.0 nl.rcd.ptqy.gitv.tv
@@ -179,6 +215,8 @@
 0.0.0.0 hisearch-drru.dt.dbankcloud.ru
 0.0.0.0 bsdvjjug6.alphonso.tv
 0.0.0.0 conn-service-in-05.allawnos.com
+0.0.0.0 www.ravm.tv
+0.0.0.0 samsung-france.demdex.net
 0.0.0.0 asia-analyzer-appstore.vivoglobal.com
 0.0.0.0 api.applicationinsights.azure.com
 0.0.0.0 sdk.ptqy.gitv.tv
@@ -187,6 +225,8 @@
 0.0.0.0 metrics.dt.dbankcloud.cn
 0.0.0.0 bsndk8.alphonso.tv
 0.0.0.0 conn-service-in-07.allawnos.com
+0.0.0.0 acr.roku.com
+0.0.0.0 fast.samsung-france.demdex.net
 0.0.0.0 asia-commonitor-stsdk.vivoglobal.com
 0.0.0.0 dc.applicationinsights.azure.cn
 0.0.0.0 si.ptqy.gitv.tv
@@ -196,6 +236,8 @@
 0.0.0.0 metrics.dt.dbankcloud.ru
 0.0.0.0 bucyhq2.alphonso.tv
 0.0.0.0 conn-service-in-08.allawnos.com
+0.0.0.0 admon.acr.roku.com
+0.0.0.0 samsung-germany.demdex.net
 0.0.0.0 dc.applicationinsights.azure.com
 0.0.0.0 static.ptqy.gitv.tv
 0.0.0.0 aax-dtb-legacy.amazon-adsystem.com
@@ -203,6 +245,8 @@
 0.0.0.0 metrics-dra.dt.dbankcloud.cn
 0.0.0.0 budwoc80.alphonso.tv
 0.0.0.0 conn-service-us-03.allawnos.com
+0.0.0.0 admon-api.acr.roku.com
+0.0.0.0 fast.samsung-germany.demdex.net
 0.0.0.0 asia-comort-stsdk.vivoglobal.com
 0.0.0.0 dc.applicationinsights.azure.us
 0.0.0.0 msg.video.ptqy.gitv.tv
@@ -212,6 +256,8 @@
 0.0.0.0 metrics-dra.dt.dbankcloud.com
 0.0.0.0 burmsde90.alphonso.tv
 0.0.0.0 conn-service-us-04.allawnos.com
+0.0.0.0 adview.acr.roku.com
+0.0.0.0 samsung-italy.demdex.net
 0.0.0.0 asia-compnrt-stsdk.vivoglobal.com
 0.0.0.0 www.dc.applicationinsights.azure.com
 0.0.0.0 msg2.video.ptqy.gitv.tv
@@ -221,6 +267,8 @@
 0.0.0.0 metrics-drcn.dt.dbankcloud.cn
 0.0.0.0 bwezic7.alphonso.tv
 0.0.0.0 conn-service-us-05.allawnos.com
+0.0.0.0 admon.ca.acr.roku.com
+0.0.0.0 fast.samsung-italy.demdex.net
 0.0.0.0 asia-comprt-stsdk.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.cn
 0.0.0.0 sdk-cache.video.ptqy.gitv.tv
@@ -229,6 +277,8 @@
 0.0.0.0 metrics-drcn.dt.dbankcloud.com
 0.0.0.0 bxcpvyl4.alphonso.tv
 0.0.0.0 conn-service-us-07.allawnos.com
+0.0.0.0 ca-service.acr.roku.com
+0.0.0.0 samsung-mena.demdex.net
 0.0.0.0 asia-cota.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.com
 0.0.0.0 time.video.ptqy.gitv.tv
@@ -238,6 +288,8 @@
 0.0.0.0 metrics-dre.dt.dbankcloud.cn
 0.0.0.0 bzgjx81.alphonso.tv
 0.0.0.0 conn-service-us-08.allawnos.com
+0.0.0.0 channels.acr.roku.com
+0.0.0.0 fast.samsung-mena.demdex.net
 0.0.0.0 asia-err-up.vivoglobal.com
 0.0.0.0 in.applicationinsights.azure.us
 0.0.0.0 openapi.vip.ptqy.gitv.tv
@@ -247,6 +299,8 @@
 0.0.0.0 metrics1-drcn.dt.dbankcloud.cn
 0.0.0.0 ccxspcacy49.alphonso.tv
 0.0.0.0 cota-service-sg.allawnos.com
+0.0.0.0 grafana.acr.roku.com
+0.0.0.0 samsung-nordics.demdex.net
 0.0.0.0 asia-ex-adlog.vivoglobal.com
 0.0.0.0 australiaeast-0.in.applicationinsights.azure.com
 0.0.0.0 mistat.xiaomi.com.download.ks-cdn.com
@@ -256,6 +310,8 @@
 0.0.0.0 metrics3.dt.dbankcloud.ru
 0.0.0.0 cdgzrfrcrk9.alphonso.tv
 0.0.0.0 crypto-dsf-fr.allawnos.com
+0.0.0.0 tvacr-tools.acr.roku.com
+0.0.0.0 fast.samsung-nordics.demdex.net
 0.0.0.0 asia-exstsdk.vivoglobal.com
 0.0.0.0 australiaeast-1.in.applicationinsights.azure.com
 0.0.0.0 mistat.india.xiaomi.com.ksyna.net
@@ -265,6 +321,8 @@
 0.0.0.0 metrics5.dt.dbankcloud.ru
 0.0.0.0 cdn-aas-campaigns.alphonso.tv
 0.0.0.0 crypto-dsf-in.allawnos.com
+0.0.0.0 us-service.acr.roku.com
+0.0.0.0 samsung-poland.demdex.net
 0.0.0.0 asia-monitor-stsdk.vivoglobal.com
 0.0.0.0 australiaeast-global.in.applicationinsights.azure.com
 0.0.0.0 ad.intl.xiaomi.com.ksyna.net
@@ -274,6 +332,8 @@
 0.0.0.0 grs.dbankcloud.asia
 0.0.0.0 cdn-aas-ssai.alphonso.tv
 0.0.0.0 crypto-dsf-sg.allawnos.com
+0.0.0.0 ads.roku.com
+0.0.0.0 fast.samsung-poland.demdex.net
 0.0.0.0 asia-news-abroad-backstage-interface.vivoglobal.com
 0.0.0.0 australiasoutheast-0.in.applicationinsights.azure.com
 0.0.0.0 mistat.intl.xiaomi.com.ksyna.net
@@ -283,6 +343,8 @@
 0.0.0.0 grs.dbankcloud.cn
 0.0.0.0 cekftfosrg84.alphonso.tv
 0.0.0.0 crypto-dsf-us.allawnos.com
+0.0.0.0 api.ads.roku.com
+0.0.0.0 samsungafrica.demdex.net
 0.0.0.0 asia-onrt-stsdk.vivoglobal.com
 0.0.0.0 brazilsouth-0.in.applicationinsights.azure.com
 0.0.0.0 mistat.rus.xiaomi.com.ksyna.net
@@ -292,6 +354,8 @@
 0.0.0.0 grs.dbankcloud.com
 0.0.0.0 ckbjtnu46.alphonso.tv
 0.0.0.0 eap-log-in.allawnos.com
+0.0.0.0 delta-staging.ads.roku.com
+0.0.0.0 fast.samsungafrica.demdex.net
 0.0.0.0 asia-ort-stsdk.vivoglobal.com
 0.0.0.0 brazilsouth-1.in.applicationinsights.azure.com
 0.0.0.0 kuyun.com
@@ -301,6 +365,8 @@
 0.0.0.0 grs.dbankcloud.eu
 0.0.0.0 clockskew.alphonso.tv
 0.0.0.0 eap-log-sg.allawnos.com
+0.0.0.0 i.ads.roku.com
+0.0.0.0 samsungau.demdex.net
 0.0.0.0 asia-os-config-appstore.vivoglobal.com
 0.0.0.0 brazilsoutheast-0.in.applicationinsights.azure.com
 0.0.0.0 config.kuyun.com
@@ -309,6 +375,8 @@
 0.0.0.0 connect-drru.hispace.dbankcloud.cn
 0.0.0.0 cmsqd1.alphonso.tv
 0.0.0.0 featureinfo-service-sg.allawnos.com
+0.0.0.0 identity.ads.roku.com
+0.0.0.0 fast.samsungau.demdex.net
 0.0.0.0 asia-p.vivoglobal.com
 0.0.0.0 canadacentral-0.in.applicationinsights.azure.com
 0.0.0.0 logonext.tv.kuyun.com
@@ -317,6 +385,8 @@
 0.0.0.0 connect-drru.hispace.dbankcloud.ru
 0.0.0.0 config-overlay-ads.alphonso.tv
 0.0.0.0 fourier-videoclip-eu.allawnos.com
+0.0.0.0 identity-dev.ads.roku.com
+0.0.0.0 samsungbrazil.demdex.net
 0.0.0.0 asia-pnrt-stsdk.vivoglobal.com
 0.0.0.0 canadacentral-1.in.applicationinsights.azure.com
 0.0.0.0 www.kuyun.com
@@ -326,6 +396,8 @@
 0.0.0.0 logservice1.dbankcloud.com
 0.0.0.0 config-overlay-ads-staging.alphonso.tv
 0.0.0.0 fourier-videoclip-in.allawnos.com
+0.0.0.0 info.ads.roku.com
+0.0.0.0 fast.samsungbrazil.demdex.net
 0.0.0.0 asia-prt-stsdk.vivoglobal.com
 0.0.0.0 canadaeast-0.in.applicationinsights.azure.com
 0.0.0.0 ad.mi.com
@@ -335,6 +407,8 @@
 0.0.0.0 connect-dra.map.dbankcloud.com
 0.0.0.0 crgyirwbq42.alphonso.tv
 0.0.0.0 fourier-videoclip-sg.allawnos.com
+0.0.0.0 login.ads.roku.com
+0.0.0.0 samsungcanada.demdex.net
 0.0.0.0 asia-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 centralindia-0.in.applicationinsights.azure.com
 0.0.0.0 e.mi.com
@@ -344,6 +418,8 @@
 0.0.0.0 connect-dre.map.dbankcloud.com
 0.0.0.0 crmjqv9.alphonso.tv
 0.0.0.0 fourier-videoclip-us.allawnos.com
+0.0.0.0 p.ads.roku.com
+0.0.0.0 fast.samsungcanada.demdex.net
 0.0.0.0 centralus.in.applicationinsights.azure.com
 0.0.0.0 api.e.mi.com
 0.0.0.0 ad.nl.doubleclick.net
@@ -352,6 +428,8 @@
 0.0.0.0 adx-dra.op.dbankcloud.com
 0.0.0.0 crpsh8.alphonso.tv
 0.0.0.0 globalcolor-service-eu.allawnos.com
+0.0.0.0 preferences.ads.roku.com
+0.0.0.0 samsungcard.demdex.net
 0.0.0.0 asia-st-sl.vivoglobal.com
 0.0.0.0 centralus-0.in.applicationinsights.azure.com
 0.0.0.0 site.e.mi.com
@@ -361,6 +439,8 @@
 0.0.0.0 adx-drcn.op.dbankcloud.cn
 0.0.0.0 cssmps40.alphonso.tv
 0.0.0.0 globalcolor-service-in.allawnos.com
+0.0.0.0 cdn.tcom.ads.roku.com
+0.0.0.0 samsungcis.demdex.net
 0.0.0.0 asia-stsdk.vivoglobal.com
 0.0.0.0 centralus-2.in.applicationinsights.azure.com
 0.0.0.0 d.g.mi.com
@@ -370,6 +450,8 @@
 0.0.0.0 adx-dre.op.dbankcloud.com
 0.0.0.0 csxnc89.alphonso.tv
 0.0.0.0 globalcolor-service-sg.allawnos.com
+0.0.0.0 adservices.roku.com
+0.0.0.0 fast.samsungcis.demdex.net
 0.0.0.0 asia-third-appstore.vivoglobal.com
 0.0.0.0 centralus-3.in.applicationinsights.azure.com
 0.0.0.0 video.kts.g.mi.com
@@ -379,6 +461,8 @@
 0.0.0.0 adx-drru.op.dbankcloud.com
 0.0.0.0 cxlqmxzemg54.alphonso.tv
 0.0.0.0 gui-server-eu.allawnos.com
+0.0.0.0 advertising.roku.com
+0.0.0.0 samsungelectronicsamericainc.demdex.net
 0.0.0.0 asia-timesync.vivoglobal.com
 0.0.0.0 chinaeast2-0.in.applicationinsights.azure.cn
 0.0.0.0 migc.g.mi.com
@@ -388,6 +472,8 @@
 0.0.0.0 events-drcn.op.dbankcloud.cn
 0.0.0.0 cyijq72.alphonso.tv
 0.0.0.0 gui-server-in.allawnos.com
+0.0.0.0 info.advertising.roku.com
+0.0.0.0 fast.samsungelectronicsamericainc.demdex.net
 0.0.0.0 asia-vcode-api.vivoglobal.com
 0.0.0.0 chinanorth3-0.in.applicationinsights.azure.cn
 0.0.0.0 account.migc.g.mi.com
@@ -397,6 +483,8 @@
 0.0.0.0 events-drcn.op.dbankcloud.com
 0.0.0.0 dar-pix-prod-lb.alphonso.tv
 0.0.0.0 gui-server-sg.allawnos.com
+0.0.0.0 advertising-v3.roku.com
+0.0.0.0 samsungeu.demdex.net
 0.0.0.0 eastasia-0.in.applicationinsights.azure.com
 0.0.0.0 app.migc.g.mi.com
 0.0.0.0 adclick.g.doubleclick.net
@@ -405,6 +493,8 @@
 0.0.0.0 events-dre.op.dbankcloud.com
 0.0.0.0 dkpae73.alphonso.tv
 0.0.0.0 gui-server-us.allawnos.com
+0.0.0.0 analytics.roku.com
+0.0.0.0 samsungeucdm.demdex.net
 0.0.0.0 asia-vcode-or.vivoglobal.com
 0.0.0.0 eastus-0.in.applicationinsights.azure.com
 0.0.0.0 oss.migc.g.mi.com
@@ -414,6 +504,8 @@
 0.0.0.0 dnkeeper.platform.dbankcloud.cn
 0.0.0.0 dmkfppbdav49.alphonso.tv
 0.0.0.0 icosa-service-eu.allawnos.com
+0.0.0.0 adeng-identity-prod3.bdp.roku.com
+0.0.0.0 samsungeverland.demdex.net
 0.0.0.0 asia-vpushonrt-stsdk.vivoglobal.com
 0.0.0.0 eastus-1.in.applicationinsights.azure.com
 0.0.0.0 migcreport.g.mi.com
@@ -423,6 +515,8 @@
 0.0.0.0 grs.platform.dbankcloud.ru
 0.0.0.0 dqfui3.alphonso.tv
 0.0.0.0 icosa-service-in.allawnos.com
+0.0.0.0 adeng-looker-bi-oneview-prod-1001.bdp.roku.com
+0.0.0.0 fast.samsungeverland.demdex.net
 0.0.0.0 asia-vpushort-stsdk.vivoglobal.com
 0.0.0.0 eastus-2.in.applicationinsights.azure.com
 0.0.0.0 mis.g.mi.com
@@ -431,6 +525,8 @@
 0.0.0.0 logservice-dre.platform.dbankcloud.cn
 0.0.0.0 dqtcg35.alphonso.tv
 0.0.0.0 icosa-service-sg.allawnos.com
+0.0.0.0 adeng-looker-dev-1001.bdp.roku.com
+0.0.0.0 samsunghq.demdex.net
 0.0.0.0 br-p.vivoglobal.com
 0.0.0.0 eastus-3.in.applicationinsights.azure.com
 0.0.0.0 in.tv.global.mi.com
@@ -439,6 +535,8 @@
 0.0.0.0 openlocation-drcn.platform.dbankcloud.com
 0.0.0.0 dqzljjhryn04.alphonso.tv
 0.0.0.0 icosa-service-us.allawnos.com
+0.0.0.0 adeng-looker-dev-1003.bdp.roku.com
+0.0.0.0 samsungindiaelectronics.demdex.net
 0.0.0.0 cl-vcode-od.vivoglobal.com
 0.0.0.0 eastus-4.in.applicationinsights.azure.com
 0.0.0.0 a.hl.mi.com
@@ -447,6 +545,8 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dtsif22.alphonso.tv
 0.0.0.0 icota-service-eu.allawnos.com
+0.0.0.0 adi-airflow.bdp.roku.com
+0.0.0.0 fast.samsungindiaelectronics.demdex.net
 0.0.0.0 cname-ali-asia-stsdk.vivoglobal.com
 0.0.0.0 eastus-5.in.applicationinsights.azure.com
 0.0.0.0 idm.iot.mi.com
@@ -455,6 +555,8 @@
 0.0.0.0 adx-dra-op-hicloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dtyjiik06.alphonso.tv
 0.0.0.0 icota-service-in.allawnos.com
+0.0.0.0 ads.beta.roku.com
+0.0.0.0 samsungindonesia.demdex.net
 0.0.0.0 cname-asia-comonrt-stsdk.vivoglobal.com
 0.0.0.0 eastus-6.in.applicationinsights.azure.com
 0.0.0.0 api.jr.mi.com
@@ -464,6 +566,8 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc.dbankedge.cn
 0.0.0.0 dueypce56.alphonso.tv
 0.0.0.0 lockcard-service-in.allawnos.com
+0.0.0.0 api.ads.beta.roku.com
+0.0.0.0 fast.samsungindonesia.demdex.net
 0.0.0.0 cname-asia-st-exappupgrade.vivoglobal.com
 0.0.0.0 eastus-8.in.applicationinsights.azure.com
 0.0.0.0 pandora.mi.com
@@ -473,6 +577,8 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dufqih18.alphonso.tv
 0.0.0.0 moa-upload-in.allawnos.com
+0.0.0.0 cloudservices.roku.com
+0.0.0.0 samsungjapan.demdex.net
 0.0.0.0 cname-asia-stsdk09.vivoglobal.com
 0.0.0.0 eastus-global.in.applicationinsights.azure.com
 0.0.0.0 adx.tv.mi.com
@@ -482,6 +588,8 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 dwbrhfm60.alphonso.tv
 0.0.0.0 moa-upload-sg.allawnos.com
+0.0.0.0 samples.voice.cti.roku.com
+0.0.0.0 samsunglatam.demdex.net
 0.0.0.0 cname-asia02-stsdk.vivoglobal.com
 0.0.0.0 eastus2-0.in.applicationinsights.azure.com
 0.0.0.0 h5.tv.mi.com
@@ -491,6 +599,8 @@
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dzhsiasru67.alphonso.tv
 0.0.0.0 opex-service-eu.allawnos.com
+0.0.0.0 ravm-staging.data.roku.com
+0.0.0.0 fast.samsunglatam.demdex.net
 0.0.0.0 cname-de-stsdk.vivoglobal.com
 0.0.0.0 eastus2-3.in.applicationinsights.azure.com
 0.0.0.0 a.union.mi.com
@@ -500,6 +610,8 @@
 0.0.0.0 events-dre-op-hicloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 dzqkrgamr75.alphonso.tv
 0.0.0.0 opex-service-in.allawnos.com
+0.0.0.0 ads-aka-us-east-1.delivery.roku.com
+0.0.0.0 samsunglevant.demdex.net
 0.0.0.0 cname-in-apport-stsdk.vivoglobal.com
 0.0.0.0 eastus2-4.in.applicationinsights.azure.com
 0.0.0.0 stat.youpin.mi.com
@@ -509,6 +621,8 @@
 0.0.0.0 grs-dbankcloud-asia-dra.appacc.dbankedge.cn
 0.0.0.0 ebgyjue7.alphonso.tv
 0.0.0.0 opex-service-sg.allawnos.com
+0.0.0.0 ads-aka-us-west-2.delivery.roku.com
+0.0.0.0 fast.samsunglevant.demdex.net
 0.0.0.0 cname-in-bom01-nginxpool03.vivoglobal.com
 0.0.0.0 francecentral-0.in.applicationinsights.azure.com
 0.0.0.0 resolver.gslb.mi-idc.com
@@ -518,6 +632,8 @@
 0.0.0.0 grs-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 ecbmtltfbu47.alphonso.tv
 0.0.0.0 ostorage-ocloud-in.allawnos.com
+0.0.0.0 ads-cf-us-east-1.delivery.roku.com
+0.0.0.0 samsunglife.demdex.net
 0.0.0.0 cname-in-ctdbonrt-stsdk.vivoglobal.com
 0.0.0.0 francecentral-1.in.applicationinsights.azure.com
 0.0.0.0 miui.net
@@ -527,6 +643,8 @@
 0.0.0.0 grs-dbankcloud-com-dre.appacc.dbankedge.cn
 0.0.0.0 edqsadx4.alphonso.tv
 0.0.0.0 ostorage-ocloud-sg.allawnos.com
+0.0.0.0 ads-cf-us-west-2.delivery.roku.com
+0.0.0.0 fast.samsunglife.demdex.net
 0.0.0.0 cname-sin01-stsdk09.vivoglobal.com
 0.0.0.0 germanywestcentral-0.in.applicationinsights.azure.com
 0.0.0.0 app.miui.com
@@ -536,6 +654,8 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc.dbankedge.cn
 0.0.0.0 eekghd98.alphonso.tv
 0.0.0.0 rus-service-eu.allawnos.com
+0.0.0.0 ads-us-east-1.delivery.roku.com
+0.0.0.0 samsungseao.demdex.net
 0.0.0.0 co-cota.vivoglobal.com
 0.0.0.0 germanywestcentral-1.in.applicationinsights.azure.com
 0.0.0.0 api.bbs.miui.com
@@ -545,6 +665,8 @@
 0.0.0.0 openlocation-drcn-platform-dbankcloud-com-drcn.appacc.dbankedge.cn
 0.0.0.0 efovduk59.alphonso.tv
 0.0.0.0 rus-service-in.allawnos.com
+0.0.0.0 ads-us-east-2.delivery.roku.com
+0.0.0.0 fast.samsungseao.demdex.net
 0.0.0.0 co-domaincfg.vivoglobal.com
 0.0.0.0 italynorth-0.in.applicationinsights.azure.com
 0.0.0.0 browser.miui.com
@@ -554,6 +676,8 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.appacc-region.dbankedge.cn
 0.0.0.0 egmfuqki23.alphonso.tv
 0.0.0.0 rus-service-sg.allawnos.com
+0.0.0.0 ads-us-west-2.delivery.roku.com
+0.0.0.0 samsungsec.demdex.net
 0.0.0.0 co-err-up.vivoglobal.com
 0.0.0.0 japaneast-0.in.applicationinsights.azure.com
 0.0.0.0 hd.browser.miui.com
@@ -563,6 +687,8 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 ennef96.alphonso.tv
 0.0.0.0 rus-service-us.allawnos.com
+0.0.0.0 ads-cf-us-east-1.dev.delivery.roku.com
+0.0.0.0 fast.samsungsec.demdex.net
 0.0.0.0 co-onrt-stsdk.vivoglobal.com
 0.0.0.0 japaneast-1.in.applicationinsights.azure.com
 0.0.0.0 hot.browser.miui.com
@@ -572,6 +698,8 @@
 0.0.0.0 events-dre-op-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 eoydhe10.alphonso.tv
 0.0.0.0 sau-server-eu.allawnos.com
+0.0.0.0 ads.gcp.roku.com
+0.0.0.0 fast.samsungsingapore.demdex.net
 0.0.0.0 co-ort-stsdk.vivoglobal.com
 0.0.0.0 japanwest-0.in.applicationinsights.azure.com
 0.0.0.0 httpdns.browser.miui.com
@@ -581,6 +709,8 @@
 0.0.0.0 grs-dbankcloud-asia-dra.appacc-region.dbankedge.cn
 0.0.0.0 eqdrews7.alphonso.tv
 0.0.0.0 sau-server-in.allawnos.com
+0.0.0.0 dev.ads.gcp.roku.com
+0.0.0.0 samsungspain.demdex.net
 0.0.0.0 co-pnrt-stsdk.vivoglobal.com
 0.0.0.0 koreacentral-0.in.applicationinsights.azure.com
 0.0.0.0 nav.browser.miui.com
@@ -589,6 +719,8 @@
 0.0.0.0 grs-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 erafukhaie3.alphonso.tv
 0.0.0.0 sau-server-sg.allawnos.com
+0.0.0.0 europe-west3.dev.ads.gcp.roku.com
+0.0.0.0 fast.samsungspain.demdex.net
 0.0.0.0 co-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 northcentralus-0.in.applicationinsights.azure.com
 0.0.0.0 r.browser.miui.com
@@ -598,6 +730,8 @@
 0.0.0.0 grs-dbankcloud-com-dre.appacc-region.dbankedge.cn
 0.0.0.0 eu-acr-gpu1.alphonso.tv
 0.0.0.0 sau-server-us.allawnos.com
+0.0.0.0 us-east4.dev.ads.gcp.roku.com
+0.0.0.0 samsungthailand.demdex.net
 0.0.0.0 co-st-sl.vivoglobal.com
 0.0.0.0 northeurope-0.in.applicationinsights.azure.com
 0.0.0.0 reader.browser.miui.com
@@ -607,6 +741,8 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.appacc-region.dbankedge.cn
 0.0.0.0 eu-acr-gpu2.alphonso.tv
 0.0.0.0 sidebar-apps-eu.allawnos.com
+0.0.0.0 adeng-qa-device.us-east4.dev.ads.gcp.roku.com
+0.0.0.0 fast.samsungthailand.demdex.net
 0.0.0.0 co-stsdk.vivoglobal.com
 0.0.0.0 northeurope-2.in.applicationinsights.azure.com
 0.0.0.0 security.browser.miui.com
@@ -616,6 +752,8 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu3.alphonso.tv
 0.0.0.0 sidebar-apps-in.allawnos.com
+0.0.0.0 adeng-staging.us-east4.dev.ads.gcp.roku.com
+0.0.0.0 samsungturkey.demdex.net
 0.0.0.0 co-timesync.vivoglobal.com
 0.0.0.0 northeurope-3.in.applicationinsights.azure.com
 0.0.0.0 api.comm.miui.com
@@ -625,6 +763,8 @@
 0.0.0.0 adx-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu4.alphonso.tv
 0.0.0.0 sidebar-apps-sg.allawnos.com
+0.0.0.0 us-west1.dev.ads.gcp.roku.com
+0.0.0.0 fast.samsungturkey.demdex.net
 0.0.0.0 co-vcode-api.vivoglobal.com
 0.0.0.0 northeurope-4.in.applicationinsights.azure.com
 0.0.0.0 tracking.eu.miui.com
@@ -633,6 +773,8 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr-gpu5.alphonso.tv
 0.0.0.0 smartcard-apps-in.allawnos.com
+0.0.0.0 us-east4.ads.gcp.roku.com
+0.0.0.0 clientapi-samsung.dtignite.com
 0.0.0.0 co-vcode-od.vivoglobal.com
 0.0.0.0 northeurope-5.in.applicationinsights.azure.com
 0.0.0.0 events.miui.com
@@ -642,6 +784,8 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr10.alphonso.tv
 0.0.0.0 smartcard-apps-sg.allawnos.com
+0.0.0.0 adeng-staging-device.us-east4.ads.gcp.roku.com
+0.0.0.0 download-samsung.dtignite.com
 0.0.0.0 co-vcode-or.vivoglobal.com
 0.0.0.0 northeurope-global.in.applicationinsights.azure.com
 0.0.0.0 feedback.miui.com
@@ -651,6 +795,8 @@
 0.0.0.0 events-dra-op-hicloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr100.alphonso.tv
 0.0.0.0 smartcard-apps-us.allawnos.com
+0.0.0.0 us-west1.ads.gcp.roku.com
+0.0.0.0 akcjasamsung.e-kei.pl
 0.0.0.0 de-gdpr-err-up.vivoglobal.com
 0.0.0.0 norwayeast-0.in.applicationinsights.azure.com
 0.0.0.0 native.feedback.miui.com
@@ -659,6 +805,8 @@
 0.0.0.0 grs-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr101.alphonso.tv
 0.0.0.0 sticker-service-in.allawnos.com
+0.0.0.0 ad.prod.rpay.int.roku.com
+0.0.0.0 samsung-akcja.e-kei.pl
 0.0.0.0 de-gdpr-vcode-od.vivoglobal.com
 0.0.0.0 qatarcentral-0.in.applicationinsights.azure.com
 0.0.0.0 cdn1.static.home.miui.com
@@ -668,6 +816,8 @@
 0.0.0.0 grs-dbankcloud-com-dre.edge.dbankedge.cn
 0.0.0.0 eu-acr102.alphonso.tv
 0.0.0.0 wallpaper-service-sg.allawnos.com
+0.0.0.0 ad-bl.prod.rpay.int.roku.com
+0.0.0.0 samsung.ecorebates.com
 0.0.0.0 err-up.vivoglobal.com
 0.0.0.0 southafricanorth-0.in.applicationinsights.azure.com
 0.0.0.0 hybrid.miui.com
@@ -677,6 +827,8 @@
 0.0.0.0 hisearch-dra-dt-dbankcloud-com-dra.edge.dbankedge.cn
 0.0.0.0 eu-acr103.alphonso.tv
 0.0.0.0 zen-core-fr.allawnos.com
+0.0.0.0 ad-eng.prod.rpay.int.roku.com
+0.0.0.0 samsung.telemetry.eyeo.com
 0.0.0.0 eu-album-api.vivoglobal.com
 0.0.0.0 southafricanorth-1.in.applicationinsights.azure.com
 0.0.0.0 india.miui.com
@@ -685,6 +837,8 @@
 0.0.0.0 metrics1-data-hicloud-com.ge.dbankedge.cn
 0.0.0.0 eu-acr104.alphonso.tv
 0.0.0.0 zen-core-in.allawnos.com
+0.0.0.0 ad-eng-pci.prod.rpay.int.roku.com
+0.0.0.0 ehg-samsungusa.hitbox.com
 0.0.0.0 eu-cota.vivoglobal.com
 0.0.0.0 southcentralus-0.in.applicationinsights.azure.com
 0.0.0.0 tracking.india.miui.com
@@ -693,6 +847,8 @@
 0.0.0.0 metrics1-drcn-dt-dbankcloud-cn.ge.dbankedge.cn
 0.0.0.0 eu-acr105.alphonso.tv
 0.0.0.0 zen-core-sg.allawnos.com
+0.0.0.0 ad-eng-pci-bl.prod.rpay.int.roku.com
+0.0.0.0 moai-dev-samsung.com
 0.0.0.0 eu-domaincfg.vivoglobal.com
 0.0.0.0 southcentralus-3.in.applicationinsights.azure.com
 0.0.0.0 mitv.tracking.india.miui.com
@@ -701,6 +857,8 @@
 0.0.0.0 0001-metrics1-data-hicloud-com.geac.dbankedge.cn
 0.0.0.0 eu-acr106.alphonso.tv
 0.0.0.0 zen-core-us.allawnos.com
+0.0.0.0 ad-eng-bl.use1.prod.rpay.int.roku.com
+0.0.0.0 www.moai-dev-samsung.com
 0.0.0.0 eu-errup.vivoglobal.com
 0.0.0.0 southeastasia-0.in.applicationinsights.azure.com
 0.0.0.0 inf.miui.com
@@ -710,6 +868,8 @@
 0.0.0.0 0001-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr107.alphonso.tv
 0.0.0.0 conn-service-cn-01.allawntech.com
+0.0.0.0 ad-eng-pci-bl.use1.prod.rpay.int.roku.com
+0.0.0.0 samsungcard.sc.omtrdc.net
 0.0.0.0 eu-onrt-stsdk.vivoglobal.com
 0.0.0.0 southeastasia-1.in.applicationinsights.azure.com
 0.0.0.0 apm-rum-ind.inf.miui.com
@@ -719,6 +879,8 @@
 0.0.0.0 0002-metrics1-drcn-dt-dbankcloud-cn.geac.dbankedge.cn
 0.0.0.0 eu-acr108.alphonso.tv
 0.0.0.0 conn-service-cn-03.allawntech.com
+0.0.0.0 ad-eng-bl.usw2.prod.rpay.int.roku.com
+0.0.0.0 samsungnorthamerica.sc.omtrdc.net
 0.0.0.0 eu-ort-stsdk.vivoglobal.com
 0.0.0.0 southindia-0.in.applicationinsights.azure.com
 0.0.0.0 mcc.intl.inf.miui.com
@@ -728,6 +890,8 @@
 0.0.0.0 metrics1-data-hicloud-com.gere.dbankedge.cn
 0.0.0.0 eu-acr109.alphonso.tv
 0.0.0.0 conn-service-cn-04.allawntech.com
+0.0.0.0 ad-eng-pci-bl.usw2.prod.rpay.int.roku.com
+0.0.0.0 samsung.com.ssl.sc.omtrdc.net
 0.0.0.0 eu-p.vivoglobal.com
 0.0.0.0 swedencentral-0.in.applicationinsights.azure.com
 0.0.0.0 api.accelerator.intl.miui.com
@@ -737,6 +901,8 @@
 0.0.0.0 metrics1-drcn-dt-dbankcloud-cn.gere.dbankedge.cn
 0.0.0.0 eu-acr11.alphonso.tv
 0.0.0.0 conn-service-cn-05.allawntech.com
+0.0.0.0 ad.staging.rpay.int.roku.com
+0.0.0.0 samsungafrica.tt.omtrdc.net
 0.0.0.0 eu-pnrt-stsdk.vivoglobal.com
 0.0.0.0 switzerlandnorth-0.in.applicationinsights.azure.com
 0.0.0.0 api.aurogon.intl.miui.com
@@ -746,6 +912,8 @@
 0.0.0.0 adx-dra-op-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr110.alphonso.tv
 0.0.0.0 conn-service-cn-07.allawntech.com
+0.0.0.0 ad-eng.staging.rpay.int.roku.com
+0.0.0.0 samsungbenelux.tt.omtrdc.net
 0.0.0.0 eu-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 uksouth-0.in.applicationinsights.azure.com
 0.0.0.0 activity.browser.intl.miui.com
@@ -755,6 +923,8 @@
 0.0.0.0 events-dra-op-dbankcloud-cn-dra.region.dbankedge.cn
 0.0.0.0 eu-acr111.alphonso.tv
 0.0.0.0 conn-service-cn-08.allawntech.com
+0.0.0.0 ad-bl.usw2.staging.rpay.int.roku.com
+0.0.0.0 samsungcanada.tt.omtrdc.net
 0.0.0.0 eu-st-sl.vivoglobal.com
 0.0.0.0 uksouth-1.in.applicationinsights.azure.com
 0.0.0.0 api.activity.browser.intl.miui.com
@@ -764,6 +934,8 @@
 0.0.0.0 events-dra-op-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr112.alphonso.tv
 0.0.0.0 conn-service-gl-01.allawntech.com
+0.0.0.0 logs.roku.com
+0.0.0.0 samsungchina.tt.omtrdc.net
 0.0.0.0 eu-stsdk.vivoglobal.com
 0.0.0.0 ukwest-0.in.applicationinsights.azure.com
 0.0.0.0 india.activity.browser.intl.miui.com
@@ -773,6 +945,8 @@
 0.0.0.0 grs-dbankcloud-com-dra.region.dbankedge.cn
 0.0.0.0 eu-acr113.alphonso.tv
 0.0.0.0 conn-service-gl-03.allawntech.com
+0.0.0.0 austin.logs.roku.com
+0.0.0.0 samsungcis.tt.omtrdc.net
 0.0.0.0 eu-timesync.vivoglobal.com
 0.0.0.0 usgovarizona-0.in.applicationinsights.azure.us
 0.0.0.0 sandbox.activity.browser.intl.miui.com
@@ -782,6 +956,8 @@
 0.0.0.0 grs-dbankcloud-com-dre.region.dbankedge.cn
 0.0.0.0 eu-acr114.alphonso.tv
 0.0.0.0 conn-service-gl-04.allawntech.com
+0.0.0.0 bailey.logs.roku.com
+0.0.0.0 samsungeucdm.tt.omtrdc.net
 0.0.0.0 eu-vcode-api.vivoglobal.com
 0.0.0.0 usgovarizona-global.in.applicationinsights.azure.us
 0.0.0.0 api.browser.intl.miui.com
@@ -791,6 +967,8 @@
 0.0.0.0 grs-dbankcloud-com-drcn.wec.dbankedge.cn
 0.0.0.0 eu-acr115.alphonso.tv
 0.0.0.0 smartcard.apps.coloros.com
+0.0.0.0 benjamin.logs.roku.com
+0.0.0.0 samsungkorea.tt.omtrdc.net
 0.0.0.0 eu-vcode-od.vivoglobal.com
 0.0.0.0 usgovvirginia-0.in.applicationinsights.azure.us
 0.0.0.0 hot.browser.intl.miui.com
@@ -800,6 +978,8 @@
 0.0.0.0 adx-dre.op.dbankcloud.com.edgekey.net
 0.0.0.0 eu-acr116.alphonso.tv
 0.0.0.0 smartcardf.apps.coloros.com
+0.0.0.0 benjamin-w.logs.roku.com
+0.0.0.0 samsunglatam.tt.omtrdc.net
 0.0.0.0 eu-vcode-or.vivoglobal.com
 0.0.0.0 usgovvirginia-1.in.applicationinsights.azure.us
 0.0.0.0 r.browser.intl.miui.com
@@ -809,6 +989,8 @@
 0.0.0.0 data.hicloud.com
 0.0.0.0 eu-acr117.alphonso.tv
 0.0.0.0 smartcardf-eu.apps.coloros.com
+0.0.0.0 brewster.logs.roku.com
+0.0.0.0 samsungmena.tt.omtrdc.net
 0.0.0.0 ex-adreq-asia.vivoglobal.com
 0.0.0.0 usgovvirginia-global.in.applicationinsights.azure.us
 0.0.0.0 api.brs.intl.miui.com
@@ -818,6 +1000,8 @@
 0.0.0.0 metrics.data.hicloud.com
 0.0.0.0 eu-acr118.alphonso.tv
 0.0.0.0 conn1.coloros.com
+0.0.0.0 cooper.logs.roku.com
+0.0.0.0 samsungseao.tt.omtrdc.net
 0.0.0.0 ex-adreq-in.vivoglobal.com
 0.0.0.0 westeurope.in.applicationinsights.azure.com
 0.0.0.0 api.calendar.intl.miui.com
@@ -827,6 +1011,8 @@
 0.0.0.0 metrics1.data.hicloud.com
 0.0.0.0 eu-acr119.alphonso.tv
 0.0.0.0 conn2.coloros.com
+0.0.0.0 digdug.logs.roku.com
+0.0.0.0 samsungturkey.tt.omtrdc.net
 0.0.0.0 ex-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 westeurope-0.in.applicationinsights.azure.com
 0.0.0.0 abroad.api.comm.intl.miui.com
@@ -835,6 +1021,8 @@
 0.0.0.0 metrics2.data.hicloud.com
 0.0.0.0 eu-acr12.alphonso.tv
 0.0.0.0 conn3.coloros.com
+0.0.0.0 digdug-g2.logs.roku.com
+0.0.0.0 samsungus.tt.omtrdc.net
 0.0.0.0 id-analyzer-appstore.vivoglobal.com
 0.0.0.0 westeurope-1.in.applicationinsights.azure.com
 0.0.0.0 api.competition.intl.miui.com
@@ -844,6 +1032,8 @@
 0.0.0.0 metrics3.data.hicloud.com
 0.0.0.0 eu-acr120.alphonso.tv
 0.0.0.0 conn4.coloros.com
+0.0.0.0 esp.logs.roku.com
+0.0.0.0 samsungtv-d.openx.net
 0.0.0.0 id-third-appstore.vivoglobal.com
 0.0.0.0 westeurope-2.in.applicationinsights.azure.com
 0.0.0.0 api.content.intl.miui.com
@@ -853,6 +1043,8 @@
 0.0.0.0 metrics5.data.hicloud.com
 0.0.0.0 eu-acr121.alphonso.tv
 0.0.0.0 conn5.coloros.com
+0.0.0.0 external.logs.roku.com
+0.0.0.0 qmds-dev-samsung.com
 0.0.0.0 in-ad-mkt-vivofs.vivoglobal.com
 0.0.0.0 westeurope-3.in.applicationinsights.azure.com
 0.0.0.0 api.collect.data.intl.miui.com
@@ -862,6 +1054,8 @@
 0.0.0.0 dnkeeper.hicloud.com
 0.0.0.0 eu-acr122.alphonso.tv
 0.0.0.0 foreign.coloros.com
+0.0.0.0 aws.external.logs.roku.com
+0.0.0.0 www.qmds-dev-samsung.com
 0.0.0.0 in-adlog.vivoglobal.com
 0.0.0.0 westeurope-4.in.applicationinsights.azure.com
 0.0.0.0 api.game.intl.miui.com
@@ -871,6 +1065,8 @@
 0.0.0.0 dt.hicloud.com
 0.0.0.0 eu-acr123.alphonso.tv
 0.0.0.0 i.ota.foreign.coloros.com
+0.0.0.0 use1.aws.external.logs.roku.com
+0.0.0.0 zn8qwjgdslpyjq5n3-samsungcustomerboard.siteintercept.qualtrics.com
 0.0.0.0 in-adreq.vivoglobal.com
 0.0.0.0 westeurope-5.in.applicationinsights.azure.com
 0.0.0.0 gtglobal.intl.miui.com
@@ -879,6 +1075,8 @@
 0.0.0.0 datacollector-dra.dt.hicloud.com
 0.0.0.0 eu-acr124.alphonso.tv
 0.0.0.0 i.rus.foreign.coloros.com
+0.0.0.0 g3.logs.roku.com
+0.0.0.0 zn9xowqszdbqtbfwx-seasamsung.siteintercept.qualtrics.com
 0.0.0.0 in-adsjssdk.vivoglobal.com
 0.0.0.0 westeurope-global.in.applicationinsights.azure.com
 0.0.0.0 m.beehive.in.intl.miui.com
@@ -887,6 +1085,8 @@
 0.0.0.0 datacollector-drcn.dt.hicloud.com
 0.0.0.0 eu-acr125.alphonso.tv
 0.0.0.0 i.sau.foreign.coloros.com
+0.0.0.0 giga.logs.roku.com
+0.0.0.0 znewylzpqds1jt1sh-samsunggdc.siteintercept.qualtrics.com
 0.0.0.0 in-analyzer-appstore.vivoglobal.com
 0.0.0.0 westus-0.in.applicationinsights.azure.com
 0.0.0.0 api.launcher.intl.miui.com
@@ -896,6 +1096,8 @@
 0.0.0.0 datacollector-dre.dt.hicloud.com
 0.0.0.0 eu-acr126.alphonso.tv
 0.0.0.0 guif.coloros.com
+0.0.0.0 griffin.logs.roku.com
+0.0.0.0 znexudtrhw0nwrmga-seasamsung.siteintercept.qualtrics.com
 0.0.0.0 in-apponrt-stsdk.vivoglobal.com
 0.0.0.0 westus2-0.in.applicationinsights.azure.com
 0.0.0.0 api.mintbrs.intl.miui.com
@@ -905,6 +1107,8 @@
 0.0.0.0 datacollector-drru.dt.hicloud.com
 0.0.0.0 eu-acr127.alphonso.tv
 0.0.0.0 guif-eu.coloros.com
+0.0.0.0 lagrange.logs.roku.com
+0.0.0.0 zneysvtqyfhzf6n4p-samsungeurope.siteintercept.qualtrics.com
 0.0.0.0 in-apport-stsdk.vivoglobal.com
 0.0.0.0 westus2-1.in.applicationinsights.azure.com
 0.0.0.0 api.muc.intl.miui.com
@@ -913,6 +1117,8 @@
 0.0.0.0 logservice-drru.dt.hicloud.com
 0.0.0.0 eu-acr128.alphonso.tv
 0.0.0.0 icosa-sg.coloros.com
+0.0.0.0 liberty.logs.roku.com
+0.0.0.0 sia.internet.apps.samsung.com
 0.0.0.0 in-apppnrt-stsdk.vivoglobal.com
 0.0.0.0 westus2-2.in.applicationinsights.azure.com
 0.0.0.0 adv.sec.intl.miui.com
@@ -922,6 +1128,8 @@
 0.0.0.0 metrics.dt.hicloud.com
 0.0.0.0 eu-acr129.alphonso.tv
 0.0.0.0 icota-eu.coloros.com
+0.0.0.0 littlefield.logs.roku.com
+0.0.0.0 dc.di.atlas.samsung.com
 0.0.0.0 in-appprt-stsdk.vivoglobal.com
 0.0.0.0 westus2-4.in.applicationinsights.azure.com
 0.0.0.0 authbe.sec.intl.miui.com
@@ -931,6 +1139,8 @@
 0.0.0.0 metrics-dra.dt.hicloud.com
 0.0.0.0 eu-acr13.alphonso.tv
 0.0.0.0 ifrus.coloros.com
+0.0.0.0 lockhart.logs.roku.com
+0.0.0.0 ddf.di.atlas.samsung.com
 0.0.0.0 in-cfg-stsdk.vivoglobal.com
 0.0.0.0 westus2-5.in.applicationinsights.azure.com
 0.0.0.0 data.sec.intl.miui.com
@@ -939,6 +1149,8 @@
 0.0.0.0 metrics-drcn.dt.hicloud.com
 0.0.0.0 eu-acr130.alphonso.tv
 0.0.0.0 ifrus-eu.coloros.com
+0.0.0.0 logan.logs.roku.com
+0.0.0.0 dls-account.di.atlas.samsung.com
 0.0.0.0 in-cota.vivoglobal.com
 0.0.0.0 westus2-global.in.applicationinsights.azure.com
 0.0.0.0 protect.dev.sec.intl.miui.com
@@ -947,6 +1159,8 @@
 0.0.0.0 metrics6.dt.hicloud.com
 0.0.0.0 eu-acr131.alphonso.tv
 0.0.0.0 ifrus-in.coloros.com
+0.0.0.0 longview.logs.roku.com
+0.0.0.0 dqa-auth.di.atlas.samsung.com
 0.0.0.0 in-ctdbonrt-stsdk.vivoglobal.com
 0.0.0.0 westus3.in.applicationinsights.azure.com
 0.0.0.0 flash.sec.intl.miui.com
@@ -955,6 +1169,8 @@
 0.0.0.0 grs.hicloud.com
 0.0.0.0 eu-acr132.alphonso.tv
 0.0.0.0 ifsau.coloros.com
+0.0.0.0 lt.logs.roku.com
+0.0.0.0 regi.di.atlas.samsung.com
 0.0.0.0 in-ctdbort-stsdk.vivoglobal.com
 0.0.0.0 westus3-1.in.applicationinsights.azure.com
 0.0.0.0 gamebox.sec.intl.miui.com
@@ -963,6 +1179,8 @@
 0.0.0.0 logbak.hicloud.com
 0.0.0.0 eu-acr133.alphonso.tv
 0.0.0.0 ifsau-eu.coloros.com
+0.0.0.0 madison.logs.roku.com
+0.0.0.0 analytics.bigdata.samsung.com
 0.0.0.0 in-ctdbpnrt-stsdk.vivoglobal.com
 0.0.0.0 live.applicationinsights.azure.cn
 0.0.0.0 in-protect-dev.sec.intl.miui.com
@@ -971,6 +1189,8 @@
 0.0.0.0 logservice.hicloud.com
 0.0.0.0 eu-acr134.alphonso.tv
 0.0.0.0 ifsau-in.coloros.com
+0.0.0.0 marlin.logs.roku.com
+0.0.0.0 lp.americas.business.samsung.com
 0.0.0.0 in-ctdbprt-stsdk.vivoglobal.com
 0.0.0.0 live.applicationinsights.azure.com
 0.0.0.0 port.sec.intl.miui.com
@@ -979,6 +1199,8 @@
 0.0.0.0 logservice1.hicloud.com
 0.0.0.0 eu-acr135.alphonso.tv
 0.0.0.0 log-eap.coloros.com
+0.0.0.0 midland.logs.roku.com
+0.0.0.0 tracking.americas.business.samsung.com
 0.0.0.0 in-domaincfg.vivoglobal.com
 0.0.0.0 www.live.applicationinsights.azure.com
 0.0.0.0 api.setting.intl.miui.com
@@ -987,6 +1209,8 @@
 0.0.0.0 adx-dra.op.hicloud.com
 0.0.0.0 eu-acr136.alphonso.tv
 0.0.0.0 log-eap-in.coloros.com
+0.0.0.0 mobile.logs.roku.com
+0.0.0.0 lp.apac.business.samsung.com
 0.0.0.0 in-errup.vivoglobal.com
 0.0.0.0 inference-app-gateway.eastus2.cloudapp.azure.com
 0.0.0.0 api.sms.intl.miui.com
@@ -994,6 +1218,8 @@
 0.0.0.0 adx-dre.op.hicloud.com
 0.0.0.0 eu-acr137.alphonso.tv
 0.0.0.0 log-eap-sg.coloros.com
+0.0.0.0 mustang.logs.roku.com
+0.0.0.0 tracking.apac.business.samsung.com
 0.0.0.0 in-ex-adlog.vivoglobal.com
 0.0.0.0 inference-app-gateway.koreacentral.cloudapp.azure.com
 0.0.0.0 api-rec.stellar.intl.miui.com
@@ -1002,6 +1228,8 @@
 0.0.0.0 adx-drru.op.hicloud.com
 0.0.0.0 eu-acr138.alphonso.tv
 0.0.0.0 moa-upload-online.coloros.com
+0.0.0.0 nemo.logs.roku.com
+0.0.0.0 tracking.europe.business.samsung.com
 0.0.0.0 in-monitor-stsdk.vivoglobal.com
 0.0.0.0 inference-app-gateway.northeurope.cloudapp.azure.com
 0.0.0.0 tracking.intl.miui.com
@@ -1010,6 +1238,8 @@
 0.0.0.0 events-dra.op.hicloud.com
 0.0.0.0 eu-acr139.alphonso.tv
 0.0.0.0 moa-upload-online-in.coloros.com
+0.0.0.0 os-12-5-alpha.logs.roku.com
+0.0.0.0 images.it.business.samsung.com
 0.0.0.0 in-news-abroad-backstage-interface.vivoglobal.com
 0.0.0.0 azsc-edge-bingads-westeurope.westeurope.cloudapp.azure.com
 0.0.0.0 mitv.tracking.intl.miui.com
@@ -1017,6 +1247,8 @@
 0.0.0.0 events-dre.op.hicloud.com
 0.0.0.0 eu-acr14.alphonso.tv
 0.0.0.0 storedl1.nearme.com.cn
+0.0.0.0 paolo.logs.roku.com
+0.0.0.0 seao.business.samsung.com
 0.0.0.0 in-onrt-stsdk.vivoglobal.com
 0.0.0.0 collector.azure.cn
 0.0.0.0 mcc.miui.com
@@ -1025,6 +1257,8 @@
 0.0.0.0 logservice-dra.platform.hicloud.com
 0.0.0.0 eu-acr140.alphonso.tv
 0.0.0.0 storedl3f.nearme.com.cn
+0.0.0.0 pico.logs.roku.com
+0.0.0.0 channelusa.samsung.com
 0.0.0.0 in-ort-stsdk.vivoglobal.com
 0.0.0.0 js.monitor.azure.com
 0.0.0.0 mqs-log.miui.com
@@ -1033,6 +1267,8 @@
 0.0.0.0 logservice-dre.platform.hicloud.com
 0.0.0.0 eu-acr141.alphonso.tv
 0.0.0.0 storedl4f.nearme.com.cn
+0.0.0.0 richmond.logs.roku.com
+0.0.0.0 images.chbusiness.samsung.com
 0.0.0.0 in-os-config-appstore.vivoglobal.com
 0.0.0.0 adsdkpreprod.azureedge.net
 0.0.0.0 privacy.miui.com
@@ -1040,6 +1276,8 @@
 0.0.0.0 dt.hihonorcloud.com
 0.0.0.0 eu-acr142.alphonso.tv
 0.0.0.0 storedl5f.nearme.com.cn
+0.0.0.0 rockett.logs.roku.com
+0.0.0.0 dc.dqa.samsung.com
 0.0.0.0 in-pnrt-stsdk.vivoglobal.com
 0.0.0.0 adsdkprod.azureedge.net
 0.0.0.0 miui-l7-data-other.pt.miui.com
@@ -1048,6 +1286,8 @@
 0.0.0.0 logservice.dt.hihonorcloud.com
 0.0.0.0 eu-acr143.alphonso.tv
 0.0.0.0 finosfin.com
+0.0.0.0 scribe.logs.roku.com
+0.0.0.0 dls-ddc.dqa.samsung.com
 0.0.0.0 in-prt-stsdk.vivoglobal.com
 0.0.0.0 adsdkpreprod.afd.azureedge.net
 0.0.0.0 miui-l7-data-other-c3.pt.miui.com
@@ -1056,6 +1296,8 @@
 0.0.0.0 logservice-dra.dt.hihonorcloud.com
 0.0.0.0 eu-acr144.alphonso.tv
 0.0.0.0 www.finosfin.com
+0.0.0.0 sugarland.logs.roku.com
+0.0.0.0 dls-udc.dqa.samsung.com
 0.0.0.0 in-third-appstore.vivoglobal.com
 0.0.0.0 adsdkprod.afd.azureedge.net
 0.0.0.0 rus.miui.com
@@ -1064,6 +1306,8 @@
 0.0.0.0 logservice-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr145.alphonso.tv
 0.0.0.0 appconf-ocs-eu.heytapdl.com
+0.0.0.0 tyler.logs.roku.com
+0.0.0.0 event-tracking.samsung.com
 0.0.0.0 in-timesync.vivoglobal.com
 0.0.0.0 msadsscale.azureedge.net
 0.0.0.0 tracking.rus.miui.com
@@ -1072,6 +1316,8 @@
 0.0.0.0 logservice-dre.dt.hihonorcloud.com
 0.0.0.0 eu-acr15.alphonso.tv
 0.0.0.0 appconf-ocs-in.heytapdl.com
+0.0.0.0 victoria.logs.roku.com
+0.0.0.0 eumarketing.event-tracking.samsung.com
 0.0.0.0 in-vcode-api.vivoglobal.com
 0.0.0.0 cjs-diagnostics-office-com-gvdhgwfwbbfsd9g3.z01.azurefd.net
 0.0.0.0 mitv.tracking.rus.miui.com
@@ -1080,6 +1326,8 @@
 0.0.0.0 logservice-drru.dt.hihonorcloud.com
 0.0.0.0 eu-acr16.alphonso.tv
 0.0.0.0 appconf-ocs-sgp.heytapdl.com
+0.0.0.0 weighted.logs.roku.com
+0.0.0.0 europe.event-tracking.samsung.com
 0.0.0.0 in-vcode-od.vivoglobal.com
 0.0.0.0 location-microsoft-com.b-0005.b-msedge.net
 0.0.0.0 search.miui.com
@@ -1088,6 +1336,8 @@
 0.0.0.0 metrics.dt.hihonorcloud.com
 0.0.0.0 eu-acr17.alphonso.tv
 0.0.0.0 appconf-ocs-us.heytapdl.com
+0.0.0.0 windsor.logs.roku.com
+0.0.0.0 marketing.event-tracking.samsung.com
 0.0.0.0 in-vcode-or.vivoglobal.com
 0.0.0.0 a4.bing.com
 0.0.0.0 adv.l7.34.sec.miui.com
@@ -1096,6 +1346,8 @@
 0.0.0.0 metrics-ad-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr18.alphonso.tv
 0.0.0.0 appconf-sgp.heytapdl.com
+0.0.0.0 blog-advertising.msc.roku.com
+0.0.0.0 images.frbusiness.samsung.com
 0.0.0.0 in-vpushonrt-stsdk.vivoglobal.com
 0.0.0.0 ads.bing.com
 0.0.0.0 nginx.34.sec.miui.com
@@ -1104,6 +1356,8 @@
 0.0.0.0 metrics-appdistribute-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr19.alphonso.tv
 0.0.0.0 conf-in-dc.heytapdl.com
+0.0.0.0 advertising-qa.us-east-1.dev.msc.roku.com
+0.0.0.0 bldr.mkt.samsung.com
 0.0.0.0 in-vpushort-stsdk.vivoglobal.com
 0.0.0.0 adserver.bing.com
 0.0.0.0 adv.sec.miui.com
@@ -1112,6 +1366,8 @@
 0.0.0.0 metrics-basecloud-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr2.alphonso.tv
 0.0.0.0 conf-sg-dc.heytapdl.com
+0.0.0.0 advertising-v3-qa.us-east-1.dev.msc.roku.com
+0.0.0.0 analytics.mpay.samsung.com
 0.0.0.0 kz-cname-sin01-bigdata.vivoglobal.com
 0.0.0.0 bat.bing.com
 0.0.0.0 api.sec.miui.com
@@ -1119,6 +1375,8 @@
 0.0.0.0 metrics-dra.dt.hihonorcloud.com
 0.0.0.0 eu-acr20.alphonso.tv
 0.0.0.0 mdp-appconf-ae.heytapdl.com
+0.0.0.0 blog-advertising-qa.us-east-1.dev.msc.roku.com
+0.0.0.0 nmetrics.samsung.com
 0.0.0.0 kz-err-up.vivoglobal.com
 0.0.0.0 r.bat.bing.com
 0.0.0.0 analytics.ff.avast.sec.miui.com
@@ -1127,6 +1385,8 @@
 0.0.0.0 metrics-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr21.alphonso.tv
 0.0.0.0 mdp-appconf-af.heytapdl.com
+0.0.0.0 blog-advertising-v2-qa.us-east-1.dev.msc.roku.com
+0.0.0.0 images.partnersupport.samsung.com
 0.0.0.0 kz-monitor-stsdk.vivoglobal.com
 0.0.0.0 2539951.r.bat.bing.com
 0.0.0.0 apkrep.ff.avast.sec.miui.com
@@ -1135,6 +1395,8 @@
 0.0.0.0 metrics-dre.dt.hihonorcloud.com
 0.0.0.0 eu-acr22.alphonso.tv
 0.0.0.0 mdp-appconf-apc.heytapdl.com
+0.0.0.0 advertising.qa.us-east-1.dev.msc.roku.com
+0.0.0.0 plbusiness.samsung.com
 0.0.0.0 kz-onrt-stsdk.vivoglobal.com
 0.0.0.0 c.bing.com
 0.0.0.0 au.ff.avast.sec.miui.com
@@ -1142,6 +1404,8 @@
 0.0.0.0 metrics-drru.dt.hihonorcloud.com
 0.0.0.0 eu-acr23.alphonso.tv
 0.0.0.0 mdp-appconf-ar.heytapdl.com
+0.0.0.0 advertising.us-east-1.msc.roku.com
+0.0.0.0 api.runestone.samsung.com
 0.0.0.0 kz-ort-stsdk.vivoglobal.com
 0.0.0.0 www.c.bing.com
 0.0.0.0 auth.ff.avast.sec.miui.com
@@ -1150,6 +1414,8 @@
 0.0.0.0 metrics-test-drcn.dt.hihonorcloud.com
 0.0.0.0 eu-acr24.alphonso.tv
 0.0.0.0 mdp-appconf-at.heytapdl.com
+0.0.0.0 advertising-v3.us-east-1.msc.roku.com
+0.0.0.0 di.runestone.samsung.com
 0.0.0.0 kz-pnrt-stsdk.vivoglobal.com
 0.0.0.0 commerce.bing.com
 0.0.0.0 ip-info.ff.avast.sec.miui.com
@@ -1158,6 +1424,8 @@
 0.0.0.0 grs.hihonorcloud.com
 0.0.0.0 eu-acr25.alphonso.tv
 0.0.0.0 mdp-appconf-au.heytapdl.com
+0.0.0.0 blog-advertising-v2.us-east-1.msc.roku.com
+0.0.0.0 cc.di.runestone.samsung.com
 0.0.0.0 kz-prt-stsdk.vivoglobal.com
 0.0.0.0 g.bing.com
 0.0.0.0 streamback.ff.avast.sec.miui.com
@@ -1166,6 +1434,8 @@
 0.0.0.0 honorsearch-dra.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr26.alphonso.tv
 0.0.0.0 mdp-appconf-ba.heytapdl.com
+0.0.0.0 ad-eng-pci-bl.geoproximity.rpay.roku.com
+0.0.0.0 dc.di.runestone.samsung.com
 0.0.0.0 kz-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 r.g.bing.com
 0.0.0.0 cse.avlyun.sec.miui.com
@@ -1174,6 +1444,8 @@
 0.0.0.0 honorsearch-drcn.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr27.alphonso.tv
 0.0.0.0 mdp-appconf-bd.heytapdl.com
+0.0.0.0 ad-bl.geoproximity.staging.rpay.roku.com
+0.0.0.0 dls.di.runestone.samsung.com
 0.0.0.0 kz-st-exappupgrade.vivoglobal.com
 0.0.0.0 raka.bing.com
 0.0.0.0 log-abroad.avlyun.sec.miui.com
@@ -1182,6 +1454,8 @@
 0.0.0.0 honorsearch-dre.hiboard.hihonorcloud.com
 0.0.0.0 eu-acr28.alphonso.tv
 0.0.0.0 mdp-appconf-be.heytapdl.com
+0.0.0.0 ad-eng-bl.geoproximity.staging.rpay.roku.com
+0.0.0.0 lcs.di.runestone.samsung.com
 0.0.0.0 kz-st-sl.vivoglobal.com
 0.0.0.0 c.bingapis.com
 0.0.0.0 logupdate.avlyun.sec.miui.com
@@ -1190,6 +1464,8 @@
 0.0.0.0 ads-drcn.platform.hihonorcloud.com
 0.0.0.0 eu-acr29.alphonso.tv
 0.0.0.0 mdp-appconf-bg.heytapdl.com
+0.0.0.0 ad-eng-pci-bl.geoproximity.staging.rpay.roku.com
+0.0.0.0 orsdls.di.runestone.samsung.com
 0.0.0.0 kz-st-sysupgrade.vivoglobal.com
 0.0.0.0 exo.nel.measure.office.net.sw.buhl-data.com
 0.0.0.0 update.avlyun.sec.miui.com
@@ -1198,6 +1474,8 @@
 0.0.0.0 log-dra.platform.hihonorcloud.com
 0.0.0.0 eu-acr3.alphonso.tv
 0.0.0.0 mdp-appconf-bh.heytapdl.com
+0.0.0.0 assets.sr.roku.com
+0.0.0.0 orsfs.di.runestone.samsung.com
 0.0.0.0 kz-stsdk.vivoglobal.com
 0.0.0.0 teams.nel.measure.office.net.sw.buhl-data.com
 0.0.0.0 auth.be.sec.miui.com
@@ -1205,6 +1483,8 @@
 0.0.0.0 log-drcn.platform.hihonorcloud.com
 0.0.0.0 eu-acr30.alphonso.tv
 0.0.0.0 mdp-appconf-bo.heytapdl.com
+0.0.0.0 item-tracking.dev.sr.roku.com
+0.0.0.0 orsplc.di.runestone.samsung.com
 0.0.0.0 kz-timesync.vivoglobal.com
 0.0.0.0 insights.cloud.microsoft
 0.0.0.0 cdna.sec.miui.com
@@ -1213,6 +1493,8 @@
 0.0.0.0 log-dre.platform.hihonorcloud.com
 0.0.0.0 eu-acr31.alphonso.tv
 0.0.0.0 mdp-appconf-br.heytapdl.com
+0.0.0.0 logs.dev.sr.roku.com
+0.0.0.0 sca.samsung.com
 0.0.0.0 kz-vcode-api.vivoglobal.com
 0.0.0.0 analysis.insights.cloud.microsoft
 0.0.0.0 child.sec.miui.com
@@ -1221,6 +1503,8 @@
 0.0.0.0 log-drru.platform.hihonorcloud.com
 0.0.0.0 eu-acr32.alphonso.tv
 0.0.0.0 mdp-appconf-by.heytapdl.com
+0.0.0.0 traces.dev.sr.roku.com
+0.0.0.0 gear.sca.samsung.com
 0.0.0.0 kz-vcode-od.vivoglobal.com
 0.0.0.0 measure.office.net.edgesuite.net
 0.0.0.0 chong.sec.miui.com
@@ -1229,6 +1513,8 @@
 0.0.0.0 ads.cloud.huawei.com
 0.0.0.0 eu-acr33.alphonso.tv
 0.0.0.0 mdp-appconf-ca.heytapdl.com
+0.0.0.0 traces-us-east-1.dev.sr.roku.com
+0.0.0.0 prd.sca.samsung.com
 0.0.0.0 kz-vcode-or.vivoglobal.com
 0.0.0.0 nel.measure.office.net.edgesuite.net
 0.0.0.0 cms.sec.miui.com
@@ -1237,6 +1523,8 @@
 0.0.0.0 ads-drru.cloud.huawei.ru
 0.0.0.0 eu-acr34.alphonso.tv
 0.0.0.0 mdp-appconf-ch.heytapdl.com
+0.0.0.0 traces-us-west-2.dev.sr.roku.com
+0.0.0.0 shome.sca.samsung.com
 0.0.0.0 monitor-stsdk.vivoglobal.com
 0.0.0.0 nelsdf.measure.office.net.edgesuite.net
 0.0.0.0 data.sec.miui.com
@@ -1245,6 +1533,8 @@
 0.0.0.0 rnd-cbgpas01.huawei.com
 0.0.0.0 eu-acr35.alphonso.tv
 0.0.0.0 mdp-appconf-chl.heytapdl.com
+0.0.0.0 userdata.dev.sr.roku.com
+0.0.0.0 lp.smartbusiness.samsung.com
 0.0.0.0 mx-cota.vivoglobal.com
 0.0.0.0 collector.azure.eaglex.ic.gov
 0.0.0.0 protect.dev.sec.miui.com
@@ -1253,6 +1543,8 @@
 0.0.0.0 uba.huaweicloud.com
 0.0.0.0 eu-acr36.alphonso.tv
 0.0.0.0 mdp-appconf-cn.heytapdl.com
+0.0.0.0 logs.sr.roku.com
+0.0.0.0 tracking.smartbusiness.samsung.com
 0.0.0.0 mx-domaincfg.vivoglobal.com
 0.0.0.0 measure.office.net.cn.intinfra.com
 0.0.0.0 flash.sec.miui.com
@@ -1261,6 +1553,8 @@
 0.0.0.0 nsp-logservice-hiview-p05-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr37.alphonso.tv
 0.0.0.0 mdp-appconf-co.heytapdl.com
+0.0.0.0 traces.sr.roku.com
+0.0.0.0 smetrics.samsung.com
 0.0.0.0 mx-err-up.vivoglobal.com
 0.0.0.0 nel.measure.office.net.cn.intinfra.com
 0.0.0.0 flow.sec.miui.com
@@ -1268,6 +1562,8 @@
 0.0.0.0 nsp-logservice-hiview-p06-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr38.alphonso.tv
 0.0.0.0 mdp-appconf-cr.heytapdl.com
+0.0.0.0 userdata.sr.roku.com
+0.0.0.0 images.ssbusiness.samsung.com
 0.0.0.0 mx-onrt-stsdk.vivoglobal.com
 0.0.0.0 ecs.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 gamebox.sec.miui.com
@@ -1276,6 +1572,8 @@
 0.0.0.0 nsp-logservice-hiview-p07-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr39.alphonso.tv
 0.0.0.0 mdp-appconf-cz.heytapdl.com
+0.0.0.0 ads.staging.roku.com
+0.0.0.0 bigdata.ssp.samsung.com
 0.0.0.0 mx-ort-stsdk.vivoglobal.com
 0.0.0.0 excelonline.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 srv.greenguard.sec.miui.com
@@ -1284,6 +1582,8 @@
 0.0.0.0 nsp-logservice-hiview-p08-dra.obs.ap-southeast-3.myhuaweicloud.com
 0.0.0.0 eu-acr4.alphonso.tv
 0.0.0.0 mdp-appconf-de.heytapdl.com
+0.0.0.0 login.ads.staging.roku.com
+0.0.0.0 target-us.samsung.com
 0.0.0.0 mx-p.vivoglobal.com
 0.0.0.0 exo.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 app.greengurad.sec.miui.com
@@ -1292,6 +1592,8 @@
 0.0.0.0 nsp-logservice-hiview-p40-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr40.alphonso.tv
 0.0.0.0 mdp-appconf-dk.heytapdl.com
+0.0.0.0 wwwimg.staging.roku.com
+0.0.0.0 samsungacr.com
 0.0.0.0 mx-pnrt-stsdk.vivoglobal.com
 0.0.0.0 identity.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 mazu.sec.miui.com
@@ -1299,6 +1601,8 @@
 0.0.0.0 nsp-logservice-hiview-p41-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr41.alphonso.tv
 0.0.0.0 mdp-appconf-do.heytapdl.com
+0.0.0.0 customer-feedbacks.web.roku.com
+0.0.0.0 log-config.samsungacr.com
 0.0.0.0 mx-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 m365cdn.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 nav.sec.miui.com
@@ -1307,6 +1611,8 @@
 0.0.0.0 nsp-logservice-hiview-p43-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr42.alphonso.tv
 0.0.0.0 mdp-appconf-dz.heytapdl.com
+0.0.0.0 pixel.web.roku.com
+0.0.0.0 log-ingestion.samsungacr.com
 0.0.0.0 mx-st-sl.vivoglobal.com
 0.0.0.0 officehub.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 p.sec.miui.com
@@ -1315,6 +1621,8 @@
 0.0.0.0 nsp-logservice-hiview-p50-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr43.alphonso.tv
 0.0.0.0 mdp-appconf-ec.heytapdl.com
+0.0.0.0 pixel.staging.web.roku.com
+0.0.0.0 log-ingestion-ap2.samsungacr.com
 0.0.0.0 mx-stsdk.vivoglobal.com
 0.0.0.0 spo.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 pmir.sec.miui.com
@@ -1323,6 +1631,8 @@
 0.0.0.0 nsp-logservice-weardevice-p42-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr44.alphonso.tv
 0.0.0.0 mdp-appconf-eg.heytapdl.com
+0.0.0.0 wwwimg.roku.com
+0.0.0.0 log-ingestion-eu.samsungacr.com
 0.0.0.0 mx-timesync.vivoglobal.com
 0.0.0.0 teams.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 port.sec.miui.com
@@ -1331,6 +1641,8 @@
 0.0.0.0 nsp-logservice-weardevice-p51-drcn.obs.cn-north-2.myhuaweicloud.com
 0.0.0.0 eu-acr45.alphonso.tv
 0.0.0.0 mdp-appconf-es.heytapdl.com
+0.0.0.0 h4g3z1-native.roku.web.app
+0.0.0.0 log-ingestion-kr.samsungacr.com
 0.0.0.0 mx-vcode-api.vivoglobal.com
 0.0.0.0 wordonline.nel.measure.office.net.cn.intinfra.com
 0.0.0.0 proxy.sec.miui.com
@@ -1339,6 +1651,7 @@
 0.0.0.0 nsp-logservice-hiview-p01-drru.obs.ru-northwest-2.myhuaweicloud.ru
 0.0.0.0 eu-acr46.alphonso.tv
 0.0.0.0 mdp-appconf-eu.heytapdl.com
+0.0.0.0 log-ingestion-sa.samsungacr.com
 0.0.0.0 mx-vcode-od.vivoglobal.com
 0.0.0.0 measure.office.net.cz.intinfra.com
 0.0.0.0 sentry.sec.miui.com
@@ -1347,6 +1660,7 @@
 0.0.0.0 logserver.nzxcloud.cn
 0.0.0.0 eu-acr47.alphonso.tv
 0.0.0.0 mdp-appconf-euex.heytapdl.com
+0.0.0.0 log-ingestion-v1-ap2.samsungacr.com
 0.0.0.0 mx-vcode-or.vivoglobal.com
 0.0.0.0 nel.measure.office.net.cz.intinfra.com
 0.0.0.0 r.sg.sec.miui.com
@@ -1355,6 +1669,7 @@
 0.0.0.0 logservice.vmall.com
 0.0.0.0 eu-acr48.alphonso.tv
 0.0.0.0 mdp-appconf-euex-all-cust.heytapdl.com
+0.0.0.0 log-ingestion-v2-ap2.samsungacr.com
 0.0.0.0 onrt-stsdk.vivoglobal.com
 0.0.0.0 ecs.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 srv.sec.miui.com
@@ -1363,6 +1678,7 @@
 0.0.0.0 h4g3z1-native.huawei.web.app
 0.0.0.0 eu-acr49.alphonso.tv
 0.0.0.0 mdp-appconf-export.heytapdl.com
+0.0.0.0 s3-config.samsungacr.com
 0.0.0.0 ort-stsdk.vivoglobal.com
 0.0.0.0 excelonline.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 transfer.sec.miui.com
@@ -1370,6 +1686,7 @@
 0.0.0.0 ap-northeast-1-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr5.alphonso.tv
 0.0.0.0 mdp-appconf-fi.heytapdl.com
+0.0.0.0 www.samsungacr.com
 0.0.0.0 pnrt-stsdk.vivoglobal.com
 0.0.0.0 exo.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 xlmc.sec.miui.com
@@ -1377,6 +1694,7 @@
 0.0.0.0 ap-northeast-1-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr50.alphonso.tv
 0.0.0.0 mdp-appconf-fr.heytapdl.com
+0.0.0.0 samsungadhub.com
 0.0.0.0 prt-stsdk.vivoglobal.com
 0.0.0.0 identity.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 etl.xlmc.sec.miui.com
@@ -1384,12 +1702,14 @@
 0.0.0.0 ap-northeast-1-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr51.alphonso.tv
 0.0.0.0 mdp-appconf-gb.heytapdl.com
+0.0.0.0 ad.samsungadhub.com
 0.0.0.0 ro-up.vivoglobal.com
 0.0.0.0 m365cdn.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 api.tw06.xlmc.sec.miui.com
 0.0.0.0 ap-northeast-2-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr52.alphonso.tv
 0.0.0.0 mdp-appconf-gr.heytapdl.com
+0.0.0.0 ww25.ad.samsungadhub.com
 0.0.0.0 ru-commonitor-stsdk.vivoglobal.com
 0.0.0.0 officehub.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 preview.crm.sms.miui.com
@@ -1397,6 +1717,7 @@
 0.0.0.0 ap-northeast-2-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr53.alphonso.tv
 0.0.0.0 mdp-appconf-gt.heytapdl.com
+0.0.0.0 www.samsungadhub.com
 0.0.0.0 ru-comonrt-stsdk.vivoglobal.com
 0.0.0.0 spo.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 stat.miui.com
@@ -1404,6 +1725,7 @@
 0.0.0.0 ap-northeast-2-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr54.alphonso.tv
 0.0.0.0 mdp-appconf-hk.heytapdl.com
+0.0.0.0 samsungads.com
 0.0.0.0 ru-comort-stsdk.vivoglobal.com
 0.0.0.0 teams.nel.measure.office.net.cz.intinfra.com
 0.0.0.0 cc.sys.miui.com
@@ -1411,6 +1733,7 @@
 0.0.0.0 ap-northeast-3-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr55.alphonso.tv
 0.0.0.0 mdp-appconf-hn.heytapdl.com
+0.0.0.0 ad-server.samsungads.com
 0.0.0.0 ru-compnrt-stsdk.vivoglobal.com
 0.0.0.0 measure.office.net.in.intinfra.com
 0.0.0.0 cc2.sys.miui.com
@@ -1418,6 +1741,7 @@
 0.0.0.0 ap-northeast-3-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr56.alphonso.tv
 0.0.0.0 mdp-appconf-hu.heytapdl.com
+0.0.0.0 ads.samsungads.com
 0.0.0.0 ru-comprt-stsdk.vivoglobal.com
 0.0.0.0 nel.measure.office.net.in.intinfra.com
 0.0.0.0 ccc.sys.miui.com
@@ -1425,6 +1749,7 @@
 0.0.0.0 ap-northeast-3-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr57.alphonso.tv
 0.0.0.0 mdp-appconf-id.heytapdl.com
+0.0.0.0 api-dooh.samsungads.com
 0.0.0.0 ru-cota.vivoglobal.com
 0.0.0.0 exo.nel.measure.office.net.in.intinfra.com
 0.0.0.0 geofence.sys.miui.com
@@ -1432,6 +1757,7 @@
 0.0.0.0 ap-south-1-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr58.alphonso.tv
 0.0.0.0 mdp-appconf-ie.heytapdl.com
+0.0.0.0 config.samsungads.com
 0.0.0.0 ru-err-up.vivoglobal.com
 0.0.0.0 identity.nel.measure.office.net.in.intinfra.com
 0.0.0.0 jupiter.intl.sys.miui.com
@@ -1439,6 +1765,7 @@
 0.0.0.0 ap-south-1-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr59.alphonso.tv
 0.0.0.0 mdp-appconf-il.heytapdl.com
+0.0.0.0 dsp.samsungads.com
 0.0.0.0 ru-exstsdk.vivoglobal.com
 0.0.0.0 m365cdn.nel.measure.office.net.in.intinfra.com
 0.0.0.0 jupiter.sys.miui.com
@@ -1446,12 +1773,14 @@
 0.0.0.0 ap-south-1-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr6.alphonso.tv
 0.0.0.0 mdp-appconf-in.heytapdl.com
+0.0.0.0 events.samsungads.com
 0.0.0.0 ru-monitor-stsdk.vivoglobal.com
 0.0.0.0 officehub.nel.measure.office.net.in.intinfra.com
 0.0.0.0 metok.sys.miui.com
 0.0.0.0 ap-southeast-1-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr60.alphonso.tv
 0.0.0.0 mdp-appconf-iq.heytapdl.com
+0.0.0.0 go.samsungads.com
 0.0.0.0 ru-onrt-stsdk.vivoglobal.com
 0.0.0.0 spo.nel.measure.office.net.in.intinfra.com
 0.0.0.0 jupiter.rus.sys.miui.com
@@ -1459,12 +1788,14 @@
 0.0.0.0 ap-southeast-1-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr61.alphonso.tv
 0.0.0.0 mdp-appconf-ir.heytapdl.com
+0.0.0.0 go2.samsungads.com
 0.0.0.0 ru-ort-stsdk.vivoglobal.com
 0.0.0.0 teams.nel.measure.office.net.in.intinfra.com
 0.0.0.0 testit.miui.com
 0.0.0.0 ap-southeast-1-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr62.alphonso.tv
 0.0.0.0 mdp-appconf-it.heytapdl.com
+0.0.0.0 rtb-config.samsungads.com
 0.0.0.0 ru-os-config-appstore.vivoglobal.com
 0.0.0.0 measure.office.net.us.intinfra.com
 0.0.0.0 tracking.miui.com
@@ -1472,12 +1803,14 @@
 0.0.0.0 ap-southeast-2-1.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr63.alphonso.tv
 0.0.0.0 mdp-appconf-jo.heytapdl.com
+0.0.0.0 tvp-ads-log.samsungads.com
 0.0.0.0 ru-p.vivoglobal.com
 0.0.0.0 nel.measure.office.net.us.intinfra.com
 0.0.0.0 default.tracking.miui.com
 0.0.0.0 ap-southeast-2-2.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr64.alphonso.tv
 0.0.0.0 mdp-appconf-jp.heytapdl.com
+0.0.0.0 tvp-interactive-ad.samsungads.com
 0.0.0.0 ru-pnrt-stsdk.vivoglobal.com
 0.0.0.0 ecs.nel.measure.office.net.us.intinfra.com
 0.0.0.0 fcanr.tracking.miui.com
@@ -1485,6 +1818,7 @@
 0.0.0.0 ap-southeast-2-3.telemetry.insights.video.a2z.com
 0.0.0.0 eu-acr65.alphonso.tv
 0.0.0.0 mdp-appconf-ke.heytapdl.com
+0.0.0.0 www.samsungads.com
 0.0.0.0 ru-prt-stsdk.vivoglobal.com
 0.0.0.0 excelonline.nel.measure.office.net.us.intinfra.com
 0.0.0.0 mitv.tracking.miui.com
@@ -1492,6 +1826,7 @@
 0.0.0.0 ap-southeast.3px.axp.amazon-adsystem.com
 0.0.0.0 eu-acr66.alphonso.tv
 0.0.0.0 mdp-appconf-kh.heytapdl.com
+0.0.0.0 samsungallstore.com
 0.0.0.0 ru-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 exo.nel.measure.office.net.us.intinfra.com
 0.0.0.0 om.tracking.miui.com
@@ -1499,12 +1834,14 @@
 0.0.0.0 ap-southeast.aps.axp.amazon-adsystem.com
 0.0.0.0 eu-acr67.alphonso.tv
 0.0.0.0 mdp-appconf-kw.heytapdl.com
+0.0.0.0 egs.samsungallstore.com
 0.0.0.0 ru-st-exappupgrade.vivoglobal.com
 0.0.0.0 identity.nel.measure.office.net.us.intinfra.com
 0.0.0.0 router.tracking.miui.com
 0.0.0.0 api.eu-west-1.aiv-delivery.net
 0.0.0.0 eu-acr68.alphonso.tv
 0.0.0.0 mdp-appconf-kz.heytapdl.com
+0.0.0.0 routing.egs.samsungallstore.com
 0.0.0.0 ru-st-sl.vivoglobal.com
 0.0.0.0 m365cdn.nel.measure.office.net.us.intinfra.com
 0.0.0.0 api.vip.miui.com
@@ -1512,6 +1849,7 @@
 0.0.0.0 api.gamma-toolbox.aps.amazon-adsystem.com
 0.0.0.0 eu-acr69.alphonso.tv
 0.0.0.0 mdp-appconf-la.heytapdl.com
+0.0.0.0 www.samsungallstore.com
 0.0.0.0 ru-stsdk.vivoglobal.com
 0.0.0.0 officehub.nel.measure.office.net.us.intinfra.com
 0.0.0.0 www.miui.net
@@ -1519,6 +1857,7 @@
 0.0.0.0 api.us-east-1.aiv-delivery.net
 0.0.0.0 eu-acr7.alphonso.tv
 0.0.0.0 mdp-appconf-latam.heytapdl.com
+0.0.0.0 ureca.samsungapps.com
 0.0.0.0 ru-third-appstore.vivoglobal.com
 0.0.0.0 spo.nel.measure.office.net.us.intinfra.com
 0.0.0.0 intl.up.w.xk.miui.com
@@ -1526,6 +1865,7 @@
 0.0.0.0 api.us-west-2.aiv-delivery.net
 0.0.0.0 eu-acr70.alphonso.tv
 0.0.0.0 mdp-appconf-lk.heytapdl.com
+0.0.0.0 acr-au-prd.samsungcloud.tv
 0.0.0.0 ru-timesync.vivoglobal.com
 0.0.0.0 teams.nel.measure.office.net.us.intinfra.com
 0.0.0.0 traffic-media.co
@@ -1533,6 +1873,7 @@
 0.0.0.0 applab-sdk.amazon.com
 0.0.0.0 eu-acr71.alphonso.tv
 0.0.0.0 mdp-appconf-ly.heytapdl.com
+0.0.0.0 acr-br-prd.samsungcloud.tv
 0.0.0.0 ru-vcode-api.vivoglobal.com
 0.0.0.0 analytics.live.com
 0.0.0.0 imgg.traffic-media.co
@@ -1540,6 +1881,7 @@
 0.0.0.0 aps.amazon-adsystem.com
 0.0.0.0 eu-acr72.alphonso.tv
 0.0.0.0 mdp-appconf-ma.heytapdl.com
+0.0.0.0 acr-ca-prd.samsungcloud.tv
 0.0.0.0 ru-vcode-od.vivoglobal.com
 0.0.0.0 digg.analytics.live.com
 0.0.0.0 www.traffic-media.co
@@ -1547,6 +1889,7 @@
 0.0.0.0 aps.axp.amazon-adsystem.com
 0.0.0.0 eu-acr73.alphonso.tv
 0.0.0.0 mdp-appconf-me.heytapdl.com
+0.0.0.0 acr-eu-prd.samsungcloud.tv
 0.0.0.0 ru-vcode-or.vivoglobal.com
 0.0.0.0 ms.analytics.live.com
 0.0.0.0 h4g3z1-native.xiaomi.web.app
@@ -1554,6 +1897,7 @@
 0.0.0.0 apse.rtb.axp.amazon-adsystem.com
 0.0.0.0 eu-acr74.alphonso.tv
 0.0.0.0 mdp-appconf-mea.heytapdl.com
+0.0.0.0 acr-in-prd.samsungcloud.tv
 0.0.0.0 sca-cota.vivoglobal.com
 0.0.0.0 c.live.com
 0.0.0.0 ad.xiaomi.com
@@ -1561,6 +1905,7 @@
 0.0.0.0 ara.paa-reporting-advertising.amazon
 0.0.0.0 eu-acr75.alphonso.tv
 0.0.0.0 mdp-appconf-mm.heytapdl.com
+0.0.0.0 acr-kr-prd.samsungcloud.tv
 0.0.0.0 sca-domaincfg.vivoglobal.com
 0.0.0.0 location.live.net
 0.0.0.0 api.ad.xiaomi.com
@@ -1568,6 +1913,7 @@
 0.0.0.0 assoc-amazon.ca
 0.0.0.0 eu-acr76.alphonso.tv
 0.0.0.0 mdp-appconf-mx.heytapdl.com
+0.0.0.0 acr-mx-prd.samsungcloud.tv
 0.0.0.0 sca-err-up.vivoglobal.com
 0.0.0.0 agps.location.live.net
 0.0.0.0 cupid.ad.xiaomi.com
@@ -1575,6 +1921,7 @@
 0.0.0.0 assoc-amazon.co.uk
 0.0.0.0 eu-acr77.alphonso.tv
 0.0.0.0 mdp-appconf-my.heytapdl.com
+0.0.0.0 acr-nz-prd.samsungcloud.tv
 0.0.0.0 sca-onrt-stsdk.vivoglobal.com
 0.0.0.0 collection.location.live.net
 0.0.0.0 databi.ad.xiaomi.com
@@ -1582,12 +1929,14 @@
 0.0.0.0 assoc-amazon.com
 0.0.0.0 eu-acr78.alphonso.tv
 0.0.0.0 mdp-appconf-ng.heytapdl.com
+0.0.0.0 acr-us-prd.samsungcloud.tv
 0.0.0.0 sca-ort-stsdk.vivoglobal.com
 0.0.0.0 inference.location.live.net
 0.0.0.0 diagnosis.ad.xiaomi.com
 0.0.0.0 assoc-amazon.de
 0.0.0.0 eu-acr79.alphonso.tv
 0.0.0.0 mdp-appconf-nl.heytapdl.com
+0.0.0.0 acr0.samsungcloudsolution.com
 0.0.0.0 sca-p.vivoglobal.com
 0.0.0.0 nexusrules.live.com
 0.0.0.0 e.ad.xiaomi.com
@@ -1595,6 +1944,7 @@
 0.0.0.0 assoc-amazon.es
 0.0.0.0 eu-acr8.alphonso.tv
 0.0.0.0 mdp-appconf-np.heytapdl.com
+0.0.0.0 devicelog.samsungcloudsolution.net
 0.0.0.0 sca-pnrt-stsdk.vivoglobal.com
 0.0.0.0 aec-visio-telemetry.officeapps.live.com
 0.0.0.0 emi-cube.ad.xiaomi.com
@@ -1602,12 +1952,14 @@
 0.0.0.0 assoc-amazon.fr
 0.0.0.0 eu-acr80.alphonso.tv
 0.0.0.0 mdp-appconf-null.heytapdl.com
+0.0.0.0 prderrordumphsm.samsungcloudsolution.com
 0.0.0.0 sca-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 auc-visio-telemetry.officeapps.live.com
 0.0.0.0 game.ad.xiaomi.com
 0.0.0.0 assoc-amazon.it
 0.0.0.0 eu-acr81.alphonso.tv
 0.0.0.0 mdp-appconf-nz.heytapdl.com
+0.0.0.0 prderrordumpssm.samsungcloudsolution.net
 0.0.0.0 sca-st-sl.vivoglobal.com
 0.0.0.0 brc-visio-telemetry.officeapps.live.com
 0.0.0.0 log.ad.xiaomi.com
@@ -1615,6 +1967,7 @@
 0.0.0.0 assoc-amazon.jp
 0.0.0.0 eu-acr82.alphonso.tv
 0.0.0.0 mdp-appconf-oca.heytapdl.com
+0.0.0.0 diagmon-policy.samsungdm.com
 0.0.0.0 sca-stsdk.vivoglobal.com
 0.0.0.0 cac-visio-telemetry.officeapps.live.com
 0.0.0.0 maizhenapi.ad.xiaomi.com
@@ -1622,6 +1975,7 @@
 0.0.0.0 assoc-msdk-cn.amazon-adsystem.com
 0.0.0.0 eu-acr83.alphonso.tv
 0.0.0.0 mdp-appconf-om.heytapdl.com
+0.0.0.0 diagmon-serviceapi.samsungdm.com
 0.0.0.0 sca-timesync.vivoglobal.com
 0.0.0.0 dec-visio-telemetry.officeapps.live.com
 0.0.0.0 max.ad.xiaomi.com
@@ -1629,6 +1983,7 @@
 0.0.0.0 assoc-msdk-eu.amazon-adsystem.com
 0.0.0.0 eu-acr84.alphonso.tv
 0.0.0.0 mdp-appconf-other.heytapdl.com
+0.0.0.0 report.gras.samsungdm.com
 0.0.0.0 sca-vcode-api.vivoglobal.com
 0.0.0.0 euc-excel-telemetry.officeapps.live.com
 0.0.0.0 sdkconfig.ad.xiaomi.com
@@ -1636,6 +1991,7 @@
 0.0.0.0 assoc-msdk-us.amazon-adsystem.com
 0.0.0.0 eu-acr85.alphonso.tv
 0.0.0.0 mdp-appconf-per.heytapdl.com
+0.0.0.0 dev-apigw.samsungdmroute.com
 0.0.0.0 sca-vcode-od.vivoglobal.com
 0.0.0.0 euc-onenote-telemetry.officeapps.live.com
 0.0.0.0 staging-diagnosis.ad.xiaomi.com
@@ -1643,6 +1999,7 @@
 0.0.0.0 at-beta.amazon-adsystem.com
 0.0.0.0 eu-acr86.alphonso.tv
 0.0.0.0 mdp-appconf-ph.heytapdl.com
+0.0.0.0 stg-apigw.samsungdmroute.com
 0.0.0.0 sca-vcode-or.vivoglobal.com
 0.0.0.0 euc-powerpoint-telemetry.officeapps.live.com
 0.0.0.0 test.ad.xiaomi.com
@@ -1650,6 +2007,7 @@
 0.0.0.0 at-gamma-us-east.amazon-adsystem.com
 0.0.0.0 eu-acr87.alphonso.tv
 0.0.0.0 mdp-appconf-pk.heytapdl.com
+0.0.0.0 analytics.samsungedo.com
 0.0.0.0 sg-cfg-stsdk.vivoglobal.com
 0.0.0.0 euc-visio-telemetry.officeapps.live.com
 0.0.0.0 track.ad.xiaomi.com
@@ -1657,6 +2015,7 @@
 0.0.0.0 at-us-east.amazon-adsystem.com
 0.0.0.0 eu-acr88.alphonso.tv
 0.0.0.0 mdp-appconf-pl.heytapdl.com
+0.0.0.0 apu.samsungelectronics.com
 0.0.0.0 stsdk.vivoglobal.com
 0.0.0.0 euc-word-telemetry.officeapps.live.com
 0.0.0.0 m.track.ad.xiaomi.com
@@ -1664,12 +2023,14 @@
 0.0.0.0 atfe.amazon-adsystem.com
 0.0.0.0 eu-acr89.alphonso.tv
 0.0.0.0 mdp-appconf-ps.heytapdl.com
+0.0.0.0 bpu.samsungelectronics.com
 0.0.0.0 onrt.stsdk.vivoglobal.com
 0.0.0.0 eurffc-word-telemetry.officeapps.live.com
 0.0.0.0 t.track.ad.xiaomi.com
 0.0.0.0 atue.amazon-adsystem.com
 0.0.0.0 eu-acr9.alphonso.tv
 0.0.0.0 mdp-appconf-pt.heytapdl.com
+0.0.0.0 cpu.samsungelectronics.com
 0.0.0.0 ort.stsdk.vivoglobal.com
 0.0.0.0 eurppc-excel-telemetry.officeapps.live.com
 0.0.0.0 zeus.ad.xiaomi.com
@@ -1677,6 +2038,7 @@
 0.0.0.0 aviary.amazon.co.jp
 0.0.0.0 eu-acr90.alphonso.tv
 0.0.0.0 mdp-appconf-qa.heytapdl.com
+0.0.0.0 dpu.samsungelectronics.com
 0.0.0.0 pnrt.stsdk.vivoglobal.com
 0.0.0.0 eurppc-powerpoint-telemetry.officeapps.live.com
 0.0.0.0 api.ads.xiaomi.com
@@ -1684,12 +2046,14 @@
 0.0.0.0 aviary.amazon.com
 0.0.0.0 eu-acr91.alphonso.tv
 0.0.0.0 mdp-appconf-ro.heytapdl.com
+0.0.0.0 kpu.samsungelectronics.com
 0.0.0.0 prt.stsdk.vivoglobal.com
 0.0.0.0 eurppc-word-telemetry.officeapps.live.com
 0.0.0.0 tracker.ai.xiaomi.com
 0.0.0.0 aviary.amazon.de
 0.0.0.0 eu-acr92.alphonso.tv
 0.0.0.0 mdp-appconf-row.heytapdl.com
+0.0.0.0 upu.samsungelectronics.com
 0.0.0.0 tr-album-api.vivoglobal.com
 0.0.0.0 excel-telemetry.officeapps.live.com
 0.0.0.0 tracker-preview.ai.xiaomi.com
@@ -1697,6 +2061,7 @@
 0.0.0.0 axp.amazon-adsystem.com
 0.0.0.0 eu-acr93.alphonso.tv
 0.0.0.0 mdp-appconf-rs.heytapdl.com
+0.0.0.0 xpu.samsungelectronics.com
 0.0.0.0 tr-cota.vivoglobal.com
 0.0.0.0 ffc-excel-telemetry.officeapps.live.com
 0.0.0.0 bigdata-lbs-pri-c3.alb.xiaomi.com
@@ -1704,6 +2069,7 @@
 0.0.0.0 beta-ara.paa-reporting-advertising.amazon
 0.0.0.0 eu-acr94.alphonso.tv
 0.0.0.0 mdp-appconf-ru.heytapdl.com
+0.0.0.0 ypu.samsungelectronics.com
 0.0.0.0 tr-domaincfg.vivoglobal.com
 0.0.0.0 ffc-word-telemetry.officeapps.live.com
 0.0.0.0 global-ad-extranet-pri-azams.alb.xiaomi.com
@@ -1711,6 +2077,7 @@
 0.0.0.0 beta-c.aps.amazon-adsystem.com
 0.0.0.0 eu-acr95.alphonso.tv
 0.0.0.0 mdp-appconf-sa.heytapdl.com
+0.0.0.0 zpu.samsungelectronics.com
 0.0.0.0 tr-err-up.vivoglobal.com
 0.0.0.0 frc-visio-telemetry.officeapps.live.com
 0.0.0.0 global-ad-extranet-pri-azpn.alb.xiaomi.com
@@ -1718,12 +2085,14 @@
 0.0.0.0 beta-config.aps.amazon-adsystem.com
 0.0.0.0 eu-acr96.alphonso.tv
 0.0.0.0 mdp-appconf-se.heytapdl.com
+0.0.0.0 shealth-analytics-api.samsunghealth.com
 0.0.0.0 tr-gdpr-vgc-datacenter.vivoglobal.com
 0.0.0.0 inc-visio-telemetry.officeapps.live.com
 0.0.0.0 global-ad-intl-pri-alisgp.alb.xiaomi.com
 0.0.0.0 beta-krypton.aps.amazon-adsystem.com
 0.0.0.0 eu-acr97.alphonso.tv
 0.0.0.0 mdp-appconf-sg.heytapdl.com
+0.0.0.0 shealth-analytics-stg-api.samsunghealth.com
 0.0.0.0 tr-onrt-stsdk.vivoglobal.com
 0.0.0.0 nexus.officeapps.live.com
 0.0.0.0 awssgp0-files.fds.api.xiaomi.com
@@ -1731,6 +2100,7 @@
 0.0.0.0 bid-eu.ads.aps.amazon-adsystem.com
 0.0.0.0 eu-acr98.alphonso.tv
 0.0.0.0 mdp-appconf-sk.heytapdl.com
+0.0.0.0 analytics-dev-api.test.samsunghealth.com
 0.0.0.0 tr-ort-stsdk.vivoglobal.com
 0.0.0.0 nexusrules.officeapps.live.com
 0.0.0.0 cdn.fds.api.xiaomi.com
@@ -1738,6 +2108,7 @@
 0.0.0.0 bid-na.ads-beta.aps.amazon-adsystem.com
 0.0.0.0 eu-acr99.alphonso.tv
 0.0.0.0 mdp-appconf-th.heytapdl.com
+0.0.0.0 analytics-api.samsunghealthcn.com
 0.0.0.0 tr-p.vivoglobal.com
 0.0.0.0 noc-visio-telemetry.officeapps.live.com
 0.0.0.0 awsusor0-cdn.fds-ssl.api.xiaomi.com
@@ -1745,12 +2116,14 @@
 0.0.0.0 bid-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 eu-bl-server.alphonso.tv
 0.0.0.0 mdp-appconf-tn.heytapdl.com
+0.0.0.0 invitation.samsungiotcloud.com
 0.0.0.0 tr-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 pgtbr1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 cdn.fds-ssl.api.xiaomi.com
 0.0.0.0 bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 eu-clockskew.alphonso.tv
 0.0.0.0 mdp-appconf-tr.heytapdl.com
+0.0.0.0 analytics.samsungknox.com
 0.0.0.0 tr-st-sl.vivoglobal.com
 0.0.0.0 pgtbr1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 mibi.api.xiaomi.com
@@ -1758,6 +2131,7 @@
 0.0.0.0 bugs.firebat.prime-video.amazon.dev
 0.0.0.0 eu-prov-lb.alphonso.tv
 0.0.0.0 mdp-appconf-tw.heytapdl.com
+0.0.0.0 analytics-stg.samsungknox.com
 0.0.0.0 tr-st-sysupgrade.vivoglobal.com
 0.0.0.0 pgtbr1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 o2o.api.xiaomi.com
@@ -1765,6 +2139,7 @@
 0.0.0.0 bugsnag-event.monitor.core.app.alexa.a2z.com
 0.0.0.0 eu-prov2.alphonso.tv
 0.0.0.0 mdp-appconf-ua.heytapdl.com
+0.0.0.0 api-analytics.samsungknox.com
 0.0.0.0 tr-stsdk.vivoglobal.com
 0.0.0.0 pgtbr2-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 a0.app.xiaomi.com
@@ -1772,12 +2147,14 @@
 0.0.0.0 bugsnag.appstore.a2z.com
 0.0.0.0 eyndphse57.alphonso.tv
 0.0.0.0 mdp-appconf-us.heytapdl.com
+0.0.0.0 api-analytics-qa.samsungknox.com
 0.0.0.0 tr-sysupgrade-api.vivoglobal.com
 0.0.0.0 pgtbr2-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 t.app.xiaomi.com
 0.0.0.0 bugsnag.shopbop.amazon.dev
 0.0.0.0 favann0.alphonso.tv
 0.0.0.0 mdp-appconf-uz.heytapdl.com
+0.0.0.0 b2banalytics.samsungknox.com
 0.0.0.0 tr-timesync.vivoglobal.com
 0.0.0.0 pgtbr2-word-telemetry-vip.officeapps.live.com
 0.0.0.0 shoes.app-xae.xiaomi.com
@@ -1785,12 +2162,14 @@
 0.0.0.0 c.amazon-adsystem.com
 0.0.0.0 fdaobvh8.alphonso.tv
 0.0.0.0 mdp-appconf-ve.heytapdl.com
+0.0.0.0 nmetrics.samsungmobile.com
 0.0.0.0 tr-vcode-api.vivoglobal.com
 0.0.0.0 pgtca1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 mon.be.xiaomi.com
 0.0.0.0 c.aps.amazon-adsystem.com
 0.0.0.0 fddan03.alphonso.tv
 0.0.0.0 mdp-appconf-vn.heytapdl.com
+0.0.0.0 stats.samsungpass.com
 0.0.0.0 tr-vcode-od.vivoglobal.com
 0.0.0.0 pgtca1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 sentry.be.xiaomi.com
@@ -1798,12 +2177,14 @@
 0.0.0.0 c.gamma-toolbox.aps.amazon-adsystem.com
 0.0.0.0 fhkex91.alphonso.tv
 0.0.0.0 mdp-appconf-ye.heytapdl.com
+0.0.0.0 osb.samsungqbe.com
 0.0.0.0 tr-vcode-or.vivoglobal.com
 0.0.0.0 pgtca1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 image.box.xiaomi.com
 0.0.0.0 c.toolbox.aps.amazon-adsystem.com
 0.0.0.0 fjzlz5.alphonso.tv
 0.0.0.0 mdp-appconf-za.heytapdl.com
+0.0.0.0 osb-krsvc.samsungqbe.com
 0.0.0.0 tr-weather.vivoglobal.com
 0.0.0.0 pgteu1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 package.box.xiaomi.com
@@ -1811,6 +2192,7 @@
 0.0.0.0 ca-central-1-1.telemetry.insights.video.a2z.com
 0.0.0.0 fkflly0.alphonso.tv
 0.0.0.0 appconf.heytapdownload.com
+0.0.0.0 samsungr.com
 0.0.0.0 uk-timesync.vivoglobal.com
 0.0.0.0 pgteu1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 orig.package.box.xiaomi.com
@@ -1818,6 +2200,7 @@
 0.0.0.0 ca-central-1-2.telemetry.insights.video.a2z.com
 0.0.0.0 fltqq84.alphonso.tv
 0.0.0.0 adsfs-sdkconfig.heytapimage.com
+0.0.0.0 www.samsungr.com
 0.0.0.0 err.up.vivoglobal.com
 0.0.0.0 pgteu1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 bugreport.xiaomi.net
@@ -1825,6 +2208,7 @@
 0.0.0.0 ca-central-1-3.telemetry.insights.video.a2z.com
 0.0.0.0 frmrmyi2.alphonso.tv
 0.0.0.0 dhfs-id.heytapimage.com
+0.0.0.0 samsungrm.com
 0.0.0.0 xn-ex-adreq-asa-c5b.vivoglobal.com
 0.0.0.0 pgteu2-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 bgp.fe01.c3.xiaomi.com
@@ -1832,6 +2216,7 @@
 0.0.0.0 cdn-a.amazon-adsystem.com
 0.0.0.0 fwvrvdv95.alphonso.tv
 0.0.0.0 dhfs-in.heytapimage.com
+0.0.0.0 test.samsungrm.net
 0.0.0.0 za-p.vivoglobal.com
 0.0.0.0 pgteu2-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 d.xiaomi.com
@@ -1839,6 +2224,7 @@
 0.0.0.0 cdn-d.amazon-adsystem.com
 0.0.0.0 ganltsl61.alphonso.tv
 0.0.0.0 dhfs-my.heytapimage.com
+0.0.0.0 www.samsungrm.com
 0.0.0.0 zasc-cota.vivoglobal.com
 0.0.0.0 pgteu2-word-telemetry-vip.officeapps.live.com
 0.0.0.0 api.d.xiaomi.com
@@ -1846,6 +2232,7 @@
 0.0.0.0 cdn-t.amazon-adsystem.com
 0.0.0.0 gbasccnma3.alphonso.tv
 0.0.0.0 dhfs-ph.heytapimage.com
+0.0.0.0 sspapi-prd.samsungrs.com
 0.0.0.0 zasc-domaincfg.vivoglobal.com
 0.0.0.0 pgteu3-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 feedback.d.xiaomi.com
@@ -1853,6 +2240,7 @@
 0.0.0.0 cell2001.iad.spp.bid-na.ads-beta.aps.amazon-adsystem.com
 0.0.0.0 gdafrjemy1.alphonso.tv
 0.0.0.0 ums-rum-cn.heytapimage.com
+0.0.0.0 matomo.samsungsdibs.at
 0.0.0.0 zasc-err-up.vivoglobal.com
 0.0.0.0 pgteu3-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 api.developer.xiaomi.com
@@ -1860,6 +2248,7 @@
 0.0.0.0 cell2001.iad.spp.event-na.ads-beta.aps.amazon-adsystem.com
 0.0.0.0 gepafpa94.alphonso.tv
 0.0.0.0 ums-rum-global.heytapimage.com
+0.0.0.0 lp.mkt-email.samsungsds.com
 0.0.0.0 zasc-onrt-stsdk.vivoglobal.com
 0.0.0.0 pgteu3-word-telemetry-vip.officeapps.live.com
 0.0.0.0 api.device.xiaomi.net
@@ -1867,12 +2256,14 @@
 0.0.0.0 cell2002.iad.stv.bid-na.ads-beta.aps.amazon-adsystem.com
 0.0.0.0 gixtvwwny43.alphonso.tv
 0.0.0.0 ads.heytapmobi.com
+0.0.0.0 tracking.mkt-email.samsungsds.com
 0.0.0.0 zasc-ort-stsdk.vivoglobal.com
 0.0.0.0 pgteu4-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c3.miui-l7-feedback.1irknwwveg.elb.xiaomi.com
 0.0.0.0 cell5001.iad.spp.bid-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 goefescqwv2.alphonso.tv
 0.0.0.0 adx.ads.heytapmobi.com
+0.0.0.0 samsungtvads.com
 0.0.0.0 zasc-pnrt-stsdk.vivoglobal.com
 0.0.0.0 pgteu4-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c3.feedback.2ddfrkx42q.elb.xiaomi.com
@@ -1880,6 +2271,7 @@
 0.0.0.0 cell5001.iad.spp.event-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 gotqxdmd87.alphonso.tv
 0.0.0.0 adx-f.ads.heytapmobi.com
+0.0.0.0 www.samsungtvads.com
 0.0.0.0 zasc-romsp-unifyconfig.vivoglobal.com
 0.0.0.0 pgteu4-word-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.eu-east-1.miui-l7-feedback.c7qiwffdmn.elb.xiaomi.com
@@ -1887,6 +2279,7 @@
 0.0.0.0 cell5001.iad.stv.bid-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 gqttihib0.alphonso.tv
 0.0.0.0 adx-id.ads.heytapmobi.com
+0.0.0.0 business.samsungusa.com
 0.0.0.0 zasc-st-sl.vivoglobal.com
 0.0.0.0 pgteu5-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.ap-southeast-1.miui-l7-feedback.d6ocem01vo.elb.xiaomi.com
@@ -1894,6 +2287,7 @@
 0.0.0.0 cell5001.iad.stv.event-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 gqwgkgqdg82.alphonso.tv
 0.0.0.0 adx-in.ads.heytapmobi.com
+0.0.0.0 app.business.samsungusa.com
 0.0.0.0 zasc-stsdk.vivoglobal.com
 0.0.0.0 pgteu5-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 intranet.c3.bigdata-l7-trackservice.eup4xvxeqr.elb.xiaomi.com
@@ -1901,6 +2295,7 @@
 0.0.0.0 cell5002.pdx.stv.bid-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 gyatn07.alphonso.tv
 0.0.0.0 adx-sg.ads.heytapmobi.com
+0.0.0.0 api-samsung.swypeconnect.com
 0.0.0.0 zasc-timesync.vivoglobal.com
 0.0.0.0 pgteu5-word-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.eu-east-1.miui-l7-feedback.fvlyh0lisv.elb.xiaomi.com
@@ -1908,12 +2303,14 @@
 0.0.0.0 cell5002.pdx.stv.event-na.ads-gamma.aps.amazon-adsystem.com
 0.0.0.0 gynwosmqlg1.alphonso.tv
 0.0.0.0 b1-data.ads.heytapmobi.com
+0.0.0.0 lbs-samsung.swypeconnect.com
 0.0.0.0 zasc-vcode-api.vivoglobal.com
 0.0.0.0 pgtmx1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c4.miui-l7-feedback.izsagsovue.elb.xiaomi.com
 0.0.0.0 cell7001.iad.mobile.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hbdmwkefy8.alphonso.tv
 0.0.0.0 b2-data.ads.heytapmobi.com
+0.0.0.0 samsungau.api.useinsider.com
 0.0.0.0 zasc-vcode-od.vivoglobal.com
 0.0.0.0 pgtmx1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c3.bigdata-l7-trackservice.nbnpzmfyom.elb.xiaomi.com
@@ -1921,6 +2318,7 @@
 0.0.0.0 cell7001.iad.mobile.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hlrztkztfe5.alphonso.tv
 0.0.0.0 bdapi.ads.heytapmobi.com
+0.0.0.0 samsungca.api.useinsider.com
 0.0.0.0 zasc-vcode-or.vivoglobal.com
 0.0.0.0 pgtmx1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c4.miui-l7-feedback.q2fo3bs76f.elb.xiaomi.com
@@ -1928,172 +2326,201 @@
 0.0.0.0 cell7001.iad.pg.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hoekqq1.alphonso.tv
 0.0.0.0 bdapi-id.ads.heytapmobi.com
+0.0.0.0 samsunghk.api.useinsider.com
 0.0.0.0 h4g3z1-native.vivo.web.app
 0.0.0.0 pgtsg1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.ap-southeast-1.miui-l7-feedback.qkou0akepj.elb.xiaomi.com
 0.0.0.0 cell7001.iad.pg.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hooftnl76.alphonso.tv
 0.0.0.0 bdapi-in.ads.heytapmobi.com
+0.0.0.0 samsungid.api.useinsider.com
 0.0.0.0 vhs.wwstat.com
 0.0.0.0 pgtsg1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.ap-southeast-1.miui-l7-feedback.s3hawgekth.elb.xiaomi.com
 0.0.0.0 cell7001.iad.spp.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hrnwnuobza7.alphonso.tv
 0.0.0.0 ck.ads.heytapmobi.com
+0.0.0.0 samsungiraq.api.useinsider.com
 0.0.0.0 pgtsg1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 extranet.c3.bigdata-l7-dp-lan.x0x8wmy6im.elb.xiaomi.com
 0.0.0.0 rad.live.com
 0.0.0.0 cell7001.iad.stv.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hsfhfh95.alphonso.tv
 0.0.0.0 cl-data.ads.heytapmobi.com
+0.0.0.0 samsungjordan.api.useinsider.com
 0.0.0.0 pgtus1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 ad.eu.xiaomi.com
 0.0.0.0 cell7001.iad.stv.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 htzypautm19.alphonso.tv
 0.0.0.0 cl-data-f.ads.heytapmobi.com
+0.0.0.0 samsungkr.api.useinsider.com
 0.0.0.0 pgtus1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 sdkconfig.ad.eu.xiaomi.com
 0.0.0.0 insitez.blob.core.windows.net
 0.0.0.0 cell7002.pdx.pg.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hvqjcycemh5.alphonso.tv
 0.0.0.0 cl-data-id.ads.heytapmobi.com
+0.0.0.0 samsungksa.api.useinsider.com
 0.0.0.0 pgtus1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 cdn.exp.xiaomi.com
 0.0.0.0 tenmaxsgads.blob.core.windows.net
 0.0.0.0 cell7002.pdx.spp.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hzcecjl9.alphonso.tv
 0.0.0.0 cl-data-in.ads.heytapmobi.com
+0.0.0.0 samsungmalaysia.api.useinsider.com
 0.0.0.0 pgtus2-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 lxcdn.dl.files.xiaomi.net
 0.0.0.0 cell7002.pdx.stv.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 hzcjehtc7.alphonso.tv
 0.0.0.0 cl-data-sg.ads.heytapmobi.com
+0.0.0.0 samsungpakistan.api.useinsider.com
 0.0.0.0 pgtus2-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 data.game.xiaomi.com
 0.0.0.0 ad.atdmt.com
 0.0.0.0 cell7002.pdx.stv.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 ibniwvetq1.alphonso.tv
 0.0.0.0 darvin-ec.ads.heytapmobi.com
+0.0.0.0 samsungph.api.useinsider.com
 0.0.0.0 pgtus2-word-telemetry-vip.officeapps.live.com
 0.0.0.0 bgp.data.game.xiaomi.com
 0.0.0.0 adecn-w.atdmt.com
 0.0.0.0 cell8001.iad.mobile.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 icoxpv90.alphonso.tv
 0.0.0.0 data.ads.heytapmobi.com
+0.0.0.0 samsungsamcol.api.useinsider.com
 0.0.0.0 pgtus3-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 cnc.data.game.xiaomi.com
 0.0.0.0 aidps.atdmt.com
 0.0.0.0 cell8001.iad.mobile.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 idkjv31.alphonso.tv
 0.0.0.0 sms.ads.heytapmobi.com
+0.0.0.0 samsungsamcolepp.api.useinsider.com
 0.0.0.0 pgtus3-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 notice.game.xiaomi.com
 0.0.0.0 analytics.atdmt.com
 0.0.0.0 cell8001.iad.pg.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 ieufd1.alphonso.tv
 0.0.0.0 ssp-adx.ads.heytapmobi.com
+0.0.0.0 samsungsavinaepp.api.useinsider.com
 0.0.0.0 pgtus3-word-telemetry-vip.officeapps.live.com
 0.0.0.0 n.notice.game.xiaomi.com
 0.0.0.0 api.atdmt.com
 0.0.0.0 cell8001.iad.pg.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 insights.alphonso.tv
 0.0.0.0 stg-data.ads.heytapmobi.com
+0.0.0.0 samsungsebnbg.api.useinsider.com
 0.0.0.0 pgtus4-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 static.game.xiaomi.com
 0.0.0.0 atdmt.com
 0.0.0.0 cell8001.iad.spp.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 ioaoyyl3.alphonso.tv
 0.0.0.0 stg-data-f.ads.heytapmobi.com
+0.0.0.0 samsungsebnnl.api.useinsider.com
 0.0.0.0 pgtus4-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 wl.voip.game.xiaomi.com
 0.0.0.0 c.atdmt.com
 0.0.0.0 cell8001.iad.spp.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 iqzjhctm4.alphonso.tv
 0.0.0.0 stg-data-id.ads.heytapmobi.com
+0.0.0.0 samsungseda.api.useinsider.com
 0.0.0.0 pgtus4-word-telemetry-vip.officeapps.live.com
 0.0.0.0 wap.game.xiaomi.com
 0.0.0.0 c1.atdmt.com
 0.0.0.0 cell8001.iad.stv.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 irmchav36.alphonso.tv
 0.0.0.0 stg-data-in.ads.heytapmobi.com
+0.0.0.0 samsungsem.api.useinsider.com
 0.0.0.0 pgtus5-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 idmb.app.chat.global.xiaomi.net
 0.0.0.0 cdn.atdmt.com
 0.0.0.0 cell8001.iad.stv.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 iwwwvsed59.alphonso.tv
 0.0.0.0 stg-data-sg.ads.heytapmobi.com
+0.0.0.0 samsungsemepp.api.useinsider.com
 0.0.0.0 pgtus5-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 fr.resolver.msg.global.xiaomi.net
 0.0.0.0 click.atdmt.com
 0.0.0.0 cell8001.iad.web.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 iytopqvcp0.alphonso.tv
 0.0.0.0 uapi.ads.heytapmobi.com
+0.0.0.0 samsungsepr.api.useinsider.com
 0.0.0.0 pgtus5-word-telemetry-vip.officeapps.live.com
 0.0.0.0 api.xmpush.global.xiaomi.com
 0.0.0.0 clk.atdmt.com
 0.0.0.0 cell8001.iad.web.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jcntvzwcu59.alphonso.tv
 0.0.0.0 logforward.browser.heytapmobi.com
+0.0.0.0 samsungseromro.api.useinsider.com
 0.0.0.0 pgtus6-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 fr.api.xmpush.global.xiaomi.com
 0.0.0.0 cs.atdmt.com
 0.0.0.0 cell8002.pdx.pg.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jflpf9.alphonso.tv
 0.0.0.0 stat.browser.heytapmobi.com
+0.0.0.0 samsungsesarepp.api.useinsider.com
 0.0.0.0 pgtus6-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 idmb.api.xmpush.global.xiaomi.com
 0.0.0.0 cx.atdmt.com
 0.0.0.0 cell8002.pdx.pg.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jfrqba0.alphonso.tv
 0.0.0.0 api-cn.cdo.heytapmobi.com
+0.0.0.0 samsungsetkepp.api.useinsider.com
 0.0.0.0 pgtus6-word-telemetry-vip.officeapps.live.com
 0.0.0.0 ru.api.xmpush.global.xiaomi.com
 0.0.0.0 db3aqu.atdmt.com
 0.0.0.0 cell8002.pdx.spp.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jgqioypx31.alphonso.tv
 0.0.0.0 api-gl.cdo.heytapmobi.com
+0.0.0.0 samsungsingapore.api.useinsider.com
 0.0.0.0 powerpoint-telemetry.officeapps.live.com
 0.0.0.0 vip.api.xmpush.global.xiaomi.com
 0.0.0.0 ec.atdmt.com
 0.0.0.0 cell8002.pdx.spp.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jiniqgj4.alphonso.tv
 0.0.0.0 epoch-id.cdo.heytapmobi.com
+0.0.0.0 samsungth.api.useinsider.com
 0.0.0.0 ppc-excel-telemetry.officeapps.live.com
 0.0.0.0 fr.feedback.xmpush.global.xiaomi.com
 0.0.0.0 g.atdmt.com
 0.0.0.0 cell8002.pdx.stv.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jkxthjq85.alphonso.tv
 0.0.0.0 dragate-cn.dc.heytapmobi.com
+0.0.0.0 samsungtseepp.api.useinsider.com
 0.0.0.0 ppc-onenote-telemetry.officeapps.live.com
 0.0.0.0 idmb.feedback.xmpush.global.xiaomi.com
 0.0.0.0 h.atdmt.com
 0.0.0.0 cell8002.pdx.stv.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jmbiescta34.alphonso.tv
 0.0.0.0 dragate-in.dc.heytapmobi.com
+0.0.0.0 samsungturkey.api.useinsider.com
 0.0.0.0 ppc-powerpoint-telemetry.officeapps.live.com
 0.0.0.0 ru.feedback.xmpush.global.xiaomi.com
 0.0.0.0 iact.atdmt.com
 0.0.0.0 cell8003.iad.mobile.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jokeg7.alphonso.tv
 0.0.0.0 dragate-sg.dc.heytapmobi.com
+0.0.0.0 samsunguk.api.useinsider.com
 0.0.0.0 ppc-word-telemetry.officeapps.live.com
 0.0.0.0 fr-api.xmpush.global.xiaomi.com
 0.0.0.0 image.atdmt.com
 0.0.0.0 cell8003.iad.mobile.event-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jqqqiife69.alphonso.tv
 0.0.0.0 obus-cn.dc.heytapmobi.com
+0.0.0.0 samsungusa.api.useinsider.com
 0.0.0.0 sgtus1-excel-telemetry-vip.officeapps.live.com
 0.0.0.0 fr-register.xmpush.global.xiaomi.com
 0.0.0.0 img.atdmt.com
 0.0.0.0 cell8003.iad.web.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jrtwcm90.alphonso.tv
 0.0.0.0 dc-dragate-cn.heytapmobi.com
+0.0.0.0 samsungvn.api.useinsider.com
 0.0.0.0 sgtus1-powerpoint-telemetry-vip.officeapps.live.com
 0.0.0.0 idmb-api.xmpush.global.xiaomi.com
 0.0.0.0 jact.atdmt.com
 0.0.0.0 cell8004.pdx.stv.bid-na.ads.aps.amazon-adsystem.com
 0.0.0.0 jzbznqbz81.alphonso.tv
 0.0.0.0 dcc-awareness-cn.heytapmobi.com
+0.0.0.0 h4g3z1-native.samsung.web.app
 0.0.0.0 sgtus1-word-telemetry-vip.officeapps.live.com
 0.0.0.0 register.xmpush.global.xiaomi.com
 0.0.0.0 sact.atdmt.com
@@ -22981,24 +23408,7 @@
 0.0.0.0 mobile-collector.newrelic.com
 0.0.0.0 metricswpsh.com
 0.0.0.0 fp.metricswpsh.com
-0.0.0.0 ads.samsungads.com
-0.0.0.0 config.samsungads.com
-0.0.0.0 dsp.samsungads.com
-0.0.0.0 events.samsungads.com
-0.0.0.0 samsungads.com
-0.0.0.0 log-config.samsungacr.com
-0.0.0.0 log-ingestion-eu.samsungacr.com
-0.0.0.0 log-ingestion.samsungacr.com
-0.0.0.0 samsungacr.com
-0.0.0.0 ad.samsungadhub.com
-0.0.0.0 samsungadhub.com
-0.0.0.0 samsungtvads.com
-0.0.0.0 nmetrics.samsung.com
-0.0.0.0 smetrics.samsung.com
-0.0.0.0 target-us.samsung.com
-0.0.0.0 analytics.bigdata.samsung.com
 0.0.0.0 adconsent.samsungrs.com
-0.0.0.0 sspapi-prd.samsungrs.com
 0.0.0.0 reactful.com
 0.0.0.0 tracking.reactful.com
 0.0.0.0 visitor.reactful.com
@@ -28669,7 +29079,6 @@
 0.0.0.0 lockerdomecdn.com
 0.0.0.0 log.btopenworld.com
 0.0.0.0 logger.snackly.co
-0.0.0.0 logs.roku.com
 0.0.0.0 logua.com
 0.0.0.0 longingtrees.com
 0.0.0.0 loopme.com
@@ -30643,7 +31052,6 @@
 0.0.0.0 alpixtrack.com
 0.0.0.0 analysis.polarisoffice.com
 0.0.0.0 analytic.rollout.io
-0.0.0.0 analytics-api.samsunghealthcn.com
 0.0.0.0 analytics-api.vanceai.com
 0.0.0.0 analytics-au.clickdimensions.com
 0.0.0.0 analytics-ca.clickdimensions.com
@@ -30692,7 +31100,6 @@
 0.0.0.0 analytics.posttv.com
 0.0.0.0 analytics.publitas.com
 0.0.0.0 analytics.ravelz.com
-0.0.0.0 analytics.samsungknox.com
 0.0.0.0 analytics.scalemonk.com
 0.0.0.0 analytics.seg.ritual.com
 0.0.0.0 analytics.sejda.com
