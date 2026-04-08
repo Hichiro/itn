@@ -10,17 +10,21 @@ jobs:
 
       - name: Build Core with Manual Docker SDK
         run: |
-          # 1. Tạo thư mục chứa kết quả
           mkdir -p bin/
-          
-          # 2. Chạy Docker SDK chính thức của OpenWrt
-          # Chúng ta map thư mục 'packages' vào trong Docker
+          # Chạy Docker với biến môi trường TERM=xterm để tránh lỗi terminal
           docker run --rm \
+            -e TERM=xterm \
             -v ${{ github.workspace }}/packages:/home/build/openwrt/package/custom \
             -v ${{ github.workspace }}/bin:/home/build/openwrt/bin \
             openwrt/sdk:mipsel_74kc-23.05.3 \
             sh -c "
+              # Cập nhật feed
               ./scripts/feeds update -a && ./scripts/feeds install -a
+              
+              # TẠO CẤU HÌNH MẶC ĐỊNH (Quan trọng nhất để tránh lỗi menuconfig)
+              make defconfig
+              
+              # Chỉ định biên dịch riêng gói picoclaw
               make package/custom/core/compile V=s
             "
 
@@ -28,5 +32,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: core-apk
-          # Quét sâu để tìm file apk vừa build
           path: bin/**/*.apk
