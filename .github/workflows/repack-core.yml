@@ -11,11 +11,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create Repo with Binary Only
+      - name: Create Repo Structure
         run: |
-          # 1. Tạo thư mục Repo
-          REPO_DIR="public/mipsel_74kc/packages"
-          mkdir -p $REPO_DIR
+          # 1. Tạo thư mục Repo ngay tại thư mục gốc của Runner
+          mkdir -p public/mipsel_74kc/packages
           
           # 2. Tải và lấy binary từ Sipeed
           CORE_URL=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.assets[] | select(.name | endswith("mipsle.deb")) | .browser_download_url' | head -n 1)
@@ -23,25 +22,20 @@ jobs:
           ar x core.deb
           tar -xzf data.tar.gz
           
-          # 3. Đưa binary vào Repo và đặt tên theo chuẩn OpenWrt
-          # Chúng ta đặt tên file là 'picoclaw' (không đuôi .apk)
-          cp usr/bin/picoclaw $REPO_DIR/picoclaw
-          chmod +x $REPO_DIR/picoclaw
+          # 3. Đưa binary vào đường dẫn chuẩn
+          cp usr/bin/picoclaw public/mipsel_74kc/packages/picoclaw
+          chmod +x public/mipsel_74kc/packages/picoclaw
 
-          # 4. TẠO INDEX THỦ CÔNG (Không dùng lệnh apk index của Docker nữa)
-          # OpenWrt có thể nhận diện file binary nếu có mô tả đúng trong APKINDEX
-          cd $REPO_DIR
-          
-          # Tạo file mô tả đơn giản nhất
+          # 4. Tạo file Index thủ công cho Repo
+          # Đảm bảo đứng ở thư mục gốc để thực hiện
           echo "P:picoclaw" > metadata
           echo "V:1.0.0-1" >> metadata
           echo "A:mipsel_74kc" >> metadata
-          echo "S:$(stat -c%s picoclaw)" >> metadata
+          echo "S:$(stat -c%s public/mipsel_74kc/packages/picoclaw)" >> metadata
           echo "D:PicoClaw AI Core" >> metadata
           echo "" >> metadata
           
-          # Nén thành APKINDEX chuẩn
-          tar -czf APKINDEX.tar.gz metadata
+          tar -czf public/mipsel_74kc/packages/APKINDEX.tar.gz metadata
           rm metadata
 
       - name: Deploy to Cloudflare Pages
@@ -49,5 +43,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: itn
-          directory: public
+          projectName: itn # Đảm bảo tên này khớp với Cloudflare
+          directory: public # Action sẽ tìm thư mục 'public' ở gốc Repo
