@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+env:
+  # Tắt cảnh báo Node.js 20 theo yêu cầu của GitHub năm 2026
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,23 +19,26 @@ jobs:
         uses: openwrt/gh-action-sdk@v1
         env:
           ARCH: mipsel_74kc
-          FEEDNAME: myrepo
+          FEEDNAME: my_private_repo
+          # Đảm bảo tên gói trùng khớp với PKG_NAME trong Makefile
           PACKAGES: picoclaw luci-app-picoclaw
 
       - name: Organize Rolling Repo
         run: |
-          BASE_DIR="public/mipsel_74kc/base"
-          LUCI_DIR="public/mipsel_74kc/luci"
-          mkdir -p $BASE_DIR $LUCI_DIR
+          REPO_DIR="public/mipsel_74kc/packages"
+          mkdir -p $REPO_DIR
 
-          # Gom file apk vào thư mục tương ứng
-          find bin/packages/mipsel_74kc/ -name "picoclaw*.apk" -exec cp {} $BASE_DIR/ \;
-          find bin/packages/mipsel_74kc/ -name "luci-app-picoclaw*.apk" -exec cp {} $LUCI_DIR/ \;
+          # Kiểm tra xem có file apk nào được tạo ra không trước khi copy
+          if [ -d "bin/packages/mipsel_74kc/" ]; then
+            find bin/packages/mipsel_74kc/ -name "*.apk" -exec cp {} $REPO_DIR/ \;
+          else
+            echo "Lỗi: Không tìm thấy thư mục output bin/packages/"
+            exit 1
+          fi
 
-          # Tạo APKINDEX cho từng thư mục bằng Docker
+          # Tạo APKINDEX
           docker run --rm -v $(pwd):/dir alpine sh -c "
-            apk index -o /dir/$BASE_DIR/APKINDEX.tar.gz /dir/$BASE_DIR/*.apk
-            apk index -o /dir/$LUCI_DIR/APKINDEX.tar.gz /dir/$LUCI_DIR/*.apk
+            apk index -o /dir/$REPO_DIR/APKINDEX.tar.gz /dir/$REPO_DIR/*.apk
           "
 
       - name: Deploy to Cloudflare Pages
