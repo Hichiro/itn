@@ -11,38 +11,48 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract and Build APK
+      - name: Repackaging Binary to APK
         run: |
-          # 1. Tạo cấu trúc thư mục Repo
+          # 1. Tạo thư mục làm việc và đích
           REPO_DIR="public/mipsel_74kc/packages"
           mkdir -p $REPO_DIR
+          mkdir -p pkg_root/usr/bin
+          mkdir -p pkg_root/etc/control
           
-          # 2. Lấy duy nhất 1 link .deb mipsle mới nhất
+          # 2. Tải và giải nén .deb từ Sipeed
           CORE_URL=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.assets[] | select(.name | endswith("mipsle.deb")) | .browser_download_url' | head -n 1)
-          echo "Downloading from: $CORE_URL"
           wget -O core.deb "$CORE_URL"
-          
-          # 3. Giải nén .deb (Hỗ trợ cả định dạng nén mới zst)
           ar x core.deb
+          
+          # Cài zstd để giải nén data
           sudo apt-get update && sudo apt-get install -y zstd
+          if [ -f data.tar.zst ]; then tar --zstd -xf data.tar.zst;
+          elif [ -f data.tar.xz ]; then tar -xf data.tar.xz;
+          else tar -xf data.tar.gz; fi
           
-          if [ -f data.tar.zst ]; then
-            tar --zstd -xf data.tar.zst
-          elif [ -f data.tar.xz ]; then
-            tar -xf data.tar.xz
-          else
-            tar -xf data.tar.gz
-          fi
-          
-          # 4. Tìm và đưa file thực thi vào thư mục Repo
-          # Đổi tên thành 'picoclaw' viết thường để đồng nhất
-          find . -name "picoclaw" -type f -exec cp {} $REPO_DIR/picoclaw \;
-          chmod +x $REPO_DIR/picoclaw
+          # 3. Lấy binary và cấp quyền
+          find . -name "picoclaw" -type f -exec cp {} pkg_root/usr/bin/picoclaw \;
+          chmod +x pkg_root/usr/bin/picoclaw
 
-          # 5. Tạo APKINDEX (Chỉ chứa duy nhất core picoclaw)
+          # 4. Tự tạo file .apk bằng Docker Alpine
+          # Chúng ta sẽ dùng chính lệnh 'apk' bên trong Alpine để đóng gói
           docker run --rm -v $(pwd):/dir alpine sh -c "
+            apk add --no-cache abuild
+            cd /dir/pkg_root
+            
+            # Tạo file danh sách nội dung (tar)
+            tar -cvzf /dir/data.tar.gz usr/
+            
+            # Tạo file mô tả gói (control)
+            echo -e 'pkgname: picoclaw\npkgver: 1.0.0\npkgrel: 1\narch: mipsel_74kc\nsize: \$(du -sb usr | cut -f1)\ndescription: PicoClaw Core' > control
+            tar -cvzf /dir/control.tar.gz control
+            
+            # Kết hợp thành file .apk chuẩn
+            cat /dir/control.tar.gz /dir/data.tar.gz > /dir/$REPO_DIR/picoclaw.apk
+            
+            # Tạo Index cho Repo
             cd /dir/$REPO_DIR
-            apk index -o APKINDEX.tar.gz picoclaw
+            apk index -o APKINDEX.tar.gz picoclaw.apk
           "
 
       - name: Deploy to Cloudflare Pages
