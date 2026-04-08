@@ -1,0 +1,43 @@
+name: Build and Deploy Rolling Repo
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build with OpenWrt SDK
+        uses: openwrt/gh-action-sdk@v1
+        env:
+          ARCH: mipsel_74kc
+          FEEDNAME: myrepo
+          PACKAGES: picoclaw luci-app-picoclaw
+
+      - name: Organize Rolling Repo
+        run: |
+          BASE_DIR="public/mipsel_74kc/base"
+          LUCI_DIR="public/mipsel_74kc/luci"
+          mkdir -p $BASE_DIR $LUCI_DIR
+
+          # Gom file apk vào thư mục tương ứng
+          find bin/packages/mipsel_74kc/ -name "picoclaw*.apk" -exec cp {} $BASE_DIR/ \;
+          find bin/packages/mipsel_74kc/ -name "luci-app-picoclaw*.apk" -exec cp {} $LUCI_DIR/ \;
+
+          # Tạo APKINDEX cho từng thư mục bằng Docker
+          docker run --rm -v $(pwd):/dir alpine sh -c "
+            apk index -o /dir/$BASE_DIR/APKINDEX.tar.gz /dir/$BASE_DIR/*.apk
+            apk index -o /dir/$LUCI_DIR/APKINDEX.tar.gz /dir/$LUCI_DIR/*.apk
+          "
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: my-picoclaw-repo
+          directory: public
