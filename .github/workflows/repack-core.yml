@@ -13,41 +13,50 @@ jobs:
 
       - name: Repackaging Binary to APK
         run: |
-          # 1. Tạo thư mục làm việc
+          # 1. Tạo thư mục làm việc chuẩn
           REPO_DIR="public/mipsel_74kc/packages"
           mkdir -p $REPO_DIR
           mkdir -p pkg_root/usr/bin
           
-          # 2. Tải và giải nén .deb từ Sipeed
+          # 2. Xử lý file .deb bạn đã cung cấp
+          # Lưu ý: Nếu bạn chạy trên GitHub, script sẽ lấy từ Release 
+          # Hoặc bạn có thể sửa lệnh này để lấy file local nếu bạn đẩy file .deb lên repo
           CORE_URL=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.assets[] | select(.name | endswith("mipsle.deb")) | .browser_download_url' | head -n 1)
           wget -O core.deb "$CORE_URL"
+          
+          # Giải nén .deb (Lấy data.tar.gz)
           ar x core.deb
           
-          sudo apt-get update && sudo apt-get install -y zstd
-          if [ -f data.tar.zst ]; then tar --zstd -xf data.tar.zst;
-          elif [ -f data.tar.xz ]; then tar -xf data.tar.xz;
-          else tar -xf data.tar.gz; fi
+          # Giải nén data.tar.gz để lấy binary
+          tar -xzf data.tar.gz
           
-          # 3. Lấy binary và cấp quyền
-          find . -name "picoclaw" -type f -exec cp {} pkg_root/usr/bin/picoclaw \;
+          # 3. Chép binary vào cấu trúc gói mới và cấp quyền thực thi
+          # File từ .deb nằm ở usr/bin/picoclaw
+          cp usr/bin/picoclaw pkg_root/usr/bin/picoclaw
           chmod +x pkg_root/usr/bin/picoclaw
 
-          # 4. Tạo các thành phần của APK (Thực hiện trực tiếp trên Ubuntu)
-          # Tạo nội dung mô tả gói
+          # 4. Đóng gói chuẩn OpenWrt (apk v2 format)
           cd pkg_root
-          echo -e "pkgname = picoclaw\npkgver = 1.0.0-r1\narch = mipsel_74kc\nsize = $(du -sb usr | cut -f1)\npkgdesc = PicoClaw AI Core" > .PKGINFO
           
-          # Đóng gói phần dữ liệu (Data)
-          tar -czf ../data.tar.gz usr/
+          # Tạo PKGINFO đúng định dạng (dùng dấu =)
+          echo "pkgname = picoclaw" > .PKGINFO
+          echo "pkgver = 1.0.0-r1" >> .PKGINFO
+          echo "arch = mipsel_74kc" >> .PKGINFO
+          echo "size = $(du -sb usr | cut -f1)" >> .PKGINFO
+          echo "pkgdesc = PicoClaw AI Core for Newifi 3" >> .PKGINFO
           
-          # Đóng gói phần thông tin (Control/Metadata)
-          tar -czf ../control.tar.gz .PKGINFO
+          # Nén phần Data
+          tar -czf ../data_new.tar.gz usr/
+          
+          # Nén phần Control (.PKGINFO phải nằm ở gốc của tarball này)
+          tar -czf ../control_new.tar.gz .PKGINFO
+          
           cd ..
+          
+          # Gộp thành file .apk chuẩn
+          cat control_new.tar.gz data_new.tar.gz > $REPO_DIR/picoclaw.apk
 
-          # Gộp lại thành file .apk chuẩn
-          cat control.tar.gz data.tar.gz > $REPO_DIR/picoclaw.apk
-
-          # 5. Dùng Docker Alpine CHỈ để tạo Index (Bỏ qua kiểm tra chữ ký)
+          # 5. Tạo Index dùng Docker Alpine (Bỏ qua check chữ ký)
           docker run --rm -v $(pwd):/dir alpine sh -c "
             cd /dir/$REPO_DIR
             apk index --allow-untrusted -o APKINDEX.tar.gz picoclaw.apk
