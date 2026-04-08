@@ -1,0 +1,54 @@
+name: Repack PicoClaw Core
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  repack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extract and Build APK
+        run: |
+          # 1. Tạo cấu trúc thư mục Repo
+          REPO_DIR="public/mipsel_74kc/packages"
+          mkdir -p $REPO_DIR
+          
+          # 2. Lấy duy nhất 1 link .deb mipsle mới nhất
+          CORE_URL=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.assets[] | select(.name | endswith("mipsle.deb")) | .browser_download_url' | head -n 1)
+          echo "Downloading from: $CORE_URL"
+          wget -O core.deb "$CORE_URL"
+          
+          # 3. Giải nén .deb (Hỗ trợ cả định dạng nén mới zst)
+          ar x core.deb
+          sudo apt-get update && sudo apt-get install -y zstd
+          
+          if [ -f data.tar.zst ]; then
+            tar --zstd -xf data.tar.zst
+          elif [ -f data.tar.xz ]; then
+            tar -xf data.tar.xz
+          else
+            tar -xf data.tar.gz
+          fi
+          
+          # 4. Tìm và đưa file thực thi vào thư mục Repo
+          # Đổi tên thành 'picoclaw' viết thường để đồng nhất
+          find . -name "picoclaw" -type f -exec cp {} $REPO_DIR/picoclaw \;
+          chmod +x $REPO_DIR/picoclaw
+
+          # 5. Tạo APKINDEX (Chỉ chứa duy nhất core picoclaw)
+          docker run --rm -v $(pwd):/dir alpine sh -c "
+            cd /dir/$REPO_DIR
+            apk index -o APKINDEX.tar.gz picoclaw
+          "
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: my-picoclaw-repo
+          directory: public
