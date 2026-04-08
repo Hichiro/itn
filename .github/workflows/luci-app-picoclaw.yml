@@ -1,0 +1,58 @@
+name: Smart Mirror PicoClaw
+on:
+  schedule:
+    - cron: '0 */12 * * *' # Kiểm tra mỗi 12 tiếng
+  workflow_dispatch:      # Cho phép bấm chạy thủ công
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout your repo
+        uses: actions/checkout@v4
+
+      - name: Get Latest Release Tag
+        id: get_tag
+        run: |
+          # Lấy tag name mới nhất từ GitHub API
+          LATEST_TAG=$(curl -s https://api.github.com/repos/GennKann/luci-app-picoclaw/releases/latest | jq -r .tag_name)
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          
+          # Đọc tag cũ đã lưu (nếu có)
+          if [ -f version.txt ]; then
+            OLD_TAG=$(cat version.txt)
+          else
+            OLD_TAG="none"
+          fi
+          echo "old_tag=$OLD_TAG" >> $GITHUB_OUTPUT
+
+      - name: Mirror if New Version Found
+        if: steps.get_tag.outputs.latest_tag != steps.get_tag.outputs.old_tag
+        run: |
+          echo "Phát hiện bản mới: ${{ steps.get_tag.outputs.latest_tag }}. Đang cập nhật..."
+          mkdir -p public/mipsel_74kc
+          
+          # Tải tất cả assets từ release mới nhất
+          gh release download ${{ steps.get_tag.outputs.latest_tag }} -R GennKann/luci-app-picoclaw -D public/mipsel_74kc --pattern "*"
+
+          # Cập nhật file version.txt
+          echo "${{ steps.get_tag.outputs.latest_tag }}" > version.txt
+
+      - name: Generate APK Index
+        if: steps.get_tag.outputs.latest_tag != steps.get_tag.outputs.old_tag
+        run: |
+          cd public/mipsel_74kc
+          # Tạo file index đơn giản cho apk
+          # Nếu bạn muốn chuẩn hơn, có thể dùng docker chứa apk-tools để chạy 'apk index'
+          tar -cvzf APKINDEX.tar.gz *.ipk *.apk 2>/dev/null || true
+
+      - name: Commit and Push to Cloudflare Pages
+        if: steps.get_tag.outputs.latest_tag != steps.get_tag.outputs.old_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/ version.txt
+          git commit -m "Cập nhật PicoClaw lên bản ${{ steps.get_tag.outputs.latest_tag }}"
+          git push
