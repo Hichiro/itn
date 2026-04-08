@@ -32,17 +32,27 @@ jobs:
           find . -name "picoclaw" -type f -exec cp {} pkg_root/usr/bin/picoclaw \;
           chmod +x pkg_root/usr/bin/picoclaw
 
-          # 4. Đóng gói chuẩn hóa và tạo Index
+          # 4. Đóng gói bằng công cụ chuyên dụng của Alpine
           docker run --rm -v $(pwd):/dir alpine sh -c "
+            apk add --no-cache abuild tar
             cd /dir/pkg_root
             
-            # Tạo file control với đầy đủ thông tin hơn
-            echo -e 'pkgname: picoclaw\npkgver: 1.0.0\npkgrel: 1\narch: mipsel_74kc\nsize: 17281218\ndescription: PicoClaw AI Core\nmaintainer: Sipeed' > .PKGINFO
+            # Tạo file .PKGINFO chuẩn (phải có định dạng cụ thể)
+            echo 'pkgname = picoclaw' > .PKGINFO
+            echo 'pkgver = 1.0.0-r1' >> .PKGINFO
+            echo 'arch = mipsel_74kc' >> .PKGINFO
+            echo 'size = 17281218' >> .PKGINFO
+            echo 'pkgdesc = PicoClaw AI Core' >> .PKGINFO
             
-            # Đóng gói tất cả (bao gồm cả .PKGINFO) vào một file .tar.gz duy nhất
-            tar -cvzf /dir/$REPO_DIR/picoclaw.apk usr/ .PKGINFO
+            # Đóng gói theo chuẩn Alpine (phải nén từng phần)
+            # Tạo tệp nén cho metadata và dữ liệu riêng biệt
+            tar -ztf /dir/pkg_root | tar -zc -f /dir/data.tar.gz -T -
+            tar -zc -f /dir/control.tar.gz .PKGINFO
             
-            # Tạo Index cho Repo (Dùng tham số --allow-untrusted)
+            # Gộp lại thành file .apk chuẩn mà apk index có thể đọc
+            cat /dir/control.tar.gz /dir/data.tar.gz > /dir/$REPO_DIR/picoclaw.apk
+            
+            # Tạo Index với tham số bỏ qua chữ ký
             cd /dir/$REPO_DIR
             apk index --allow-untrusted -o APKINDEX.tar.gz picoclaw.apk
           "
