@@ -17,26 +17,24 @@ jobs:
       - name: Build with OpenWrt SDK
         uses: openwrt/gh-action-sdk@v1
         with:
-          arch: mipsel_74kc
-          feedname: my_private_repo
-          packages: picoclaw luci-app-picoclaw
+          # Thêm tham số feed để SDK biết cần lấy code từ đâu
+          feed_sources: |
+            src-link my_private_repo ${{ github.workspace }}/packages
         env:
           ARCH: mipsel_74kc
-          FEEDNAME: my_private_repo
           PACKAGES: picoclaw luci-app-picoclaw
+          V: s # Hiển thị chi tiết lỗi biên dịch nếu có
 
       - name: Organize Rolling Repo
         run: |
           REPO_DIR="public/mipsel_74kc/packages"
           mkdir -p $REPO_DIR
 
-          if [ -d "bin/packages/mipsel_74kc/" ]; then
-            find bin/packages/mipsel_74kc/ -name "*.apk" -exec cp {} $REPO_DIR/ \;
-          else
-            echo "Lỗi: Không tìm thấy thư mục output bin/packages/"
-            exit 1
-          fi
+          # Tìm và gom file .apk
+          # Lưu ý: Thư mục chứa apk có thể khác nhau tùy bản SDK, chúng ta quét rộng hơn
+          find bin/ -name "*.apk" -exec cp {} $REPO_DIR/ \;
 
+          # Tạo APKINDEX bằng Docker
           docker run --rm -v $(pwd):/dir alpine sh -c "
             apk index -o /dir/$REPO_DIR/APKINDEX.tar.gz /dir/$REPO_DIR/*.apk
           "
