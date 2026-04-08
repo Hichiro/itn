@@ -13,18 +13,16 @@ jobs:
 
       - name: Repackaging Binary to APK
         run: |
-          # 1. Tạo thư mục làm việc và đích
+          # 1. Tạo thư mục làm việc
           REPO_DIR="public/mipsel_74kc/packages"
           mkdir -p $REPO_DIR
           mkdir -p pkg_root/usr/bin
-          mkdir -p pkg_root/etc/control
           
           # 2. Tải và giải nén .deb từ Sipeed
           CORE_URL=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.assets[] | select(.name | endswith("mipsle.deb")) | .browser_download_url' | head -n 1)
           wget -O core.deb "$CORE_URL"
           ar x core.deb
           
-          # Cài zstd để giải nén data
           sudo apt-get update && sudo apt-get install -y zstd
           if [ -f data.tar.zst ]; then tar --zstd -xf data.tar.zst;
           elif [ -f data.tar.xz ]; then tar -xf data.tar.xz;
@@ -34,25 +32,23 @@ jobs:
           find . -name "picoclaw" -type f -exec cp {} pkg_root/usr/bin/picoclaw \;
           chmod +x pkg_root/usr/bin/picoclaw
 
-          # 4. Tự tạo file .apk bằng Docker Alpine
-          # Chúng ta sẽ dùng chính lệnh 'apk' bên trong Alpine để đóng gói
+          # 4. Đóng gói thành .apk và tạo Index
           docker run --rm -v $(pwd):/dir alpine sh -c "
-            apk add --no-cache abuild
             cd /dir/pkg_root
             
-            # Tạo file danh sách nội dung (tar)
+            # Đóng gói dữ liệu
             tar -cvzf /dir/data.tar.gz usr/
             
-            # Tạo file mô tả gói (control)
-            echo -e 'pkgname: picoclaw\npkgver: 1.0.0\npkgrel: 1\narch: mipsel_74kc\nsize: \$(du -sb usr | cut -f1)\ndescription: PicoClaw Core' > control
+            # Tạo file control (bắt buộc phải có dòng pkgname, pkgver, arch)
+            echo -e 'pkgname: picoclaw\npkgver: 1.0.0\npkgrel: 1\narch: mipsel_74kc\nsize: 17000000\ndescription: PicoClaw AI Core' > control
             tar -cvzf /dir/control.tar.gz control
             
-            # Kết hợp thành file .apk chuẩn
+            # Tạo file .apk bằng cách gộp control và data
             cat /dir/control.tar.gz /dir/data.tar.gz > /dir/$REPO_DIR/picoclaw.apk
             
-            # Tạo Index cho Repo
+            # TẠO INDEX VỚI THAM SỐ --allow-untrusted
             cd /dir/$REPO_DIR
-            apk index -o APKINDEX.tar.gz picoclaw.apk
+            apk index --allow-untrusted -o APKINDEX.tar.gz picoclaw.apk
           "
 
       - name: Deploy to Cloudflare Pages
