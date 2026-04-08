@@ -1,0 +1,25 @@
+name: 1. Build PicoClaw Core
+on: [workflow_dispatch, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Core
+        uses: openwrt/gh-action-sdk@v1
+        with:
+          arch: mipsel_74kc
+        env:
+          # Đưa trực tiếp Makefile vào feed của SDK
+          FEED_COMMON: src-link custom ${{ github.workspace }}/packages/core
+          PACKAGES: picoclaw
+          V: s
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-apk
+          path: bin/packages/mipsel_74kc/custom/picoclaw*.apk
