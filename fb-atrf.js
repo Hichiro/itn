@@ -1,43 +1,76 @@
 // ==UserScript==
-// @name         Facebook Anti-Refresh (Lite)
-// @namespace    http://tampermonkey.net/
-// @version      1.1
-// @description  Chặn Facebook tự động tải lại trang - Bản tinh gọn
-// @author       YourName
-// @match        *://*.facebook.com/*
-// @run-at       document-start
-// @grant        none
+// @name                 Facebook Anti-Refresh & Ad-Blocker
+// @namespace            CustomScripts
+// @description          Ngăn chặn tự động refresh Feed và ẩn bài viết quảng cáo trên Facebook
+// @author               areen-c & Gemini
+// @match                *://*.facebook.com/*
+// @version              2.0
+// @license              MIT
+// @run-at               document-start
+// @grant                none
 // ==/UserScript==
 
 (function() {
     'use strict';
 
-    // 1. Chặn WebSocket: Ngăn server gửi lệnh ép trình duyệt làm mới
-    const OriginalWebSocket = window.WebSocket;
-    window.WebSocket = function(url, protocols) {
-        // Nếu muốn chặn hoàn toàn lệnh từ FB, ta có thể lọc URL ở đây
-        // Nhưng cách gọn nhất là vô hiệu hóa nếu nó phục vụ việc refresh
-        return new OriginalWebSocket(url, protocols);
-    };
-    window.WebSocket.prototype = OriginalWebSocket.prototype;
+    console.log('[FB Optimizer] Khởi động...');
 
-    // 2. Chặn các lệnh Reload từ phía Client (JavaScript của FB)
-    const stopReload = () => {
-        console.log("FB Anti-Refresh: Đã chặn một yêu cầu tải lại trang.");
+    // --- PHẦN 1: CHẶN AUTO REFRESH (Lừa trình duyệt tab luôn hoạt động) ---
+    try {
+        // Luôn giữ trạng thái hiển thị để FB không load lại khi bạn quay lại tab
+        Object.defineProperty(document, 'visibilityState', { get: () => 'visible', configurable: true });
+        Object.defineProperty(document, 'hidden', { get: () => false, configurable: true });
+        document.hasFocus = () => true;
+
+        // Chặn các sự kiện nhận biết người dùng rời tab
+        const blockEvents = ['visibilitychange', 'webkitvisibilitychange', 'blur'];
+        const originalAddEventListener = EventTarget.prototype.addEventListener;
+        
+        EventTarget.prototype.addEventListener = function(type, listener, options) {
+            if (blockEvents.includes(type)) return;
+            return originalAddEventListener.call(this, type, listener, options);
+        };
+    } catch (e) {
+        console.warn('[FB Optimizer] Lỗi ghi đè API:', e);
+    }
+
+    // --- PHẦN 2: CHẶN QUẢNG CÁO & GỢI Ý (CSS Injection) ---
+    const injectAdBlocker = () => {
+        const style = document.createElement('style');
+        style.innerHTML = `
+            /* Ẩn bài viết Được tài trợ (Sponsored) */
+            div[aria-label*="Sponsored"], 
+            div[aria-label*="Được tài trợ"],
+            /* Ẩn các hộp gợi ý trên Feed */
+            div[data-pagelet*="FeedUnit_Suggested"],
+            div[data-pagelet*="GenericFeedUnit"],
+            /* Ẩn quảng cáo bên phải (PC) */
+            div[role="complementary"] div[data-pagelet="RightRail"] > div > div:nth-child(1) {
+                display: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+        console.log('[FB Optimizer] Đã nhúng bộ lọc quảng cáo');
     };
 
-    // Vô hiệu hóa hàm reload thủ công
-    window.location.reload = stopReload;
-    
-    // Vô hiệu hóa việc chuyển hướng về chính nó
-    window.history.go = function(n) {
-        if (n === 0) stopReload();
-        else history.go(n);
+    // --- PHẦN 3: XỬ LÝ FETCH (Ngăn các request làm mới ngầm) ---
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+        const url = typeof args[0] === 'string' ? args[0] : args[0].url;
+        
+        // Chặn các endpoint liên quan đến việc cập nhật Feed tự động
+        const forbidden = ['/ajax/home/generic.php', '/ajax/pagelet/generic.php/HomeStream'];
+        if (forbidden.some(e => url?.includes(e))) {
+            return Promise.resolve(new Response('{}', { status: 200 }));
+        }
+        return originalFetch.apply(this, args);
     };
 
-    // 3. Chặn Navigation Timing (đánh lừa script kiểm tra trạng thái trang)
-    Object.defineProperty(performance.navigation, 'type', {
-        get: () => 0
-    });
+    // Thực thi khi DOM sẵn sàng
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', injectAdBlocker);
+    } else {
+        injectAdBlocker();
+    }
 
 })();
