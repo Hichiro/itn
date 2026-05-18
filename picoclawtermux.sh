@@ -1,11 +1,11 @@
 #!/data/data/com.termux/files/usr/bin/bash
 # install_picoclaw_termux.sh
-# Interactive installer for PicoClaw on Android with OpenRouter config
-# Version: 6
+# Tự động check và cài đặt phiên bản PicoClaw mới nhất từ GitHub
+# Version: 8
 
 set -Eeuo pipefail
 
-SCRIPT_VERSION="6"
+SCRIPT_VERSION="8"
 
 # ---------- Colors ----------
 RED='\033[0;31m'
@@ -20,21 +20,35 @@ error() { printf "${RED}[✗]${NC} %s\n" "$*" >&2; }
 info() { printf "${YELLOW}[i]${NC} %s\n" "$*"; }
 die() { error "$*"; exit 1; }
 
+# ---------- Phát hiện môi trường chroot ----------
+if [ -d "/usr/etc" ] && [ ! -d "/data/data/com.termux" ]; then
+    IS_CHROOT=true
+    TERMUX_BIN="/usr/bin"
+    CONF_DIR="/home/.picoclaw"
+    WORKSPACE_DIR="/home/.picoclaw/workspace"
+    CERT_PATH="/usr/etc/tls/cert.pem"
+else
+    IS_CHROOT=false
+    TERMUX_BIN="/data/data/com.termux/files/usr/bin"
+    CONF_DIR="$HOME/.picoclaw"
+    WORKSPACE_DIR="/home/.picoclaw/workspace"
+    CERT_PATH="/data/data/com.termux/files/usr/etc/tls/cert.pem"
+fi
+
 # ---------- Remove PicoClaw ----------
 remove_picoclaw() {
     section "Removing PicoClaw"
-    local BIN_PATH="/data/data/com.termux/files/usr/bin/picoclaw"
-    if [ -f "$BIN_PATH" ]; then
-        rm -f "$BIN_PATH"
-        success "Removed $BIN_PATH"
+    if [ -f "$TERMUX_BIN/picoclaw" ]; then
+        rm -f "$TERMUX_BIN/picoclaw"
+        success "Removed PicoClaw binary"
     else
-        info "PicoClaw not found at $BIN_PATH"
+        info "PicoClaw binary not found"
     fi
-    if [ -d "$HOME/.picoclaw" ]; then
-        read -p "Remove PicoClaw config directory ($HOME/.picoclaw)? [y/N] " -n 1 -r
+    if [ -d "$CONF_DIR" ]; then
+        read -p "Remove PicoClaw config directory ($CONF_DIR)? [y/N] " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            rm -rf "$HOME/.picoclaw"
+            rm -rf "$CONF_DIR"
             success "Removed config directory"
         fi
     fi
@@ -48,108 +62,81 @@ show_version() {
     exit 0
 }
 
-# ---------- Configure OpenRouter ----------
-configure_openrouter() {
-    section "Configuring OpenRouter"
+# ---------- Configure PicoClaw ----------
+configure_picoclaw() {
+    section "Configuring PicoClaw"
     
-    echo
-    echo "Select a model:"
-    echo "1) Qwen3 80B (free) - qwen/qwen3-next-80b-a3b-instruct:free"
-    echo "2) DeepSeek V3 - deepseek/deepseek-chat"
-    echo "3) Llama 3.3 70B (free) - meta-llama/llama-3.3-70b-instruct:free"
-    echo "4) Custom model"
-    echo
-    read -p "Enter choice [1-4]: " model_choice
+    echo "Nhập Token Bot Telegram của bạn:"
+    read -p "Token: " TG_TOKEN
     
-    case $model_choice in
-        1)
-            MODEL="qwen/qwen3-next-80b-a3b-instruct:free"
-            MODEL_NAME="qwen3-free"
-            ;;
-        2)
-            MODEL="deepseek/deepseek-chat"
-            MODEL_NAME="deepseek-chat"
-            ;;
-        3)
-            MODEL="meta-llama/llama-3.3-70b-instruct:free"
-            MODEL_NAME="llama-3.3-70b"
-            ;;
-        4)
-            read -p "Enter model name (e.g., openai/gpt-4): " MODEL
-            read -p "Enter model alias (e.g., gpt-4): " MODEL_NAME
-            ;;
-        *)
-            MODEL="qwen/qwen3-next-80b-a3b-instruct:free"
-            MODEL_NAME="qwen3-free"
-            ;;
-    esac
-    
-    echo
-    read -p "Enter your OpenRouter API key (sk-or-v1-...): " API_KEY
-    
-    if [ -z "$API_KEY" ]; then
-        error "No API key provided. Skipping config."
+    if [ -z "$TG_TOKEN" ]; then
+        error "Không có Token. Bỏ qua cấu hình nâng cao."
         return 1
     fi
+
+    mkdir -p "$CONF_DIR"
     
-    mkdir -p "$HOME/.picoclaw"
-    
-    cat > "$HOME/.picoclaw/config.json" << EOF
+    cat > "$CONF_DIR/config.json" << EOF
 {
+  "session": { "dimensions": ["chat"] },
+  "version": 3,
+  "isolation": {},
   "agents": {
     "defaults": {
-      "workspace": "~/.picoclaw/workspace",
+      "workspace": "$WORKSPACE_DIR",
       "restrict_to_workspace": true,
-      "model_name": "$MODEL_NAME",
-      "max_tokens": 8192,
-      "temperature": 0.7,
-      "max_tool_iterations": 20
+      "allow_read_outside_workspace": false,
+      "model_name": "gemini-3.1-flash-lite",
+      "max_tokens": 4096,
+      "max_tool_iterations": 15
+    }
+  },
+  "channel_list": {
+    "pico": {
+      "enabled": true,
+      "type": "pico",
+      "allow_from": ["*"],
+      "settings": { "max_connections": 100 }
+    },
+    "telegram": {
+      "enabled": true,
+      "type": "telegram",
+      "allow_from": ["734974005"],
+      "placeholder": { "enabled": true, "text": ["Thinking... 💬"] },
+      "settings": {
+        "token": "$TG_TOKEN",
+        "streaming": { "enabled": true, "throttle_seconds": 3, "min_growth_chars": 200 }
+      }
     }
   },
   "model_list": [
-    {
-      "model_name": "$MODEL_NAME",
-      "model": "openrouter/$MODEL",
-      "api_key": "$API_KEY",
-      "api_base": "https://openrouter.ai/api/v1"
-    }
+    { "model_name": "gemini-3.1-flash-lite", "model": "gemini/gemini-3.1-flash-lite", "rpm": 15 },
+    { "model_name": "gemini-2.5-flash-lite", "model": "gemini/gemini-2.5-flash-lite", "rpm": 10 },
+    { "model_name": "llama-3.3-70b", "model": "groq/llama-3.3-70b-versatile", "api_base": "https://api.groq.com/openai/v1", "rpm": 30 },
+    { "model_name": "nemotron-3-super-120b", "model": "openrouter/nvidia/nemotron-3-super-120b-a12b:free", "api_base": "https://openrouter.ai/api/v1", "rpm": 20 }
   ],
-  "channels": {
-    "whatsapp": { "enabled": false, "bridge_url": "ws://localhost:3001", "allow_from": [] },
-    "telegram": { "enabled": false, "token": "", "allow_from": [] },
-    "discord": { "enabled": false, "token": "", "allow_from": [] }
-  },
-  "tools": {
-    "web": {
-      "duckduckgo": { "enabled": true, "max_results": 5 }
-    }
-  },
-  "heartbeat": { "enabled": true, "interval": 30 },
-  "gateway": { "host": "127.0.0.1", "port": 18790 }
+  "gateway": {
+    "host": "0.0.0.0",
+    "port": 18790,
+    "hot_reload": false,
+    "log_level": "warn"
+  }
 }
 EOF
     
-    success "Config saved to ~/.picoclaw/config.json"
-    info "Model: $MODEL"
+    success "Cấu hình được lưu thành công tại $CONF_DIR/config.json"
     return 0
 }
 
 # ---------- Parse Args ----------
 if [ $# -gt 0 ]; then
     case "$1" in
-        --remove|-r)
-            remove_picoclaw
-            ;;
-        --version|-v)
-            show_version
-            ;;
+        --remove|-r) remove_picoclaw ;;
+        --version|-v) show_version ;;
         --help|-h)
             echo "Usage: $0 [OPTIONS]"
-            echo ""
-            echo "Options:"
-            echo "  -r, --remove     Remove PicoClaw installation"
-            echo "  -v, --version    Show script version"
-            echo "  -h, --help       Show this help message"
+            echo "  -r, --remove      Remove PicoClaw"
+            echo "  -v, --version     Show version"
             exit 0
             ;;
     esac
@@ -157,57 +144,58 @@ fi
 
 info "install_picoclaw_termux.sh version $SCRIPT_VERSION"
 
-# ---------- Config ----------
-PICOCLAW_VERSION="v0.1.1"
-PICOCLAW_BINARY="picoclaw-linux-arm64"
-DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/download/${PICOCLAW_VERSION}/${PICOCLAW_BINARY}"
-TERMUX_BIN="/data/data/com.termux/files/usr/bin"
+# ---------- Cài đặt gói nền tảng ----------
+section "Cài đặt/Cập nhật các gói hệ thống"
+pkg update -y || true
+pkg install -y wget tar ca-certificates grep curl || die "Cài đặt gói nền tảng thất bại"
 
-# ---------- Termux baseline ----------
-section "Request storage access"
-termux-setup-storage || true
-
-section "Update Termux packages"
-yes | pkg update || true
-yes | pkg upgrade || true
-
-section "Install wget"
-pkg install -y wget || die "Failed to install wget"
-pkg install -y termux-api || true
-
-# ---------- PicoClaw ----------
-section "Download PicoClaw ${PICOCLAW_VERSION}"
-cd "$HOME"
-wget -O picoclaw "${DOWNLOAD_URL}" || die "Failed to download PicoClaw"
-chmod +x picoclaw
-
-section "Install PicoClaw"
-mv picoclaw "$TERMUX_BIN/picoclaw"
-ls -la "$TERMUX_BIN/picoclaw" || die "Failed to install picoclaw"
-
-section "Verify installation"
-which picoclaw || die "picoclaw not in PATH"
-picoclaw --version 2>/dev/null || true
-
-# ---------- Configure ----------
-section "Configuration"
-echo
-read -p "Configure OpenRouter now? [Y/n] " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Nn]$ ]]; then
-    configure_openrouter
-else
-    info "Skipping config. Run 'picoclaw onboard' later."
+# Đảm bảo biến môi trường SSL luôn được nạp khi khởi động terminal
+if ! grep -q "SSL_CERT_FILE" ~/.bashrc; then
+    echo "export SSL_CERT_FILE=$CERT_PATH" >> ~/.bashrc
 fi
 
-# ---------- Final steps ----------
-section "Installation Complete!"
-echo
-echo "Usage:"
-echo "  picoclaw agent -m 'Hello'    # Single message"
-echo "  picoclaw agent               # Interactive mode"
-echo "  picoclaw gateway             # Start gateway"
-echo "  picoclaw status              # Check status"
-echo
-echo "Config: ~/.picoclaw/config.json"
+# ---------- Tự động quét tìm Version mới nhất ----------
+section "Đang tìm phiên bản PicoClaw mới nhất..."
+LATEST_VERSION=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
+if [ -z "$LATEST_VERSION" ]; then
+    info "Không thể quét qua API GitHub, sử dụng phiên bản dự phòng v0.2.8"
+    LATEST_VERSION="v0.2.8"
+else
+    success "Đã tìm thấy phiên bản mới nhất: $LATEST_VERSION"
+fi
+
+# ---------- Tải & Giải nén bản mới nhất ----------
+section "Tải về PicoClaw $LATEST_VERSION"
+cd "$HOME"
+DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/download/${LATEST_VERSION}/picoclaw_Linux_arm64.tar.gz"
+
+wget -O picoclaw.tar.gz "${DOWNLOAD_URL}" || die "Tải PicoClaw thất bại. Có thể cấu trúc đặt tên file trên Release đã thay đổi."
+tar -xzvf picoclaw.tar.gz || die "Giải nén gói cài đặt thất bại"
+chmod +x picoclaw
+
+section "Đưa vào hệ thống lưu trữ lệnh"
+mv picoclaw "$TERMUX_BIN/picoclaw"
+rm -f picoclaw.tar.gz
+
+section "Kiểm tra phiên bản thực tế vừa cài"
+export SSL_CERT_FILE=$CERT_PATH
+picoclaw --version || true
+
+# ---------- Cấu hình ----------
+if [ -f "$CONF_DIR/config.json" ]; then
+    read -p "Phát hiện file cấu hình cũ. Bạn có muốn ghi đè cấu hình mới không? [y/N] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        configure_picoclaw
+    fi
+else
+    configure_picoclaw
+fi
+
+# ---------- Hoàn tất ----------
+section "Cài đặt thành công PicoClaw phiên bản mới nhất!"
+echo "Để chạy bot, vui lòng gõ lệnh:"
+echo "  source ~/.bashrc"
+echo "  picoclaw"
 echo
