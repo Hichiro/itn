@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Hàm tiện ích: Ghi cấu hình tự động bật SSH vào .bashrc nếu chưa có
 enable_ssh_autostart() {
     if ! grep -q 'sshd' ~/.bashrc; then
         cat << 'SSH_BOOT' >> ~/.bashrc
@@ -42,27 +43,29 @@ echo "=== 2. KHỔI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
 mkdir -p $HOME/.cargo/bin
 mkdir -p $HOME/.zeroclaw
 
-echo "=== 3. KIỂM TRA PHIÊN BẢN QUA REMOTE MD5 ==="
-echo "🔍 Đang kiểm tra bản cập nhật..."
+echo "=== 3. KIỂM TRA PHIÊN BẢN TỪ FILE COMMIT TRÊN GITHUB ==="
+echo "🔍 Đang đọc mã commit từ GitHub của bạn..."
 
-# Giải pháp thay thế: Tải trực tiếp file md5 hoặc thông số raw để tránh bị chặn API
-# Nếu không có file md5 riêng, ta lấy trực tiếp header dung lượng file/ngày cập nhật (Etag) từ GitHub Raw
-MY_REMOTE_HASH=$(curl -sI "https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw" | grep -i etag | tr -d '\r' | cut -d '"' -f 2)
-LOCAL_HASH=$(cat $HOME/.zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
+# Tải trực tiếp nội dung file text mã commit do GitHub Actions tạo ra
+MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/last_build_commit.txt" | tr -d '\r\n ' )
+LOCAL_COMMIT=$(cat $HOME/.zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
 
 NEED_UPDATE=false
 
-if [ -z "$MY_REMOTE_HASH" ]; then
-    echo "⚠️ Vẫn không thể kết nối tới GitHub Raw để check file."
+if [ -z "$MY_REMOTE_COMMIT" ]; then
+    echo "⚠️ Không thể đọc file last_build_commit.txt từ GitHub."
     read -p "❓ Bạn có muốn ép buộc tải lại/cài đặt file binary không? (y/n): " force_choice </dev/tty
     if [[ "$force_choice" == [Yy] ]]; then
         NEED_UPDATE=true
     fi
-elif [ "$MY_REMOTE_HASH" = "$LOCAL_HASH" ] && [ -f "$HOME/.cargo/bin/zeroclaw" ]; then
-    echo "✅ Bạn đang sử dụng bản build mới nhất. Không cần tải lại."
+elif [ "$MY_REMOTE_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/.cargo/bin/zeroclaw" ]; then
+    echo "✅ Bạn đang sử dụng bản build mới nhất (${LOCAL_COMMIT:0:7}). Không cần tải lại."
 else
-    echo "🔥 Phát hiện có thay đổi mới trên GitHub!"
-    read -p "❓ Bạn có muốn cập nhật lên phiên bản mới không? (y/n): " update_choice </dev/tty
+    echo "🔥 Phát hiện bản build mới trên GitHub!"
+    echo "   - Bản hiện tại trên máy: ${LOCAL_COMMIT:0:7}"
+    echo "   - Bản mới trên GitHub  : ${MY_REMOTE_COMMIT:0:7}"
+    
+    read -p "❓ Bạn có muốn cập nhật lên phiên bản mới này không? (y/n): " update_choice </dev/tty
     if [[ "$update_choice" == [Yy] ]]; then
         NEED_UPDATE=true
     fi
@@ -79,8 +82,9 @@ if [ "$NEED_UPDATE" = true ]; then
 
     if [ $? -eq 0 ] && [ -s "$HOME/.cargo/bin/zeroclaw" ]; then
         echo "🎉 Cập nhật thành công bản build mới!"
-        if [ ! -z "$MY_REMOTE_HASH" ]; then
-            echo "$MY_REMOTE_HASH" > $HOME/.zeroclaw/last_build_commit.txt
+        # Lưu lại chính xác mã commit vừa tải vào máy để làm dấu cho lần sau
+        if [ ! -z "$MY_REMOTE_COMMIT" ]; then
+            echo "$MY_REMOTE_COMMIT" > $HOME/.zeroclaw/last_build_commit.txt
         fi
     else
         echo "❌ Lỗi: Không thể tải file từ GitHub hoặc file tải về bị rỗng."
