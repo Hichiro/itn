@@ -2,9 +2,15 @@ name: Auto Build ZeroClaw for Termux
 
 on:
   schedule:
-    # Chạy tự động vào lúc 00:00, 06:00, 12:00, 18:00 UTC hàng ngày
     - cron: '0 */6 * * *'
-  workflow_dispatch: # Vẫn giữ nút bấm bằng tay phòng khi bạn muốn build ngay lập tức
+  workflow_dispatch:
+
+# Khai báo quyền Ghi trực tiếp trong workflow để tăng tính bảo mật
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Tắt cảnh báo lỗi Node.js 20 cập nhật sang Node 24
 
 jobs:
   check-and-build:
@@ -16,11 +22,9 @@ jobs:
       - name: Check for new commits from upstream
         id: check_upstream
         run: |
-          # Lấy mã SHA của commit mới nhất từ kho gốc
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/zeroclaw-labs/zeroclaw.git HEAD | awk '{print $1}')
           echo "Upstream commit: $UPSTREAM_COMMIT"
           
-          # Đọc mã SHA của lần build thành công trước đó (nếu có lưu)
           LOCAL_COMMIT=$(cat last_build_commit.txt 2>/dev/null || echo "")
           echo "Local last build commit: $LOCAL_COMMIT"
           
@@ -33,7 +37,6 @@ jobs:
             echo "has_update=true" >> $GITHUB_OUTPUT
           fi
 
-      # Lưu lại dấu vết commit vừa check để lần sau không bị build trùng
       - name: Commit and push tracking file
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
