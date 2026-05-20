@@ -71,9 +71,15 @@ jobs:
           # Copy file binary vào chung thư mục zeroclaw/
           cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw/zeroclaw
           
-          # Cấu hình bot và push toàn bộ thư mục zeroclaw lên GitHub
+          # Cấu hình bot
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
           git add zeroclaw/last_build_commit.txt zeroclaw/zeroclaw
           git commit -m "Update binary and tracking in zeroclaw/ [skip ci]" || echo "No changes"
-          git push
+          
+          # Giải pháp: Kéo code mới nhất trên web về trước để đồng bộ lịch sử, tránh xung đột
+          git pull --rebase origin main
+          
+          # Đẩy code lên lại
+          git push origin main
