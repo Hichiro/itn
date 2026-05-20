@@ -21,7 +21,6 @@ jobs:
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/zeroclaw-labs/zeroclaw.git HEAD | awk '{print $1}')
           echo "Upstream commit: $UPSTREAM_COMMIT"
           
-          # Đổi đường dẫn đọc file tracking từ thư mục zeroclaw/
           LOCAL_COMMIT=$(cat zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
           echo "Local last build commit: $LOCAL_COMMIT"
           
@@ -30,7 +29,6 @@ jobs:
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "New update found!"
-            # Tạo thư mục zeroclaw nếu chưa có và ghi đè commit mới vào
             mkdir -p zeroclaw
             echo "$UPSTREAM_COMMIT" > zeroclaw/last_build_commit.txt
             echo "has_update=true" >> $GITHUB_OUTPUT
@@ -40,6 +38,16 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           git clone https://github.com/zeroclaw-labs/zeroclaw.git source-code
+
+      # Bước mới: Trích xuất số phiên bản từ file Cargo.toml của kho gốc
+      - name: Get ZeroClaw Version
+        if: steps.check_upstream.outputs.has_update == 'true'
+        id: get_version
+        run: |
+          # Tìm dòng chứa 'version = "..."' đầu tiên trong file Cargo.toml và lọc lấy số bản dựng
+          VERSION=$(grep -m 1 '^version' source-code/Cargo.toml | cut -d '"' -f 2)
+          echo "Detected Version: v$VERSION"
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: Setup Rust toolchain
         if: steps.check_upstream.outputs.has_update == 'true'
@@ -64,22 +72,19 @@ jobs:
           
           cargo build --release --target aarch64-linux-android
 
-      # Copy và đẩy cả 2 file vào trong thư mục zeroclaw/
+      # Đã sửa đổi phần commit: Sử dụng biến số phiên bản vừa lấy được
       - name: Commit and push files to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Copy file binary vào chung thư mục zeroclaw/
           cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw/zeroclaw
           
-          # Cấu hình bot
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add zeroclaw/last_build_commit.txt zeroclaw/zeroclaw
-          git commit -m "Update binary and tracking in zeroclaw/ [skip ci]" || echo "No changes"
           
-          # Giải pháp: Kéo code mới nhất trên web về trước để đồng bộ lịch sử, tránh xung đột
+          # Sử dụng output từ bước 'get_version' để đặt tên cho commit
+          git commit -m "Release ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes"
+          
           git pull --rebase origin main
-          
-          # Đẩy code lên lại
           git push origin main
