@@ -26,7 +26,7 @@ else
     if [[ "$choise" == [Yy] ]]; then
         if ! command -v sshd >/dev/null 2>&1; then
             echo "Dang cap nhat kho ung dung va cai dat openssh..."
-            pkg update -y && pkg install openssh -y
+            pkg update -y -o Dpkg::Options::="--force-confnew" && pkg install openssh -y
         fi
         echo "Thiet lap/Cap nhat mat khau dang nhap SSH cho Termux:"
         chsh -s bash
@@ -62,7 +62,7 @@ elif [ "$MY_REMOTE_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/.cargo/bin/zerocla
     echo "Ban dang su dung ban build moi nhat (${LOCAL_COMMIT:0:7}). Khong can tai lai."
 else
     echo "Phat hien ban build moi tren GitHub!"
-    echo "   - Ban hien tai tren may: ${LOCAL_COMMIT:0:7}"
+    echo "   - Ban hien tai tren may: ${LOCAL_COMMIT:-none}"
     echo "   - Ban moi tren GitHub  : ${MY_REMOTE_COMMIT:0:7}"
     
     read -p "Ban co muon cap nhat len phien ban moi nay khong? (y/n): " update_choice </dev/tty
@@ -102,7 +102,7 @@ fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
 echo "=== 5. THIET LAP TU DONG KHOI DONG ZEROCLAW ==="
-if ! grep -q 'zeroclaw daemon' ~/.bashrc; then
+if ! grep -f 'zeroclaw daemon' ~/.bashrc; then
     cat << 'ZEROCLAW_BOOT' >> ~/.bashrc
 
 # Tự động khởi động ZeroClaw ngầm nếu chưa chạy và đã có cấu hình hoàn chỉnh
