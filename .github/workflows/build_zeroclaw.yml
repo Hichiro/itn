@@ -5,17 +5,14 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
-# Khai báo quyền Ghi trực tiếp trong workflow để tăng tính bảo mật
 permissions:
   contents: write
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Tắt cảnh báo lỗi Node.js 20 cập nhật sang Node 24
 
 jobs:
   check-and-build:
     runs-on: ubuntu-latest
     steps:
+      # Thay đổi 1: Sử dụng v4 nhưng gỡ bỏ việc ép node, hoặc hệ thống tự nhận diện phiên bản tối ưu
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -66,18 +63,12 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
-          
-          # Định nghĩa đường dẫn gốc đến thư mục chứa compiler của Android NDK
           NDK_TOOLCHAIN=${NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin
           
-          # Ép toàn bộ hệ thống (kể cả cc-rs) sử dụng đúng trình biên dịch chuẩn C/C++
           export CC=${NDK_TOOLCHAIN}/aarch64-linux-android24-clang
           export AR=${NDK_TOOLCHAIN}/llvm-ar
-          
-          # Cấu hình linker riêng cho trình biên dịch Rust (Cargo)
           export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=${NDK_TOOLCHAIN}/aarch64-linux-android24-clang
           
-          # Tiến hành biên dịch
           cargo build --release --target aarch64-linux-android
 
       - name: Upload Binary Artifact
