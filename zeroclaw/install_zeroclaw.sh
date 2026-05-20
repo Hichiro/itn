@@ -22,7 +22,6 @@ if pgrep -x "sshd" > /dev/null; then
     enable_ssh_autostart
 else
     echo "⚠️ Dịch vụ SSH hiện tại KHÔNG hoạt động."
-    # Sử dụng </dev/tty để ép nhận lệnh nhập từ bàn phím chính xác
     read -p "❓ Bạn có muốn kích hoạt và sử dụng SSH không? (y/n): " choise </dev/tty
     if [[ "$choise" == [Yy] ]]; then
         
@@ -34,7 +33,9 @@ else
         fi
         
         echo "🔑 Thiết lập/Cập nhật mật khẩu đăng nhập SSH cho Termux:"
-        passwd
+        # GIẢI PHÁP: Ép chạy passwd trên tty chuẩn để không bị nuốt luồng nhập mật khẩu
+        chsh -s bash
+        passwd </dev/tty
         
         sshd
         echo "🚀 Đã kích hoạt dịch vụ SSH thành công."
@@ -50,45 +51,61 @@ else
     fi
 fi
 
-echo "=== 2. KHỞI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
+echo "=== 2. KHỔI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
 mkdir -p $HOME/.cargo/bin
 mkdir -p $HOME/.config/zeroclaw
 
-echo "=== 3. KIỂM TRA PHIÊN BẢN VÀ TẢI FILE BINARY ==="
-# Lấy mã commit mới nhất từ kho gốc upstream
-echo "🔍 Đang kiểm tra phiên bản mới nhất từ kho gốc..."
-UPSTREAM_COMMIT=$(curl -sSL https://api.github.com/repos/zeroclaw-labs/zeroclaw/commits/HEAD | grep '^  "sha"' | cut -d '"' -f 4)
+echo "=== 3. KIỂM TRA PHIÊN BẢN VÀ HỎI Ý KIẾN UPDATE ==="
+echo "🔍 Đang kiểm tra lịch sử build trên GitHub của bạn..."
+
+# Check mã commit mới nhất của file zeroclaw trên kho của bạn
+MY_REMOTE_COMMIT=$(curl -sSL https://api.github.com/repos/Hichiro/itn/commits?path=zeroclaw/zeroclaw\&page=1\&per_page=1 | grep '^  "sha"' | head -n 1 | cut -d '"' -f 4)
 
 # Kiểm tra mã commit cũ đã lưu tại máy
 LOCAL_COMMIT=$(cat $HOME/.config/zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
 
-# Nếu không lấy được mã từ internet (lỗi mạng), mặc định bỏ qua kiểm tra để tải lại cho an toàn
-if [ -z "$UPSTREAM_COMMIT" ]; then
-    echo "⚠️ Không thể kết nối tới GitHub để check phiên bản. Tiến hành tải lại file..."
-    NEED_UPDATE=true
-elif [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/.cargo/bin/zeroclaw" ]; then
-    echo "✅ Bạn đang sử dụng phiên bản ZeroClaw mới nhất. Không cần tải lại."
-    NEED_UPDATE=false
+NEED_UPDATE=false
+
+if [ -z "$MY_REMOTE_COMMIT" ]; then
+    echo "⚠️ Không thể check lịch sử GitHub."
+    read -p "❓ Bạn có muốn ép buộc tải lại/cài đặt file binary không? (y/n): " force_choice </dev/tty
+    if [[ "$force_choice" == [Yy] ]]; then
+        NEED_UPDATE=true
+    fi
+elif [ "$MY_REMOTE_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/.cargo/bin/zeroclaw" ]; then
+    echo "✅ Bạn đang sử dụng bản build mới nhất (${LOCAL_COMMIT:0:7}). Không cần tải lại."
 else
-    echo "🔥 Đã tìm thấy bản cập nhật mới (hoặc cài lần đầu)!"
-    NEED_UPDATE=true
+    echo "🔥 Phát hiện bản build mới trên GitHub!"
+    echo "   - Bản hiện tại trên máy: ${LOCAL_COMMIT:0:7}"
+    echo "   - Bản mới trên GitHub  : ${MY_REMOTE_COMMIT:0:7}"
+    
+    read -p "❓ Bạn có muốn cập nhật lên phiên bản mới này không? (y/n): " update_choice </dev/tty
+    if [[ "$update_choice" == [Yy] ]]; then
+        NEED_UPDATE=true
+    fi
 fi
 
-# Thực hiện tải file nếu có bản update
+# Thực hiện tải file nếu được đồng ý cập nhật
 if [ "$NEED_UPDATE" = true ]; then
-    echo "📥 Đang tải file binary từ GitHub Actions của bạn..."
-    curl -fsSL https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw -o $HOME/.cargo/bin/zeroclaw
+    echo "🛑 Đang tạm dừng các tiến trình ZeroClaw ngầm để mở khóa file..."
+    pkill -f zeroclaw > /dev/null 2>&1
+    killall zeroclaw > /dev/null 2>&1
+    sleep 1 
 
-    if [ $? -eq 0 ]; then
-        echo "🎉 Tải file thành công!"
-        # Lưu lại mã commit mới để làm dấu cho lần check sau
-        if [ ! -z "$UPSTREAM_COMMIT" ]; then
-            echo "$UPSTREAM_COMMIT" > $HOME/.config/zeroclaw/last_build_commit.txt
+    echo "📥 Đang tải file binary từ: Hichiro/itn..."
+    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw" -o $HOME/.cargo/bin/zeroclaw
+
+    if [ $? -eq 0 ] && [ -s "$HOME/.cargo/bin/zeroclaw" ]; then
+        echo "🎉 Cập nhật thành công bản build mới!"
+        if [ ! -z "$MY_REMOTE_COMMIT" ]; then
+            echo "$MY_REMOTE_COMMIT" > $HOME/.config/zeroclaw/last_build_commit.txt
         fi
     else
-        echo "❌ Lỗi: Không thể tải file từ GitHub."
+        echo "❌ Lỗi: Không thể tải file từ GitHub hoặc file tải về bị rỗng."
         exit 1
     fi
+else
+    echo "⏭️ Đã bỏ qua bước tải/cập nhật phiên bản theo yêu cầu."
 fi
 
 echo "=== 4. CẤP QUYỀN VÀ ĐỒNG BỘ PATH ==="
@@ -109,6 +126,12 @@ if [ -f "$HOME/.config/zeroclaw/config.toml" ] && ! pgrep -x "zeroclaw" > /dev/n
 fi
 ZEROCLAW_BOOT
     echo "✅ Đã thiết lập cấu hình tự động khởi động ZeroClaw cùng Termux."
+fi
+
+# Khởi chạy lại ứng dụng ngầm nếu đã cập nhật xong và máy vốn đã có file config
+if [ -f "$HOME/.config/zeroclaw/config.toml" ] && [ "$NEED_UPDATE" = true ]; then
+    echo "🔄 Đang kích hoạt lại ZeroClaw chạy ngầm..."
+    nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
 
 echo "================================================="
