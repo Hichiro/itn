@@ -60,7 +60,7 @@ echo "🔍 Đang kiểm tra lịch sử build trên GitHub của bạn..."
 # Check mã commit mới nhất của file zeroclaw trên kho của bạn
 MY_REMOTE_COMMIT=$(curl -sSL https://api.github.com/repos/Hichiro/itn/commits?path=zeroclaw/zeroclaw\&page=1\&per_page=1 | grep '^  "sha"' | head -n 1 | cut -d '"' -f 4)
 
-# Thay đổi đường dẫn đọc file commit cũ sang thư mục .zeroclaw/
+# Kiểm tra mã commit cũ đã lưu tại máy
 LOCAL_COMMIT=$(cat $HOME/.zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
 
 NEED_UPDATE=false
@@ -96,7 +96,6 @@ if [ "$NEED_UPDATE" = true ]; then
 
     if [ $? -eq 0 ] && [ -s "$HOME/.cargo/bin/zeroclaw" ]; then
         echo "🎉 Cập nhật thành công bản build mới!"
-        # Thay đổi đường dẫn ghi file commit mới sang thư mục .zeroclaw/
         if [ ! -z "$MY_REMOTE_COMMIT" ]; then
             echo "$MY_REMOTE_COMMIT" > $HOME/.zeroclaw/last_build_commit.txt
         fi
@@ -121,15 +120,15 @@ if ! grep -q 'zeroclaw daemon' ~/.bashrc; then
     cat << 'ZEROCLAW_BOOT' >> ~/.bashrc
 
 # Tự động khởi động ZeroClaw ngầm nếu chưa chạy và đã có cấu hình hoàn chỉnh
-if [ -f "$HOME/.config/zeroclaw/config.toml" ] && ! pgrep -x "zeroclaw" > /dev/null; then
+if [ -f "$HOME/.zeroclaw/config.toml" ] && ! pgrep -x "zeroclaw" > /dev/null; then
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
 ZEROCLAW_BOOT
     echo "✅ Đã thiết lập cấu hình tự động khởi động ZeroClaw cùng Termux."
 fi
 
-# Khởi chạy lại ứng dụng ngầm nếu đã cập nhật xong và máy vốn đã có file config
-if [ -f "$HOME/.config/zeroclaw/config.toml" ] && [ "$NEED_UPDATE" = true ]; then
+# KHẮC PHỤC: Kiểm tra đúng file config ở thư mục mới .zeroclaw để tự khởi động lại ngay
+if [ -f "$HOME/.zeroclaw/config.toml" ] && [ "$NEED_UPDATE" = true ]; then
     echo "🔄 Đang kích hoạt lại ZeroClaw chạy ngầm..."
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
