@@ -14,9 +14,11 @@ echo "=== 3. SỬA LỖI LINKER CLANG TRÊN TERMUX ==="
 ln -sf $PREFIX/bin/clang $PREFIX/bin/aarch64-linux-android21-clang
 
 echo "=== 4. TẢI MÃ NGUỒN VÀ BIÊN DỊCH ZEROCLAW NATIVE ==="
-rm -rf /sdcard/Download/zeroclaw
-git clone https://github.com/zeroclaw-labs/zeroclaw.git /sdcard/Download/zeroclaw
-cd /sdcard/Download/zeroclaw
+# Thay đổi quan trọng: Làm việc hoàn toàn trong thư mục HOME của Termux (~/)
+cd $HOME
+rm -rf ~/zeroclaw
+git clone https://github.com/zeroclaw-labs/zeroclaw.git ~/zeroclaw
+cd ~/zeroclaw
 
 # Bắt đầu dịch mã nguồn
 cargo build --release
@@ -26,6 +28,8 @@ mkdir -p $HOME/.cargo/bin
 cp target/release/zeroclaw $HOME/.cargo/bin/
 chmod +x $HOME/.cargo/bin/zeroclaw
 
+# Tạo file .bashrc nếu chưa có và thêm đường dẫn PATH
+touch ~/.bashrc
 if ! grep -q '\.cargo/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 fi
