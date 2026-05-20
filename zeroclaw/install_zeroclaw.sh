@@ -1,20 +1,43 @@
-# 1. Tạo thư mục chứa công cụ nếu chưa có
-mkdir -p ~/.cargo/bin
+#!/bin/bash
 
-# 2. Tải trực tiếp file binary sạch từ GitHub của bạn về máy (Thay đổi tên User và tên Repo của bạn)
-curl -fsSL https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw -o ~/.cargo/bin/zeroclaw
+echo "=== 1. KHỞI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
+mkdir -p $HOME/.cargo/bin
 
-# 3. Cấp quyền chạy cho file vừa tải
-chmod +x ~/.cargo/bin/zeroclaw
+echo "=== 2. TẢI FILE BINARY TỪ GITHUB ACTIONS ==="
+curl -fsSL https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw -o $HOME/.cargo/bin/zeroclaw
 
-# 4. Tự động thêm đường dẫn hệ thống vào .bashrc nếu chưa có
+if [ $? -eq 0 ]; then
+    echo "🎉 Tải file thành công!"
+else
+    echo "❌ Lỗi: Không thể tải file từ GitHub."
+    exit 1
+fi
+
+echo "=== 3. CẤP QUYỀN VÀ ĐỒNG BỘ PATH ==="
+chmod +x $HOME/.cargo/bin/zeroclaw
 touch ~/.bashrc
+
 if ! grep -q '\.cargo/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 fi
-
-# 5. Áp dụng cấu hình đường dẫn ngay lập tức
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# 6. Kích hoạt lệnh thiết lập ban đầu của ứng dụng
-zeroclaw onboard
+echo "=== 4. THIẾT LẬP TỰ ĐỘNG KHỞI ĐỘNG (AUTO-START) ==="
+if ! grep -q 'zeroclaw daemon' ~/.bashrc; then
+    cat << 'END_AUTOSTART' >> ~/.bashrc
+
+# Tự động khởi động ZeroClaw ngầm nếu chưa chạy
+if ! pgrep -x "zeroclaw" > /dev/null; then
+    nohup zeroclaw daemon > /dev/null 2>&1 &
+fi
+END_AUTOSTART
+    echo "✅ Đã thiết lập tự động khởi động cùng Termux."
+else
+    echo "ℹ️ Thiết lập tự động khởi động đã tồn tại, bỏ qua."
+fi
+
+echo "================================================="
+echo " ✅ QUY TRÌNH HOÀN TẤT THÀNH CÔNG!"
+echo " - Gõ 'zeroclaw onboard' nếu cài lần đầu."
+echo " - Bot sẽ tự chạy ngầm khi mở Termux."
+echo "================================================="
