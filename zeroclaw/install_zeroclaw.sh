@@ -102,21 +102,27 @@ fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
 echo "=== 5. THIET LAP TU DONG KHOI DONG ZEROCLAW ==="
-if ! grep -f 'zeroclaw daemon' ~/.bashrc; then
+# Kiểm tra và thêm vào .bashrc nếu chưa có
+if ! grep -q 'zeroclaw daemon' ~/.bashrc; then
     cat << 'ZEROCLAW_BOOT' >> ~/.bashrc
 
 # Tự động khởi động ZeroClaw ngầm nếu chưa chạy và đã có cấu hình hoàn chỉnh
-if [ -f "$HOME/.zeroclaw/config.toml" ] && ! pgrep -x "zeroclaw" > /dev/null; then
+if [ -f "$HOME/.zeroclaw/config.toml" ] && ! pgrep -f "zeroclaw daemon" > /dev/null; then
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
 ZEROCLAW_BOOT
     echo "Da thiet lap cau hinh tu dong khoi dong ZeroClaw cung Termux."
 fi
 
-if [ -f "$HOME/.zeroclaw/config.toml" ] && [ "$NEED_UPDATE" = true ]; then
-    echo "Dang kich hoat lai ZeroClaw chay ngầm..."
+# KHỞI CHẠY NGAY: Nếu có file config và chưa chạy thì bật luôn không quan tâm có update hay không
+if [ -f "$HOME/.zeroclaw/config.toml" ] && ! pgrep -f "zeroclaw daemon" > /dev/null; then
+    echo "Dang kich hoat ZeroClaw chay ngam..."
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
+
+echo "================================================="
+echo " QUY TRINH HOAN TAT THANH CONG!"
+echo "================================================="
 
 echo "================================================="
 echo " QUY TRINH HOAN TAT THANH CONG!"
