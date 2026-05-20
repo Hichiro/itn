@@ -12,9 +12,8 @@ jobs:
   check-and-build:
     runs-on: ubuntu-latest
     steps:
-      # Thay đổi 1: Sử dụng v4 nhưng gỡ bỏ việc ép node, hoặc hệ thống tự nhận diện phiên bản tối ưu
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Check for new commits from upstream
         id: check_upstream
@@ -33,15 +32,6 @@ jobs:
             echo "$UPSTREAM_COMMIT" > last_build_commit.txt
             echo "has_update=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Commit and push tracking file
-        if: steps.check_upstream.outputs.has_update == 'true'
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add last_build_commit.txt
-          git commit -m "Update last built commit tracking [skip ci]" || echo "No changes"
-          git push
 
       - name: Clone ZeroClaw Source
         if: steps.check_upstream.outputs.has_update == 'true'
@@ -71,9 +61,16 @@ jobs:
           
           cargo build --release --target aarch64-linux-android
 
-      - name: Upload Binary Artifact
+      # Thay đổi quan trọng: Copy file đã build ra ngoài và đẩy trực tiếp lên kho chứa
+      - name: Commit and push file to main branch
         if: steps.check_upstream.outputs.has_update == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: zeroclaw-termux
-          path: source-code/target/aarch64-linux-android/release/zeroclaw
+        run: |
+          # Copy file binary ra thư mục gốc bên ngoài
+          cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw
+          
+          # Cấu hình bot và push cả 2 file lên GitHub cùng lúc
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add last_build_commit.txt zeroclaw
+          git commit -m "Update binary and tracking for commit $(cat last_build_commit.txt) [skip ci]" || echo "No changes"
+          git push
