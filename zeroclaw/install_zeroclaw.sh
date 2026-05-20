@@ -33,7 +33,6 @@ else
         fi
         
         echo "🔑 Thiết lập/Cập nhật mật khẩu đăng nhập SSH cho Termux:"
-        # GIẢI PHÁP: Ép chạy passwd trên tty chuẩn để không bị nuốt luồng nhập mật khẩu
         chsh -s bash
         passwd </dev/tty
         
@@ -53,7 +52,7 @@ fi
 
 echo "=== 2. KHỔI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
 mkdir -p $HOME/.cargo/bin
-mkdir -p $HOME/.config/zeroclaw
+mkdir -p $HOME/.zeroclaw
 
 echo "=== 3. KIỂM TRA PHIÊN BẢN VÀ HỎI Ý KIẾN UPDATE ==="
 echo "🔍 Đang kiểm tra lịch sử build trên GitHub của bạn..."
@@ -61,8 +60,8 @@ echo "🔍 Đang kiểm tra lịch sử build trên GitHub của bạn..."
 # Check mã commit mới nhất của file zeroclaw trên kho của bạn
 MY_REMOTE_COMMIT=$(curl -sSL https://api.github.com/repos/Hichiro/itn/commits?path=zeroclaw/zeroclaw\&page=1\&per_page=1 | grep '^  "sha"' | head -n 1 | cut -d '"' -f 4)
 
-# Kiểm tra mã commit cũ đã lưu tại máy
-LOCAL_COMMIT=$(cat $HOME/.config/zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
+# Thay đổi đường dẫn đọc file commit cũ sang thư mục .zeroclaw/
+LOCAL_COMMIT=$(cat $HOME/.zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
 
 NEED_UPDATE=false
 
@@ -97,8 +96,9 @@ if [ "$NEED_UPDATE" = true ]; then
 
     if [ $? -eq 0 ] && [ -s "$HOME/.cargo/bin/zeroclaw" ]; then
         echo "🎉 Cập nhật thành công bản build mới!"
+        # Thay đổi đường dẫn ghi file commit mới sang thư mục .zeroclaw/
         if [ ! -z "$MY_REMOTE_COMMIT" ]; then
-            echo "$MY_REMOTE_COMMIT" > $HOME/.config/zeroclaw/last_build_commit.txt
+            echo "$MY_REMOTE_COMMIT" > $HOME/.zeroclaw/last_build_commit.txt
         fi
     else
         echo "❌ Lỗi: Không thể tải file từ GitHub hoặc file tải về bị rỗng."
