@@ -10,41 +10,41 @@ if command -v sshd >/dev/null 2>&1 && ! pgrep -x "sshd" > /dev/null; then
     sshd
 fi
 SSH_BOOT
-        echo "✅ Đã thiết lập tự động khởi động SSH cùng Termux."
+        echo "Da thiet lap tu dong khoi dong SSH cung Termux."
     fi
 }
 
-echo "=== 1. KIỂM TRA VÀ CẤU HÌNH SSH ==="
+echo "=== 1. KIEM TRA VA CAU HINH SSH ==="
 touch ~/.bashrc
 
 if pgrep -x "sshd" > /dev/null; then
-    echo "✅ Dịch vụ SSH hiện đang hoạt động bình thường."
+    echo "Dich vu SSH hien dang hoat dong binh thuong."
     enable_ssh_autostart
 else
-    echo "⚠️ Dịch vụ SSH hiện tại KHÔNG hoạt động."
-    read -p "❓ Bạn có muốn kích hoạt và sử dụng SSH không? (y/n): " choise </dev/tty
+    echo "Canh bao: Dich vu SSH hien tai KHONG hoat dong."
+    read -p "Ban co muon kich hoat va su dung SSH khong? (y/n): " choise </dev/tty
     if [[ "$choise" == [Yy] ]]; then
         if ! command -v sshd >/dev/null 2>&1; then
-            echo "🔄 Đang cập nhật kho ứng dụng và cài đặt openssh..."
+            echo "Dang cap nhat kho ung dung va cai dat openssh..."
             pkg update -y && pkg install openssh -y
         fi
-        echo "🔑 Thiết lập/Cập nhật mật khẩu đăng nhập SSH cho Termux:"
+        echo "Thiet lap/Cap nhat mat khau dang nhap SSH cho Termux:"
         chsh -s bash
         passwd </dev/tty
         sshd
-        echo "🚀 Đã kích hoạt dịch vụ SSH thành công."
+        echo "Da kich hoat dich vu SSH thanh cong."
         enable_ssh_autostart
     else
-        echo "⏭️ Đã bỏ qua cấu hình SSH theo yêu cầu."
+        echo "Da bo qua cau hinh SSH theo yeu cau."
     fi
 fi
 
-echo "=== 2. KHỔI TẠO ĐƯỜNG DẪN HỆ THỐNG ==="
+echo "=== 2. KHOI TAO DUONG DAN HE THONG ==="
 mkdir -p $HOME/.cargo/bin
 mkdir -p $HOME/.zeroclaw
 
-echo "=== 3. KIỂM TRA PHIÊN BẢN TỪ FILE COMMIT TRÊN GITHUB ==="
-echo "🔍 Đang đọc mã commit từ GitHub của bạn..."
+echo "=== 3. KIEM TRA PHIEN BAN TU FILE COMMIT TREN GITHUB ==="
+echo "Dang doc ma commit tu GitHub cua ban..."
 
 # Tải trực tiếp nội dung file text mã commit do GitHub Actions tạo ra
 MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/last_build_commit.txt" | tr -d '\r\n ' )
@@ -53,48 +53,47 @@ LOCAL_COMMIT=$(cat $HOME/.zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
 NEED_UPDATE=false
 
 if [ -z "$MY_REMOTE_COMMIT" ]; then
-    echo "⚠️ Không thể đọc file last_build_commit.txt từ GitHub."
-    read -p "❓ Bạn có muốn ép buộc tải lại/cài đặt file binary không? (y/n): " force_choice </dev/tty
+    echo "Canh bao: Khong the doc file last_build_commit.txt tu GitHub."
+    read -p "Ban co muon ep buoc tai lai/cai dat file binary khong? (y/n): " force_choice </dev/tty
     if [[ "$force_choice" == [Yy] ]]; then
         NEED_UPDATE=true
     fi
 elif [ "$MY_REMOTE_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/.cargo/bin/zeroclaw" ]; then
-    echo "✅ Bạn đang sử dụng bản build mới nhất (${LOCAL_COMMIT:0:7}). Không cần tải lại."
+    echo "Ban dang su dung ban build moi nhat (${LOCAL_COMMIT:0:7}). Khong can tai lai."
 else
-    echo "🔥 Phát hiện bản build mới trên GitHub!"
-    echo "   - Bản hiện tại trên máy: ${LOCAL_COMMIT:0:7}"
-    echo "   - Bản mới trên GitHub  : ${MY_REMOTE_COMMIT:0:7}"
+    echo "Phat hien ban build moi tren GitHub!"
+    echo "   - Ban hien tai tren may: ${LOCAL_COMMIT:0:7}"
+    echo "   - Ban moi tren GitHub  : ${MY_REMOTE_COMMIT:0:7}"
     
-    read -p "❓ Bạn có muốn cập nhật lên phiên bản mới này không? (y/n): " update_choice </dev/tty
+    read -p "Ban co muon cap nhat len phien ban moi nay khong? (y/n): " update_choice </dev/tty
     if [[ "$update_choice" == [Yy] ]]; then
         NEED_UPDATE=true
     fi
 fi
 
 if [ "$NEED_UPDATE" = true ]; then
-    echo "🛑 Đang tạm dừng các tiến trình ZeroClaw ngầm để mở khóa file..."
+    echo "Dang tam dung cac tien trinh ZeroClaw ngam de mo khoa file..."
     pkill -f zeroclaw > /dev/null 2>&1
     killall zeroclaw > /dev/null 2>&1
     sleep 1 
 
-    echo "📥 Đang tải file binary từ: Hichiro/itn..."
+    echo "Dang tai file binary tu: Hichiro/itn..."
     curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/zeroclaw/zeroclaw" -o $HOME/.cargo/bin/zeroclaw
 
     if [ $? -eq 0 ] && [ -s "$HOME/.cargo/bin/zeroclaw" ]; then
-        echo "🎉 Cập nhật thành công bản build mới!"
-        # Lưu lại chính xác mã commit vừa tải vào máy để làm dấu cho lần sau
+        echo "Cap nhat thanh cong ban build moi!"
         if [ ! -z "$MY_REMOTE_COMMIT" ]; then
             echo "$MY_REMOTE_COMMIT" > $HOME/.zeroclaw/last_build_commit.txt
         fi
     else
-        echo "❌ Lỗi: Không thể tải file từ GitHub hoặc file tải về bị rỗng."
+        echo "Loi: Khong the tai file tu GitHub hoac file tai ve bi rong."
         exit 1
     fi
 else
-    echo "⏭️ Đã bỏ qua bước tải/cập nhật phiên bản theo yêu cầu."
+    echo "Da bo qua buoc tai/cap nhat phien ban theo yeu cau."
 fi
 
-echo "=== 4. CẤP QUYỀN VÀ ĐỒNG BỘ PATH ==="
+echo "=== 4. CAP QUYEN VA DONG BO PATH ==="
 chmod +x $HOME/.cargo/bin/zeroclaw
 
 if ! grep -q '\.cargo/bin' ~/.bashrc; then
@@ -102,7 +101,7 @@ if ! grep -q '\.cargo/bin' ~/.bashrc; then
 fi
 export PATH="$HOME/.cargo/bin:$PATH"
 
-echo "=== 5. THIẾT LẬP TỰ ĐỘNG KHỞI ĐỘNG ZEROCLAW ==="
+echo "=== 5. THIET LAP TU DONG KHOI DONG ZEROCLAW ==="
 if ! grep -q 'zeroclaw daemon' ~/.bashrc; then
     cat << 'ZEROCLAW_BOOT' >> ~/.bashrc
 
@@ -111,14 +110,14 @@ if [ -f "$HOME/.zeroclaw/config.toml" ] && ! pgrep -x "zeroclaw" > /dev/null; th
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
 ZEROCLAW_BOOT
-    echo "✅ Đã thiết lập cấu hình tự động khởi động ZeroClaw cùng Termux."
+    echo "Da thiet lap cau hinh tu dong khoi dong ZeroClaw cung Termux."
 fi
 
 if [ -f "$HOME/.zeroclaw/config.toml" ] && [ "$NEED_UPDATE" = true ]; then
-    echo "🔄 Đang kích hoạt lại ZeroClaw chạy ngầm..."
+    echo "Dang kich hoat lai ZeroClaw chay ngầm..."
     nohup zeroclaw daemon > /dev/null 2>&1 &
 fi
 
 echo "================================================="
-echo " ✅ QUY TRÌNH HOÀN TẤT THÀNH CÔNG!"
+echo " QUY TRINH HOAN TAT THANH CONG!"
 echo "================================================="
