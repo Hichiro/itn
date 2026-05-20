@@ -21,7 +21,8 @@ jobs:
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/zeroclaw-labs/zeroclaw.git HEAD | awk '{print $1}')
           echo "Upstream commit: $UPSTREAM_COMMIT"
           
-          LOCAL_COMMIT=$(cat last_build_commit.txt 2>/dev/null || echo "")
+          # Đổi đường dẫn đọc file tracking từ thư mục zeroclaw/
+          LOCAL_COMMIT=$(cat zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
           echo "Local last build commit: $LOCAL_COMMIT"
           
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
@@ -29,7 +30,9 @@ jobs:
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "New update found!"
-            echo "$UPSTREAM_COMMIT" > last_build_commit.txt
+            # Tạo thư mục zeroclaw nếu chưa có và ghi đè commit mới vào
+            mkdir -p zeroclaw
+            echo "$UPSTREAM_COMMIT" > zeroclaw/last_build_commit.txt
             echo "has_update=true" >> $GITHUB_OUTPUT
           fi
 
@@ -61,16 +64,16 @@ jobs:
           
           cargo build --release --target aarch64-linux-android
 
-      # Thay đổi quan trọng: Copy file đã build ra ngoài và đẩy trực tiếp lên kho chứa
-      - name: Commit and push file to main branch
+      # Copy và đẩy cả 2 file vào trong thư mục zeroclaw/
+      - name: Commit and push files to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Copy file binary ra thư mục gốc bên ngoài
-          cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw
+          # Copy file binary vào chung thư mục zeroclaw/
+          cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw/zeroclaw
           
-          # Cấu hình bot và push cả 2 file lên GitHub cùng lúc
+          # Cấu hình bot và push toàn bộ thư mục zeroclaw lên GitHub
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add last_build_commit.txt zeroclaw
-          git commit -m "Update binary and tracking for commit $(cat last_build_commit.txt) [skip ci]" || echo "No changes"
+          git add zeroclaw/last_build_commit.txt zeroclaw/zeroclaw
+          git commit -m "Update binary and tracking in zeroclaw/ [skip ci]" || echo "No changes"
           git push
