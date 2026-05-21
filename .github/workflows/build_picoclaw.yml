@@ -2,7 +2,8 @@ name: Auto Build PicoClaw for Termux
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    # Chạy vào lúc 00:00 ngày Thứ 7 hàng tuần (6 = Saturday)
+    - cron: '0 0 * * 6'
   workflow_dispatch:
 
 env:
@@ -93,15 +94,31 @@ jobs:
       - name: Commit and push binary to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Giữ nguyên tên file gốc là picoclaw đưa vào thư mục lưu trữ
+          # 1. Tạo thư mục chứa lịch sử các bản build cũ nếu chưa có
+          mkdir -p picoclaw/history
+          
+          # 2. Nếu đã có bản build trước đó, di chuyển nó vào thư mục history kèm tag phiên bản cũ
+          if [ -f "picoclaw/picoclaw" ]; then
+            # Lấy tag cũ đã lưu từ commit trước (nếu không có thì dùng tạm tag hiện tại để tránh lỗi tên file)
+            OLD_TAG=$(git log -1 --format=%s | grep -oE '[vV]?[0-9]+\.[0-9]+\.[0-9]+' || echo "${{ steps.check_upstream.outputs.tag_name }}")
+            mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG
+            echo "Da chuyen ban build cu sang picoclaw/history/picoclaw-$OLD_TAG"
+          fi
+          
+          # 3. Sao chép bản build mới nhất ra ngoài làm file chạy chính
           cp picoclaw_bin ./picoclaw/picoclaw
           
+          # 4. Thuật toán xoá bớt, chỉ giữ lại đúng 3 phiên bản gần nhất trong thư mục history
+          cd picoclaw/history
+          ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {}
+          cd ../..
+          
+          # 5. Cấu hình Git Bot và đẩy dữ liệu lên repo
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          git add picoclaw/last_build_commit.txt picoclaw/picoclaw
+          git add picoclaw/
           
-          # Thêm thông tin phiên bản (về) và môi trường Termux vào log commit đúng yêu cầu
           git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
           
           git pull --rebase origin main
