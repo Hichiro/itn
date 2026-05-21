@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  # Ép buộc các Action chạy trên Node.js 24 để không bị lỗi/cảnh báo vào tháng 6/2026
+  # Ép buộc các Action chạy trên Node.js 24 để tránh cảnh báo lỗi hệ thống
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
@@ -62,18 +62,15 @@ jobs:
         with:
           go-version: '1.22'
           cache: true
-          # Chỉ định đúng đường dẫn go.sum nằm trong thư mục con vừa clone để sửa lỗi cache
           cache-dependency-path: source-code/go.sum
 
       - name: Fix Missing Embed Workspace Pattern
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
-          # Tạo cấu trúc thư mục
           mkdir -p workspace
           mkdir -p cmd/picoclaw/internal/onboard/workspace
           
-          # Dùng file text thường (không có dấu .) vì Go Embed mặc định bỏ qua file ẩn dạng .keep
           echo "static" > workspace/placeholder.txt
           echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
           echo "Da khoi tao file giap lap hop le de danh lua Go Embed."
@@ -96,15 +93,16 @@ jobs:
       - name: Commit and push binary to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Sao chép và đổi tên file thành picoclaw-termux để dễ hiểu
-          cp picoclaw_bin ./picoclaw/picoclaw-termux
+          # Giữ nguyên tên file gốc là picoclaw đưa vào thư mục lưu trữ
+          cp picoclaw_bin ./picoclaw/picoclaw
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Cập nhật đường dẫn add file mới
-          git add picoclaw/last_build_commit.txt picoclaw/picoclaw-termux
-          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
+          git add picoclaw/last_build_commit.txt picoclaw/picoclaw
+          
+          # Thêm thông tin phiên bản (về) và môi trường Termux vào log commit đúng yêu cầu
+          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
           
           git pull --rebase origin main
           git push origin main
