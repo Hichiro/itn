@@ -1,4 +1,4 @@
-name: Auto Build PicoClaw for Termux (Stable Only)
+name: Auto Build PicoClaw for Termux
 
 on:
   schedule:
@@ -18,27 +18,25 @@ jobs:
       - name: Check for new stable tags from upstream
         id: check_upstream
         run: |
-          # Chuẩn hóa cách lấy Tag: Lấy danh sách tag sạch, loại bỏ các chuỗi chứa chữ alpha, beta, rc, nightly
+          # Quét tag sạch từ kho sipeed/picoclaw, loại bỏ alpha, beta, rc, nightly
           UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
           
           if [ -z "$UPSTREAM_TAG" ]; then
-            echo "Khong tim thay tag stable hop le. Thu dung cach quét tag thuong..."
-            UPSTREAM_TAG=$(git ls-remote --tags https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
+            UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
           fi
           
           if [ -z "$UPSTREAM_TAG" ]; then
-            echo "Loi: Khong the xac dinh duoc Tag tu kho goc sipeed/picoclaw."
+            echo "Loi: Khong xac dinh duoc Tag tu sipeed/picoclaw."
             exit 1
           fi
           
-          # Lấy mã commit chính xác của Tag đó (Sửa lỗi lấy nhầm mã hash dạng ^{})
-          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | awk '{print $1}')
+          # Lấy duy nhất 1 dòng commit chính xác của tag (loại bỏ dòng ^{})
+          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
           
-          echo "Latest Stable Tag Detected: $UPSTREAM_TAG"
-          echo "Upstream commit for tag: $UPSTREAM_COMMIT"
+          echo "Latest Stable Tag: $UPSTREAM_TAG"
+          echo "Upstream commit: $UPSTREAM_COMMIT"
           
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-          echo "Local last build commit: $LOCAL_COMMIT"
           
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
             echo "No new updates. Skipping build."
@@ -51,59 +49,46 @@ jobs:
             echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
           fi
 
-      - name: Clone PicoClaw Source (At Stable Tag)
+      - name: Clone PicoClaw Source
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Tiến hành clone branch đích danh theo Tag sạch vừa tìm được
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
-          
-          # Kiểm tra nhanh sự tồn tại của file Cargo.toml để tránh lỗi cạn thư mục
-          if [ ! -f "source-code/Cargo.toml" ]; then
-            echo "Loi: Van khong tim thay Cargo.toml sau khi clone. Liet ke thu muc:"
-            ls -la source-code
-            exit 1
-          fi
 
-      - name: Get PicoClaw Version from Cargo
+      - name: Set up Go
         if: steps.check_upstream.outputs.has_update == 'true'
-        id: get_version
-        run: |
-          VERSION=$(grep -m 1 '^version' source-code/Cargo.toml | cut -d '"' -f 2)
-          echo "version=v$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Setup Rust toolchain
-        if: steps.check_upstream.outputs.has_update == 'true'
-        uses: dtolnay/rust-toolchain@stable
+        uses: actions/setup-go@v5
         with:
-          targets: aarch64-linux-android
+          go-version: '1.22' # Sử dụng phiên bản Go ổn định phù hợp với go.mod
 
-      - name: Install Android NDK
-        if: steps.check_upstream.outputs.has_update == 'true'
-        run: |
-          echo "NDK_HOME=${ANDROID_NDK_LATEST_HOME}" >> $GITHUB_ENV
-
-      - name: Build Binary Native for Termux
+      - name: Build Binary Native for Termux (Go Cross-Compile)
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
-          NDK_TOOLCHAIN=${NDK_HOME}/toolchains/llvm/prebuilt/linux-x86_64/bin
           
-          export CC=${NDK_TOOLCHAIN}/aarch64-linux-android24-clang
-          export AR=${NDK_TOOLCHAIN}/llvm-ar
-          export CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER=${NDK_TOOLCHAIN}/aarch64-linux-android24-clang
+          # Kích hoạt chế độ biên dịch chéo sang môi trường Android ARM64
+          export GOOS=android
+          export GOARCH=arm64
+          export CGO_ENABLED=0 # Tắt CGO để file chạy hoàn toàn độc lập, không bị phụ thuộc thư viện động
           
-          cargo build --release --target aarch64-linux-android
+          # Tiến hành biên dịch tệp thực thi từ thư mục cmd chính (thường nằm trong cmd/picoclaw hoặc main.go gốc)
+          # Lệnh này sẽ tự động tìm hàm main và build ra file binary tên là picoclaw
+          if [ -d "cmd/picoclaw" ]; then
+            go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/picoclaw
+          else
+            go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/main.go || go build -ldflags="-s -w" -o ../picoclaw_bin .
+          fi
 
       - name: Commit and push binary to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          cp source-code/target/aarch64-linux-android/release/picoclaw ./picoclaw/picoclaw
+          # Đưa file binary sạch vào đúng thư mục đích của bạn
+          cp picoclaw_bin ./picoclaw/picoclaw
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add picoclaw/last_build_commit.txt picoclaw/picoclaw
-          git commit -m "Release PicoClaw ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes"
+          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
           
           git pull --rebase origin main
           git push origin main
