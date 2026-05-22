@@ -16,7 +16,6 @@ SSH_BOOT
 
 echo "=== 1. KIEM TRA VA CAU HINH SSH ==="
 touch ~/.bashrc
-
 if pgrep -x "sshd" > /dev/null; then
     echo "Dich vu SSH hien dang hoat dong binh thuong."
     enable_ssh_autostart
@@ -45,12 +44,9 @@ mkdir -p $HOME/.picoclaw
 
 echo "=== 3. KIEM TRA VA TAI PHIEN BAN PICOCLAW MOI NHAT ==="
 echo "Dang doc ma commit tu GitHub cua ban..."
-
 MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/last_build_commit.txt" | tr -d '\r\n ' )
 LOCAL_COMMIT=$(cat $HOME/.picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-
 NEED_UPDATE=false
-
 if [ -z "$MY_REMOTE_COMMIT" ]; then
     echo "Canh bao: Khong the doc file last_build_commit.txt tu GitHub."
     read -p "Ban co muon ep buoc tai lai/cai dat file binary khong? (y/n): " force_choice </dev/tty
@@ -69,7 +65,6 @@ else
         NEED_UPDATE=true
     fi
 fi
-
 if [ "$NEED_UPDATE" = true ]; then
     echo "Dang dung cac tien trinh PicoClaw cu de giai phong file..."
     pkill -f "picoclaw gateway" > /dev/null 2>&1
@@ -77,7 +72,6 @@ if [ "$NEED_UPDATE" = true ]; then
     sleep 1 
 
     echo "Dang tai file binary picoclaw tu GitHub..."
-    # Tải đúng file tên gốc là picoclaw
     curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o $HOME/go/bin/picoclaw
 
     if [ $? -eq 0 ] && [ -s "$HOME/go/bin/picoclaw" ]; then
@@ -95,31 +89,43 @@ fi
 
 echo "=== 4. CAP QUYEN VA DONG BO PATH ==="
 chmod +x $HOME/go/bin/picoclaw
-
 if ! grep -q 'go/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
 fi
 export PATH="$HOME/go/bin:$PATH"
 
-echo "=== 5. THIET LAP TU DONG KHOI DONG PICOCLAW ==="
-if ! grep -q 'picoclaw gateway' ~/.bashrc; then
-    cat << 'PICOCLAW_BOOT' >> ~/.bashrc
+echo "=== 5. CAU HINH MUI GIO (TIMEZONE) BROWSER ==="
+echo "Dang tu dong kiem tra mui gio he thong..."
+# 1. Thử lấy múi giờ từ thuộc tính hệ thống Android (Chính xác nhất trên Termux)
+USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
+# 2. Nếu không lấy được, thử đọc qua file link hệ thống tzdata
+if [ -z "$USER_TZ" ] && [ -L /etc/localtime ]; then
+    USER_TZ=$(readlink /etc/localtime | sed 's#.*/zoneinfo/##')
+fi
+# 3. Nếu vẫn trống (trường hợp hiếm), sử dụng múi giờ mặc định của Việt Nam
+if [ -z "$USER_TZ" ]; then
+    USER_TZ="Asia/Ho_Chi_Minh"
+fi
+echo "-> Da phat hien mui gio he thong: $USER_TZ"
 
+echo "=== 6. THIET LAP TU DONG KHOI DONG PICOCLAW ==="
+# Xóa cấu hình khởi chạy picoclaw cũ nếu có để cập nhật cấu hình múi giờ mới
+sed -i '/# Tự động khởi động PicoClaw/,/fi/d' ~/.bashrc
+cat << PICOCLAW_BOOT >> ~/.bashrc
 # Tự động khởi động PicoClaw gateway ngầm nếu đã có file config.json và chưa chạy
-if [ -f "$HOME/.picoclaw/config.json" ] && ! pgrep -f "picoclaw gateway" > /dev/null; then
-    nohup picoclaw gateway > /dev/null 2>&1 &
+if [ -f "\$HOME/.picoclaw/config.json" ] && ! pgrep -f "picoclaw gateway" > /dev/null; then
+    TZ="$USER_TZ" nohup picoclaw gateway > /dev/null 2>&1 &
 fi
 PICOCLAW_BOOT
-    echo "Da thiet lap cau hinh tu dong khoi dong PicoClaw cung Termux."
-fi
+echo "Da thiet lap cau hinh tu dong khoi dong PicoClaw kem mui gio cung Termux."
 
 # KHỞI CHẠY NGAY NẾU ĐỦ ĐIỀU KIỆN
 if [ -f "$HOME/.picoclaw/config.json" ]; then
     if ! pgrep -f "picoclaw gateway" > /dev/null; then
-        echo "Dang kich hoat PicoClaw gateway chay ngam..."
-        nohup picoclaw gateway > /dev/null 2>&1 &
+        echo "Dang kich hoat PicoClaw gateway chay ngam voi mui gio $USER_TZ..."
+        TZ="$USER_TZ" nohup picoclaw gateway > /dev/null 2>&1 &
     else
-        echo "PicoClaw gateway dang chay ngam roi."
+        echo "PicoClaw gateway dang chay ngam roi. (De ap dung mui gio moi vui long khoi dong lai Termux)."
     fi
 else
     echo "Lưu ý: Bạn cần cấu hình file '~/.picoclaw/config.json' và '~/.picoclaw/.security.yml' để khởi chạy dịch vụ."
