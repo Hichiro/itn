@@ -23,14 +23,12 @@ jobs:
       - name: Check for new stable tags from upstream
         id: check_upstream
         run: |
-          UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
+          # Loại bỏ triệt để các tag thử nghiệm (alpha, beta, rc, dev, nightly)
+          # Chỉ giữ lại tag có cấu trúc thuần số ổn định và lấy bản cao nhất ở cuối dòng (tail -n 1)
+          UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|dev|nightly|\^)' | tail -n 1)
           
           if [ -z "$UPSTREAM_TAG" ]; then
-            UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
-          fi
-          
-          if [ -z "$UPSTREAM_TAG" ]; then
-            echo "Loi: Khong xac dinh duoc Tag tu sipeed/picoclaw."
+            echo "Loi: Khong xac dinh duoc Tag stable tu sipeed/picoclaw."
             exit 1
           fi
           
@@ -94,26 +92,20 @@ jobs:
       - name: Commit and push binary to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # 1. Tạo thư mục chứa lịch sử các bản build cũ nếu chưa có
           mkdir -p picoclaw/history
           
-          # 2. Nếu đã có bản build trước đó, di chuyển nó vào thư mục history kèm tag phiên bản cũ
           if [ -f "picoclaw/picoclaw" ]; then
-            # Lấy tag cũ đã lưu từ commit trước (nếu không có thì dùng tạm tag hiện tại để tránh lỗi tên file)
             OLD_TAG=$(git log -1 --format=%s | grep -oE '[vV]?[0-9]+\.[0-9]+\.[0-9]+' || echo "${{ steps.check_upstream.outputs.tag_name }}")
             mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG
             echo "Da chuyen ban build cu sang picoclaw/history/picoclaw-$OLD_TAG"
           fi
           
-          # 3. Sao chép bản build mới nhất ra ngoài làm file chạy chính
           cp picoclaw_bin ./picoclaw/picoclaw
           
-          # 4. Thuật toán xoá bớt, chỉ giữ lại đúng 3 phiên bản gần nhất trong thư mục history
           cd picoclaw/history
           ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {}
           cd ../..
           
-          # 5. Cấu hình Git Bot và đẩy dữ liệu lên repo
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
