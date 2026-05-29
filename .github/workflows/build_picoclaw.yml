@@ -2,8 +2,7 @@ name: Auto Build PicoClaw for Termux
 
 on:
   schedule:
-    # Chạy vào lúc 00:00 ngày Thứ 7 hàng tuần (6 = Saturday)
-    - cron: '0 0 * * 6'
+    - cron: '0 19 * * 5'
   workflow_dispatch:
 
 env:
