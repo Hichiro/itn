@@ -5,9 +5,6 @@ on:
     - cron: '0 19 * * 5'
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 permissions:
   contents: write
 
@@ -31,25 +28,34 @@ jobs:
           else
             echo "has_update=true" >> $GITHUB_OUTPUT
             echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
-            echo "$UPSTREAM_COMMIT" > last_build_commit.txt
+            mkdir -p picoclaw
+            echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
           fi
 
       - name: Clone Source
         if: steps.check_upstream.outputs.has_update == 'true'
         run: git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
 
-      - name: Build Web UI
+      - name: Setup Node.js
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
-        with: {node-version: '20'}
+        with:
+          node-version: '20'
+
+      - name: Build Web UI
+        if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code/ui && npm install && npm run build
-          mkdir -p ../web_dist && cp -r dist/* ../web_dist/
+          mkdir -p web_dist && cp -r dist/* web_dist/
+
+      - name: Setup Go
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
 
       - name: Build Binaries
         if: steps.check_upstream.outputs.has_update == 'true'
-        uses: actions/setup-go@v5
-        with: {go-version: '1.22'}
         run: |
           cd source-code
           export GOOS=android && export GOARCH=arm64 && export CGO_ENABLED=0
@@ -63,9 +69,7 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
-          mv last_build_commit.txt picoclaw/
           [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-old
-          
           cp picoclaw_with_ui picoclaw/picoclaw
           
           git config --global user.name "github-actions[bot]"
