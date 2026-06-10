@@ -1,9 +1,9 @@
-name: Auto Build PicoClaw Webui for Termux
+name: Auto Build PicoClaw WebUI for Termux
 
 on:
   schedule:
-    - cron: '0 19 * * 5'
-  workflow_dispatch:
+    - cron: '0 19 * * 5' # Chạy vào 19:00 thứ 6 hàng tuần
+  workflow_dispatch: # Cho phép chạy thủ công
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -18,73 +18,114 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 9
-
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-          cache: true
-
-      - name: Check for new stable tags
+      - name: Check for new stable tags from upstream
         id: check_upstream
         run: |
-          UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
-          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
+          # Lấy tag mới nhất từ sipeed/picoclaw
+          UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+.[0-9]+.[0-9]+$' | tail -n 1)
           
+          if [ -z "$UPSTREAM_TAG" ]; then
+            echo "Loi: Khong xac dinh duoc Tag tu sipeed/picoclaw."
+            exit 1
+          fi
+          
+          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '^{}' | awk '{print $1}')
+          
+          # Kiểm tra xem commit này đã build chưa
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
           
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
+            echo "No new updates. Skipping build."
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
+            echo "New stable update found!"
             echo "has_update=true" >> $GITHUB_OUTPUT
             echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
             echo "commit_hash=$UPSTREAM_COMMIT" >> $GITHUB_OUTPUT
           fi
 
-      - name: Clone and Build
+      - name: Clone PicoClaw Source
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
-          
-          # 1. Khắc phục lỗi embed workspace
-          cd source-code
-          mkdir -p workspace
-          echo "placeholder" > workspace/placeholder.txt
-          
-          # 2. Build WebUI
-          cd web/frontend
+
+      - name: Setup Node.js
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Go
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+          cache-dependency-path: source-code/go.sum
+
+      - name: Fix Missing Embed Workspace Pattern
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          # Tạo thư mục workspace đúng vị trí mà Go embed yêu cầu để tránh lỗi build
+          mkdir -p source-code/cmd/picoclaw/internal/onboard/workspace
+          echo "static" > source-code/cmd/picoclaw/internal/onboard/workspace/placeholder.txt
+          echo "Đã khắc phục lỗi Go Embed."
+
+      - name: Build WebUI (Launcher)
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          cd source-code/web/frontend
           pnpm install
           pnpm run build
+          # Copy kết quả build vào thư mục picoclaw/webui trong repo của bạn
           mkdir -p ../../../picoclaw/webui
           cp -r dist/* ../../../picoclaw/webui/
-          cd ../..
-          
-          # 3. Build Core
+          echo "Đã build xong WebUI."
+
+      - name: Build Binary Native for Termux (Go Cross-Compile)
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          cd source-code
           export GOOS=android
           export GOARCH=arm64
           export CGO_ENABLED=0
+          # Build file lõi
           go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/picoclaw
+          echo "Đã build xong Core Binary."
 
-      - name: Commit and push
+      - name: Commit and push to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
-          [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-$(date +%Y%m%d)
           
+          # 1. Quản lý lịch sử: Nếu có bản build cũ, chuyển nó vào history
+          if [ -f "picoclaw/picoclaw" ]; then
+            OLD_TAG=$(date +%Y%m%d-%H%M)
+            mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG
+            echo "Đã lưu bản cũ vào history: picoclaw-$OLD_TAG"
+          fi
+          
+          # 2. Copy bản build mới nhất vào thư mục chính
           cp picoclaw_bin ./picoclaw/picoclaw
           echo "${{ steps.check_upstream.outputs.commit_hash }}" > picoclaw/last_build_commit.txt
           
+          # 3. Giữ lại tối đa 3 bản build gần nhất trong history để tránh đầy dung lượng
+          cd picoclaw/history
+          ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {}
+          cd ../..
+          
+          # 4. Đẩy lên GitHub
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
           git add picoclaw/
-          git commit -m "Release ${{ steps.check_upstream.outputs.tag_name }} [Core + WebUI]" || echo "No changes"
-          git push
+          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [Core + WebUI] [skip ci]" || echo "No changes to commit"
+          
+          git pull --rebase origin main
+          git push origin main
