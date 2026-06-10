@@ -1,4 +1,4 @@
-name: Auto Build PicoClaw for Termux
+name: Auto Build PicoClaw WebUI for Termux
 
 on:
   schedule:
@@ -65,7 +65,7 @@ jobs:
       - name: Build Web UI Assets (for Launcher)
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          cd source-code/web/frontend || echo "⚠️ No frontend folder, skipping UI build"
+          cd source-code/web/frontend || { echo "No frontend folder"; exit 0; }
           pnpm install --frozen-lockfile
           pnpm run build || echo "UI build failed, continuing..."
           mkdir -p ../../../dist_ui
@@ -76,7 +76,6 @@ jobs:
         run: |
           cd source-code
           
-          # Fix embed workspace
           mkdir -p workspace cmd/picoclaw/internal/onboard/workspace
           echo "static" > workspace/placeholder.txt
           echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
@@ -85,40 +84,37 @@ jobs:
           export GOARCH=arm64
           export CGO_ENABLED=0
           
-          echo "🔨 Building core binary: picoclaw"
+          echo "🔨 Building picoclaw..."
           go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
                    -o ../picoclaw_bin ./cmd/picoclaw
 
-          echo "🔨 Building launcher: picoclaw-launcher"
+          echo "🔨 Building picoclaw-launcher..."
           make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
             go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || true
 
           ls -lh ../picoclaw_bin ../picoclaw-launcher_bin 2>/dev/null || true
 
-      - name: Commit binaries to repository
+      - name: Commit binaries
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
 
-          # Di chuyển bản cũ vào history
+          # Backup old versions
           if [ -f "picoclaw/picoclaw" ]; then
             OLD_TAG=$(cat picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
             mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG 2>/dev/null || true
             mv picoclaw/picoclaw-launcher picoclaw/history/picoclaw-launcher-$OLD_TAG 2>/dev/null || true
           fi
 
-          # Copy bản mới
+          # Copy new binaries
           cp picoclaw_bin picoclaw/picoclaw
-          cp picoclaw-launcher_bin picoclaw/picoclaw-launcher 2>/dev/null || true
-          
+          [ -f "picoclaw-launcher_bin" ] && cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
+
           chmod +x picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
 
-          # Giữ tối đa 3 bản cũ
-          cd picoclaw/history
-          ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
-          cd ../..
+          # Cleanup old history (keep 3 latest)
+          cd picoclaw/history && ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
 
-          # Commit
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
