@@ -89,40 +89,45 @@ jobs:
           cp -r dist/* ../../../picoclaw/webui/
           cd ../..
           
-          # 3. Build Core Binary (Cross-compile cho Android/ARM64)
-          echo "Building Core Binary for Android/ARM64..."
+          # 3. Thiết lập biến môi trường build
           export GOOS=android
           export GOARCH=arm64
           export CGO_ENABLED=0
+          
+          # 4. Build Core Binary
+          echo "Building Core Binary for $GOOS-$GOARCH..."
           make build
           
-          # 4. Build Web UI Launcher
+          # 5. Build Web UI Launcher
           echo "Building WebUI Launcher..."
           make build-launcher
           
-          # 5. Tự động tìm kiếm và copy binary (Dùng find để tránh sai đường dẫn)
-          echo "Locating binaries..."
+          # 6. Tự động tìm kiếm và copy binary (Sử dụng pattern có hậu tố OS-ARCH)
+          echo "Locating binaries with pattern picoclaw-$GOOS-$GOARCH..."
           mkdir -p ../../picoclaw
           
-          # Tìm file picoclaw (loại trừ các file trong thư mục .git hoặc node_modules)
-          PICOCLAW_PATH=$(find . -type f -name "picoclaw" -not -path "*/.*" -not -path "*/node_modules/*" | head -n 1)
-          LAUNCHER_PATH=$(find . -type f -name "picoclaw-launcher" -not -path "*/.*" -not -path "*/node_modules/*" | head -n 1)
+          # Tìm kiếm file có pattern: picoclaw-android-arm64
+          PICOCLAW_PATTERN="picoclaw-$GOOS-$GOARCH"
+          LAUNCHER_PATTERN="picoclaw-launcher-$GOOS-$GOARCH"
+          
+          PICOCLAW_PATH=$(find . -type f -name "$PICOCLAW_PATTERN" -not -path "*/.*" -not -path "*/node_modules/*" | head -n 1)
+          LAUNCHER_PATH=$(find . -type f -name "$LAUNCHER_PATTERN" -not -path "*/.*" -not -path "*/node_modules/*" | head -n 1)
           
           if [ -z "$PICOCLAW_PATH" ]; then
-            echo "❌ ERROR: Không tìm thấy file binary 'picoclaw'!"
-            echo "Danh sách file trong thư mục build/ để debug:"
+            echo "❌ ERROR: Không tìm thấy file binary theo pattern: $PICOCLAW_PATTERN"
+            echo "Danh sách file thực tế trong thư mục build/ để debug:"
             find build -type f || echo "Thư mục build không tồn tại"
             exit 1
           fi
           
-          echo "✅ Found picoclaw at: $PICOCLAW_PATH"
+          echo "✅ Found core binary at: $PICOCLAW_PATH"
           cp "$PICOCLAW_PATH" ../../picoclaw/picoclaw
           
           if [ -n "$LAUNCHER_PATH" ]; then
-            echo "✅ Found picoclaw-launcher at: $LAUNCHER_PATH"
+            echo "✅ Found launcher binary at: $LAUNCHER_PATH"
             cp "$LAUNCHER_PATH" ../../picoclaw/picoclaw-launcher
           else
-            echo "⚠️ Warning: Không tìm thấy picoclaw-launcher"
+            echo "⚠️ Warning: Không tìm thấy launcher binary theo pattern: $LAUNCHER_PATTERN"
           fi
           
           echo "Build hoàn tất."
