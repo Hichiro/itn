@@ -62,7 +62,7 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: source-code/web/frontend/pnpm-lock.yaml
 
-      - name: Build Web UI Assets (for Launcher)
+      - name: Build Web UI Assets
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code/web/frontend || { echo "No frontend folder"; exit 0; }
@@ -71,7 +71,7 @@ jobs:
           mkdir -p ../../../dist_ui
           cp -r dist/* ../../../dist_ui/ 2>/dev/null || true
 
-      - name: Build Binaries (picoclaw + picoclaw-launcher)
+      - name: Build Binaries
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
@@ -84,13 +84,18 @@ jobs:
           export GOARCH=arm64
           export CGO_ENABLED=0
           
-          echo "🔨 Building picoclaw..."
+          echo "🔨 Building picoclaw core..."
           go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
                    -o ../picoclaw_bin ./cmd/picoclaw
 
-          echo "🔨 Building picoclaw-launcher..."
+          echo "🔨 Building picoclaw-launcher (WebUI)..."
           make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
             go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || true
+
+          # Fallback: tìm file launcher nếu make build ra file khác
+          if [ ! -f "../picoclaw-launcher_bin" ]; then
+            find build -name "*launcher*" -type f -exec cp {} ../picoclaw-launcher_bin \; 2>/dev/null || true
+          fi
 
           ls -lh ../picoclaw_bin ../picoclaw-launcher_bin 2>/dev/null || true
 
@@ -108,11 +113,16 @@ jobs:
 
           # Copy new binaries
           cp picoclaw_bin picoclaw/picoclaw
-          [ -f "picoclaw-launcher_bin" ] && cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
+          
+          if [ -f "picoclaw-launcher_bin" ]; then
+            cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
+          elif [ -f "source-code/build/picoclaw-launcher-android-arm64" ]; then
+            cp source-code/build/picoclaw-launcher-android-arm64 picoclaw/picoclaw-launcher
+          fi
 
           chmod +x picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
 
-          # Cleanup old history (keep 3 latest)
+          # Cleanup old history
           cd picoclaw/history && ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
 
           git config --global user.name "github-actions[bot]"
