@@ -1,1 +1,0 @@
-import{Zt as e}from"./index-BBKG4NNp.js";function t(t,n){e.warning(t(`common.restartRequiredTitle`),{description:t(`common.restartRequiredDesc`,{name:n})})}function n(n,r,i,a){if(a){t(n,i);return}e.success(r)}export{n as t};

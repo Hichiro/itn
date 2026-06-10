@@ -1,1 +1,0 @@
-import{Pn as e,Xt as t,dn as n}from"./index-BBKG4NNp.js";var r=t(`outline`,`chevron-down`,`ChevronDown`,[[`path`,{d:`M6 9l6 6l6 -6`,key:`svg-0`}]]),i=e(n(),1);function a(e){let t=i.useRef({value:e,previous:e});return i.useMemo(()=>(t.current.value!==e&&(t.current.previous=t.current.value,t.current.value=e),t.current.previous),[e])}export{r as n,a as t};

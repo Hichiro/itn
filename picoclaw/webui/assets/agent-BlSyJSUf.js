@@ -1,1 +1,0 @@
-import{in as e,rn as t,sn as n,un as r}from"./index-BBKG4NNp.js";var i=r();function a(){return t({select:e=>e.location.pathname})===`/agent`?(0,i.jsx)(n,{to:`/agent/hub`}):(0,i.jsx)(e,{})}export{a as component};
