@@ -49,7 +49,7 @@ jobs:
         run: |
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
 
-      - name: Setup Node.js
+      - name: Setup Node.js & pnpm
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
@@ -59,63 +59,77 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10 # Nâng cấp lên pnpm 10 theo README
 
       - name: Setup Go
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25' # Nâng cấp lên Go 1.25 theo README
           cache: true
           cache-dependency-path: source-code/go.sum
 
       - name: Fix Missing Embed Workspace Pattern
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Tạo thư mục workspace đúng vị trí mà Go embed yêu cầu để tránh lỗi build
+          # Tạo thư mục workspace để thỏa mãn lệnh //go:embed
           mkdir -p source-code/cmd/picoclaw/internal/onboard/workspace
-          echo "static" > source-code/cmd/picoclaw/internal/onboard/workspace/placeholder.txt
-          echo "Đã khắc phục lỗi Go Embed."
+          echo "placeholder" > source-code/cmd/picoclaw/internal/onboard/workspace/placeholder.txt
 
-      - name: Build WebUI (Launcher)
-        if: steps.check_upstream.outputs.has_update == 'true'
-        run: |
-          cd source-code/web/frontend
-          pnpm install
-          pnpm run build
-          # Copy kết quả build vào thư mục picoclaw/webui trong repo của bạn
-          mkdir -p ../../../picoclaw/webui
-          cp -r dist/* ../../../picoclaw/webui/
-          echo "Đã build xong WebUI."
-
-      - name: Build Binary Native for Termux (Go Cross-Compile)
+      - name: Build PicoClaw (Core + Launcher)
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
+          
+          # 1. Cài đặt dependencies của toàn bộ dự án
+          make deps
+          
+          # 2. Build WebUI (Frontend)
+          echo "Building WebUI..."
+          cd web/frontend
+          pnpm install --frozen-lockfile
+          pnpm run build
+          
+          # Tạo thư mục chứa WebUI trong repo chính
+          mkdir -p ../../../picoclaw/webui
+          cp -r dist/* ../../../picoclaw/webui/
+          cd ../..
+          
+          # 3. Build Core Binary (Cross-compile cho Termux/Android)
+          echo "Building Core Binary for Android/ARM64..."
           export GOOS=android
           export GOARCH=arm64
           export CGO_ENABLED=0
-          # Build file lõi
-          go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/picoclaw
-          echo "Đã build xong Core Binary."
+          make build
+          
+          # 4. Build Web UI Launcher
+          echo "Building WebUI Launcher..."
+          make build-launcher
+          
+          # 5. Copy các file đã build ra thư mục picoclaw của repo chính
+          mkdir -p ../../picoclaw
+          # Giả định binary nằm trong thư mục bin/ sau khi chạy make
+          cp bin/picoclaw ../../picoclaw/picoclaw || cp picoclaw ../../picoclaw/picoclaw
+          cp bin/picoclaw-launcher ../../picoclaw/picoclaw-launcher || cp picoclaw-launcher ../../picoclaw/picoclaw-launcher
+          echo "Build hoàn tất."
 
       - name: Commit and push to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
           
-          # 1. Quản lý lịch sử: Nếu có bản build cũ, chuyển nó vào history
+          # 1. Quản lý lịch sử: Lưu bản cũ vào history
           if [ -f "picoclaw/picoclaw" ]; then
             OLD_TAG=$(date +%Y%m%d-%H%M)
             mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG
-            echo "Đã lưu bản cũ vào history: picoclaw-$OLD_TAG"
+            [ -f "picoclaw/picoclaw-launcher" ] && mv picoclaw/picoclaw-launcher picoclaw/history/picoclaw-launcher-$OLD_TAG
+            echo "Đã lưu bản cũ vào history."
           fi
           
-          # 2. Copy bản build mới nhất vào thư mục chính
-          cp picoclaw_bin ./picoclaw/picoclaw
+          # 2. Lưu commit hash mới nhất
           echo "${{ steps.check_upstream.outputs.commit_hash }}" > picoclaw/last_build_commit.txt
           
-          # 3. Giữ lại tối đa 3 bản build gần nhất trong history để tránh đầy dung lượng
+          # 3. Giữ lại tối đa 3 bản build gần nhất trong history
           cd picoclaw/history
           ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {}
           cd ../..
@@ -125,7 +139,7 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add picoclaw/
-          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [Core + WebUI] [skip ci]" || echo "No changes to commit"
+          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [Core + WebUI + Launcher] [skip ci]" || echo "No changes to commit"
           
           git pull --rebase origin main
           git push origin main
