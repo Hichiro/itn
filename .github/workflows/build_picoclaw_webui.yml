@@ -1,9 +1,12 @@
-name: PicoClaw Multi-Variant Builder
+name: PicoClaw Builder (Auto-Release)
 
 on:
   schedule:
     - cron: '0 19 * * 5'
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: write
@@ -15,14 +18,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      - name: Check Status
-        id: check_status
+      - name: Check for new stable tags
+        id: check_upstream
         run: |
           UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
+          [ -z "$UPSTREAM_TAG" ] && UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
-          HAS_UI=$( [ -f "picoclaw/has_webui.txt" ] && echo "true" || echo "false" )
+          
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-          if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ] && [ "$HAS_UI" = "true" ]; then
+          if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "has_update=true" >> $GITHUB_OUTPUT
@@ -31,44 +35,58 @@ jobs:
             echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
           fi
 
-      - name: Setup Node.js
-        if: steps.check_status.outputs.has_update == 'true'
+      - name: Clone and Setup Source
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          git clone https://github.com/sipeed/picoclaw.git source-code
+          cd source-code
+          git fetch origin tag ${{ steps.check_upstream.outputs.tag_name }}
+          git checkout ${{ steps.check_upstream.outputs.tag_name }}
+
+      - name: Build Web UI
+        if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Build Web UI
-        if: steps.check_status.outputs.has_update == 'true'
+      - name: Run Web UI Build
+        if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          git clone --branch ${{ steps.check_status.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
-          cd source-code/ui && npm install && npm run build
-          mkdir -p ../web_dist && cp -r dist/* ../web_dist/
+          cd source-code
+          if [ -d "ui" ]; then
+            cd ui && npm install && npm run build
+            mkdir -p ../web_dist && cp -r dist/* ../web_dist/
+          fi
 
-      - name: Setup Go
-        if: steps.check_status.outputs.has_update == 'true'
+      - name: Set up Go
+        if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      - name: Build Binaries
-        if: steps.check_status.outputs.has_update == 'true'
+      - name: Build Binary
+        if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
+          mkdir -p workspace cmd/picoclaw/internal/onboard/workspace
+          echo "static" > workspace/placeholder.txt
+          echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
+          
+          # Copy UI nếu đã build thành công
+          [ -d "../web_dist" ] && cp -r ../web_dist/* cmd/picoclaw/internal/onboard/web/
+          
           export GOOS=android && export GOARCH=arm64 && export CGO_ENABLED=0
-          go build -ldflags="-s -w" -o ../picoclaw_no_ui ./cmd/picoclaw
-          cp -r ../web_dist/* ./cmd/picoclaw/internal/onboard/web/
-          go build -ldflags="-s -w" -o ../picoclaw_full ./cmd/picoclaw
+          go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/picoclaw
 
-      - name: Commit and Push
-        if: steps.check_status.outputs.has_update == 'true'
+      - name: Commit and push
+        if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
-          [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-old
-          cp picoclaw_full picoclaw/picoclaw
-          cp picoclaw_no_ui picoclaw/picoclaw_no_ui
-          echo "true" > picoclaw/has_webui.txt
+          [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-$(date +%s)
+          cp picoclaw_bin ./picoclaw/picoclaw
+          
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add picoclaw/
-          git commit -m "Release ${{ steps.check_status.outputs.tag_name }} [skip ci]" || echo "No changes"
+          git commit -m "Update PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
           git pull --rebase origin main && git push origin main
