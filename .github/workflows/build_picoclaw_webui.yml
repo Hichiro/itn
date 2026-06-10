@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check for new stable tags
         id: check_upstream
@@ -88,13 +90,13 @@ jobs:
           go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
                    -o ../picoclaw_bin ./cmd/picoclaw
 
-          echo "🔨 Building picoclaw-launcher (WebUI)..."
+          echo "🔨 Building picoclaw-launcher..."
           make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
             go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || true
 
-          # Fallback: tìm file launcher nếu make build ra file khác
-          if [ ! -f "../picoclaw-launcher_bin" ]; then
-            find build -name "*launcher*" -type f -exec cp {} ../picoclaw-launcher_bin \; 2>/dev/null || true
+          # Fallback tìm launcher
+          if [ ! -f "../picoclaw-launcher_bin" ] && [ -f "build/picoclaw-launcher-android-arm64" ]; then
+            cp build/picoclaw-launcher-android-arm64 ../picoclaw-launcher_bin
           fi
 
           ls -lh ../picoclaw_bin ../picoclaw-launcher_bin 2>/dev/null || true
@@ -104,7 +106,7 @@ jobs:
         run: |
           mkdir -p picoclaw/history
 
-          # Backup old versions
+          # Backup old
           if [ -f "picoclaw/picoclaw" ]; then
             OLD_TAG=$(cat picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
             mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG 2>/dev/null || true
@@ -113,21 +115,21 @@ jobs:
 
           # Copy new binaries
           cp picoclaw_bin picoclaw/picoclaw
-          
           if [ -f "picoclaw-launcher_bin" ]; then
             cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
-          elif [ -f "source-code/build/picoclaw-launcher-android-arm64" ]; then
-            cp source-code/build/picoclaw-launcher-android-arm64 picoclaw/picoclaw-launcher
           fi
 
           chmod +x picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
 
-          # Cleanup old history
-          cd picoclaw/history && ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
+          # Debug
+          ls -la picoclaw/
 
+          # Git commit
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          git add picoclaw/
+          git add picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
+          git add picoclaw/ 2>/dev/null || true
+          
           git commit -m "Release PicoClaw + Launcher ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
           git pull --rebase origin main && git push origin main
