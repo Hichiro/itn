@@ -59,7 +59,7 @@ LAUNCHER_BOOT
 
 echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
 
-mkdir -p $HOME/go/bin $HOME/.picoclaw
+mkdir -p $HOME/go/bin $HOME/.picoclaw /tmp
 touch ~/.bashrc
 
 # Phát hiện múi giờ
@@ -108,7 +108,8 @@ else
     read -p "Bạn có muốn cài đặt/cập nhật PicoClaw Core không? (y/n): " core_choice </dev/tty
     if [[ "$core_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Core..."
-        cd /tmp || exit 1
+        cd /tmp || mkdir -p /tmp && cd /tmp
+        
         curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o picoclaw
         cp -f picoclaw $HOME/go/bin/picoclaw
         chmod +x $HOME/go/bin/picoclaw
@@ -117,7 +118,7 @@ else
     fi
 fi
 
-# ====================== 4. PICOCLAW LAUNCHER (WebUI) ======================
+# ====================== 4. PICOCLAW LAUNCHER ======================
 echo "=== 4. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW LAUNCHER (WebUI) ==="
 if pgrep -f "picoclaw-launcher" > /dev/null; then
     echo "✓ PicoClaw Launcher đang chạy."
@@ -126,7 +127,8 @@ else
     read -p "Bạn có muốn cài đặt PicoClaw Launcher (WebUI) không? (y/n): " launcher_choice </dev/tty
     if [[ "$launcher_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Launcher..."
-        cd /tmp || exit 1
+        cd /tmp || mkdir -p /tmp && cd /tmp
+        
         curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw-launcher" -o picoclaw-launcher
         cp -f picoclaw-launcher $HOME/go/bin/picoclaw-launcher
         chmod +x $HOME/go/bin/picoclaw-launcher
@@ -147,7 +149,6 @@ echo "=== 5. KHỞI ĐỘNG DỊCH VỤ ==="
 pkill -f "picoclaw" 2>/dev/null
 sleep 1
 
-# Ưu tiên khởi động Launcher trước, sau đó mới Core nếu không có Launcher
 if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
     echo "Khởi động PicoClaw Launcher (WebUI)..."
     TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw-launcher" --port 18800 > /dev/null 2>&1 &
