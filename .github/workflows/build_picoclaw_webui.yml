@@ -2,7 +2,7 @@ name: Build PicoClaw + Launcher for Termux (Android)
 
 on:
   schedule:
-    - cron: '0 20 * * 5'      # Mỗi thứ Sáu lúc 20:00 UTC
+    - cron: '0 20 * * 5'
   workflow_dispatch:
 
 permissions:
@@ -33,7 +33,6 @@ jobs:
           echo "commit=$UPSTREAM_COMMIT" >> $GITHUB_OUTPUT
 
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-          
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
@@ -53,7 +52,7 @@ jobs:
           go-version: '1.25'
           cache: true
 
-      - name: Setup Node.js (cho Launcher)
+      - name: Setup Node.js
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
@@ -61,9 +60,11 @@ jobs:
           cache: 'pnpm'
           cache-dependency-path: source-code/web/frontend/pnpm-lock.yaml
 
-      - name: Install pnpm
+      - name: Setup pnpm
         if: steps.check_upstream.outputs.has_update == 'true'
-        run: npm install -g pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
 
       - name: Fix embed workspace
         if: steps.check_upstream.outputs.has_update == 'true'
@@ -82,15 +83,16 @@ jobs:
           export GOARCH=arm64
           export CGO_ENABLED=0
           
-          echo "🔨 Building core binary..."
+          echo "🔨 Building core binary (picoclaw)..."
           go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
                    -o ../picoclaw_bin ./cmd/picoclaw
 
-          echo "🔨 Building Launcher (WebUI)..."
-          make build-launcher OUTPUT=../picoclaw-launcher_bin || \
+          echo "🔨 Building Launcher (picoclaw-launcher)..."
+          # Ưu tiên dùng Makefile nếu có
+          make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
             go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher
 
-          ls -lh ../picoclaw_bin ../picoclaw-launcher_bin
+          ls -lh ../picoclaw_bin ../picoclaw-launcher_bin || true
 
       - name: Commit binaries to repo
         if: steps.check_upstream.outputs.has_update == 'true'
@@ -106,12 +108,14 @@ jobs:
           chmod +x picoclaw/picoclaw
 
           # Launcher binary
-          cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
-          chmod +x picoclaw/picoclaw-launcher
+          if [ -f "picoclaw-launcher_bin" ]; then
+            cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
+            chmod +x picoclaw/picoclaw-launcher
+          fi
 
           echo "${{ steps.check_upstream.outputs.commit }}" > picoclaw/last_build_commit.txt
 
-          # Giữ tối đa 3 bản cũ
+          # Clean old history (keep latest 3)
           cd picoclaw/history && ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
           
           git config --global user.name "github-actions[bot]"
