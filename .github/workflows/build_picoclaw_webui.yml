@@ -48,19 +48,19 @@ jobs:
         with:
           go-version: '1.25'
 
-      - name: Setup Node.js
+      - name: Setup Node.js & pnpm (For Web UI)
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+
+      - name: Setup Node Environment
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'pnpm'
           cache-dependency-path: source-code/web/frontend/pnpm-lock.yaml
-
-      - name: Setup pnpm
-        if: steps.check_upstream.outputs.has_update == 'true'
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10.33.0
 
       - name: Build Web UI Assets (for Launcher)
         if: steps.check_upstream.outputs.has_update == 'true'
