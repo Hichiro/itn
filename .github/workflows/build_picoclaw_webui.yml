@@ -1,0 +1,51 @@
+name: Build PicoClaw WebUI (ARM64)
+
+on:
+  workflow_dispatch: # Cho phép bạn bấm nút "Run workflow" thủ công
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'latest'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10.33.0
+
+      - name: Install dependencies (make deps)
+        run: make deps
+
+      - name: Install frontend dependencies
+        run: |
+          cd web/frontend
+          pnpm install --frozen-lockfile
+
+      - name: Build for ARM64 (Core & Launcher)
+        run: |
+          # Build core binary cho ARM64 như trong ảnh hướng dẫn
+          make build-linux-arm64
+          # Build launcher để có WebUI
+          make build-launcher
+
+      - name: Upload Binaries as Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: picoclaw-arm64-webui
+          path: |
+            picoclaw
+            launcher
+            # Nếu file launcher hoặc picoclaw nằm trong thư mục khác, hãy sửa đường dẫn ở đây
