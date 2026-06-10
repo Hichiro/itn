@@ -1,1 +1,0 @@
-import{in as e,rn as t,sn as n,un as r}from"./index-BBKG4NNp.js";var i=r();function a(){return t({select:e=>e.location.pathname})===`/channels`?(0,i.jsx)(n,{to:`/channels/$name`,params:{name:`pico`}}):(0,i.jsx)(e,{})}export{a as component};
