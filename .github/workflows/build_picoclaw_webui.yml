@@ -1,45 +1,42 @@
-name: Build PicoClaw + Launcher for Termux (Android)
+name: Auto Build PicoClaw Multi-Variant for Termux
 
 on:
   schedule:
-    - cron: '0 20 * * 5'
+    - cron: '0 19 * * 5'
   workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: write
 
 jobs:
-  build-termux:
+  check-and-build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Check new version from upstream
+      - name: Check for new stable tags
         id: check_upstream
         run: |
           UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
+          [ -z "$UPSTREAM_TAG" ] && UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
           
-          if [ -z "$UPSTREAM_TAG" ]; then
-            UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | tail -n 1)
-          fi
-
-          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | awk '{print $1}')
+          UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
           
-          echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
-          echo "commit=$UPSTREAM_COMMIT" >> $GITHUB_OUTPUT
-
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "has_update=true" >> $GITHUB_OUTPUT
+            echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
+            mkdir -p picoclaw
+            echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
           fi
 
-      - name: Clone source code
+      - name: Clone and Setup Source
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch --depth 1 \
@@ -50,13 +47,12 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '1.25'
-          cache: true
 
       - name: Setup Node.js
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: '22'
           cache: 'pnpm'
           cache-dependency-path: source-code/web/frontend/pnpm-lock.yaml
 
@@ -64,64 +60,90 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: pnpm/action-setup@v4
         with:
-          version: latest
+          version: 10.33.0   # Phù hợp với yêu cầu của project
 
-      - name: Fix embed workspace
+      - name: Build Web UI Assets
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
+          if [ -d "web/frontend" ]; then
+            echo "🔨 Installing frontend dependencies..."
+            cd web/frontend
+            pnpm install --frozen-lockfile
+            echo "🔨 Building frontend..."
+            pnpm run build
+            mkdir -p ../../../dist_ui
+            cp -r dist/* ../../../dist_ui/ || echo "Warning: dist folder not found"
+            echo "✅ Web UI built successfully"
+          else
+            echo "⚠️  web/frontend not found, skipping UI build"
+          fi
+
+      - name: Fix embed workspace & Build Binaries
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          cd source-code
+          
+          # Fix embed
           mkdir -p workspace cmd/picoclaw/internal/onboard/workspace
           echo "static" > workspace/placeholder.txt
           echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
-
-      - name: Build PicoClaw Core + Launcher for Android arm64
-        if: steps.check_upstream.outputs.has_update == 'true'
-        run: |
-          cd source-code
           
           export GOOS=android
           export GOARCH=arm64
           export CGO_ENABLED=0
           
           echo "🔨 Building core binary (picoclaw)..."
-          go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
-                   -o ../picoclaw_bin ./cmd/picoclaw
+          if [ -d "cmd/picoclaw" ]; then
+            go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
+                     -o ../picoclaw_bin ./cmd/picoclaw
+          else
+            go build -ldflags="-s -w" -o ../picoclaw_bin .
+          fi
 
-          echo "🔨 Building Launcher (picoclaw-launcher)..."
-          # Ưu tiên dùng Makefile nếu có
+          echo "🔨 Building Launcher binary..."
+          # Thử dùng make trước, fallback sang go build
           make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
-            go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher
+            go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || \
+            echo "⚠️ Launcher build failed, continuing with core only"
 
-          ls -lh ../picoclaw_bin ../picoclaw-launcher_bin || true
+          ls -lh ../picoclaw_bin ../picoclaw-launcher_bin 2>/dev/null || true
 
-      - name: Commit binaries to repo
+      - name: Package and Release variants
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          mkdir -p picoclaw/history
+          mkdir -p picoclaw/history pkg_no_ui pkg_with_ui/ui
 
-          # Core binary
-          if [ -f "picoclaw/picoclaw" ]; then
-            OLD_TAG=$(cat picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
-            mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG || true
-          fi
-          cp picoclaw_bin picoclaw/picoclaw
-          chmod +x picoclaw/picoclaw
+          # Copy binaries
+          cp source-code/../picoclaw_bin pkg_no_ui/picoclaw
+          cp source-code/../picoclaw_bin pkg_with_ui/picoclaw
+          chmod +x pkg_no_ui/picoclaw pkg_with_ui/picoclaw
 
-          # Launcher binary
-          if [ -f "picoclaw-launcher_bin" ]; then
-            cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
-            chmod +x picoclaw/picoclaw-launcher
+          # Copy UI nếu có
+          if [ -d "dist_ui" ]; then
+            cp -r dist_ui/* pkg_with_ui/ui/ 2>/dev/null || true
           fi
 
-          echo "${{ steps.check_upstream.outputs.commit }}" > picoclaw/last_build_commit.txt
+          # Package
+          tar -czf picoclaw/picoclaw_no_ui.tar.gz -C pkg_no_ui picoclaw
+          tar -czf picoclaw/picoclaw_with_ui.tar.gz -C pkg_with_ui .
 
-          # Clean old history (keep latest 3)
-          cd picoclaw/history && ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
-          
+          # History management
+          if [ -f "picoclaw/picoclaw_no_ui.tar.gz" ]; then
+            OLD_TAG=$(git log -1 --format=%s | grep -oE '[vV]?[0-9]+\.[0-9]+\.[0-9]+' || echo "old")
+            mv picoclaw/picoclaw_no_ui.tar.gz picoclaw/history/picoclaw-no-ui-$OLD_TAG.tar.gz 2>/dev/null || true
+            mv picoclaw/picoclaw_with_ui.tar.gz picoclaw/history/picoclaw-with-ui-$OLD_TAG.tar.gz 2>/dev/null || true
+          fi
+
+          cd picoclaw/history
+          ls -t picoclaw-no-ui-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
+          ls -t picoclaw-with-ui-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
+          cd ../..
+
+          # Commit
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add picoclaw/
-          git commit -m "Release PicoClaw + Launcher ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
-          git pull --rebase origin main
-          git push origin main
+          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} (no-ui + with-ui) for Termux [skip ci]" || echo "No changes"
+          git pull --rebase origin main && git push origin main
