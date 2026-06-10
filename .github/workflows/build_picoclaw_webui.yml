@@ -1,4 +1,4 @@
-name: PicoClaw Builder (Auto-Release)
+name: PicoClaw Multi-Variant Builder
 
 on:
   schedule:
@@ -43,13 +43,13 @@ jobs:
           git fetch origin tag ${{ steps.check_upstream.outputs.tag_name }}
           git checkout ${{ steps.check_upstream.outputs.tag_name }}
 
-      - name: Build Web UI
+      - name: Setup Node.js
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Run Web UI Build
+      - name: Build Web UI
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
@@ -58,35 +58,42 @@ jobs:
             mkdir -p ../web_dist && cp -r dist/* ../web_dist/
           fi
 
-      - name: Set up Go
+      - name: Setup Go
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
 
-      - name: Build Binary
+      - name: Build Binaries
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
+          # Khoi tao workspace de tranh loi embed
           mkdir -p workspace cmd/picoclaw/internal/onboard/workspace
           echo "static" > workspace/placeholder.txt
           echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
           
-          # Copy UI nếu đã build thành công
-          [ -d "../web_dist" ] && cp -r ../web_dist/* cmd/picoclaw/internal/onboard/web/
-          
           export GOOS=android && export GOARCH=arm64 && export CGO_ENABLED=0
-          go build -ldflags="-s -w" -o ../picoclaw_bin ./cmd/picoclaw
+          
+          # 1. Build bản không WebUI
+          go build -ldflags="-s -w" -o ../picoclaw_no_ui ./cmd/picoclaw
+          
+          # 2. Build bản có WebUI
+          [ -d "../web_dist" ] && cp -r ../web_dist/* cmd/picoclaw/internal/onboard/web/
+          go build -ldflags="-s -w" -o ../picoclaw_full ./cmd/picoclaw
 
-      - name: Commit and push
+      - name: Commit and Push
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           mkdir -p picoclaw/history
-          [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-$(date +%s)
-          cp picoclaw_bin ./picoclaw/picoclaw
+          [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-full-old
+          [ -f "picoclaw/picoclaw_no_ui" ] && mv picoclaw/picoclaw_no_ui picoclaw/history/picoclaw-no-ui-old
+          
+          cp picoclaw_full picoclaw/picoclaw
+          cp picoclaw_no_ui picoclaw/picoclaw_no_ui
           
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add picoclaw/
-          git commit -m "Update PicoClaw ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
+          git commit -m "Release ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
           git pull --rebase origin main && git push origin main
