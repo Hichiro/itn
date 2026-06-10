@@ -46,8 +46,8 @@ enable_picoclaw_launcher_autostart() {
     cat << 'LAUNCHER_BOOT' >> ~/.bashrc
 # Tự động khởi động PicoClaw Launcher (WebUI)
 if [ -f "$HOME/go/bin/picoclaw-launcher" ] && ! pgrep -f "picoclaw-launcher" > /dev/null; then
-    TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw-launcher" --port 18800 > /dev/null 2>&1 &
-    echo "[PicoClaw Launcher] Khởi động WebUI (port 18800)"
+    TZ="Asia/Ho_Chi_Minh" nohup "$HOME/go/bin/picoclaw-launcher" --public --port 18800 -no-browser > /dev/null 2>&1 &
+    echo "[PicoClaw Launcher] Khởi động WebUI (port 18800, public mode)"
 fi
 LAUNCHER_BOOT
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher (WebUI)."
@@ -109,7 +109,6 @@ else
     if [[ "$core_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Core..."
         cd /tmp || mkdir -p /tmp && cd /tmp
-        
         curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o picoclaw
         cp -f picoclaw $HOME/go/bin/picoclaw
         chmod +x $HOME/go/bin/picoclaw
@@ -128,7 +127,6 @@ else
     if [[ "$launcher_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Launcher..."
         cd /tmp || mkdir -p /tmp && cd /tmp
-        
         curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw-launcher" -o picoclaw-launcher
         cp -f picoclaw-launcher $HOME/go/bin/picoclaw-launcher
         chmod +x $HOME/go/bin/picoclaw-launcher
@@ -151,7 +149,7 @@ sleep 1
 
 if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
     echo "Khởi động PicoClaw Launcher (WebUI)..."
-    TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw-launcher" --port 18800 > /dev/null 2>&1 &
+    TZ="Asia/Ho_Chi_Minh" nohup "$HOME/go/bin/picoclaw-launcher" --public --port 18800 -no-browser > /dev/null 2>&1 &
 else
     echo "Khởi động PicoClaw Core..."
     TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw" onboard --port 18800 > /dev/null 2>&1 &
@@ -161,8 +159,8 @@ echo ""
 echo "================================================="
 echo "          HOÀN TẤT CÀI ĐẶT!"
 echo "================================================="
-echo "• Web UI: http://localhost:18800"
-echo "• Tự động chạy khi mở Termux"
+echo "• Web UI: http://localhost:18800   (hoặc IP máy)"
+echo "• Mode: Public + No Browser"
 echo "================================================="
 
 source ~/.bashrc 2>/dev/null
