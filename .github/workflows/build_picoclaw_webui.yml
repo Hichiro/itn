@@ -1,4 +1,4 @@
-name: Auto Build PicoClaw for Termux
+name: Build Dual PicoClaw (With/Without WebUI)
 
 on:
   schedule:
