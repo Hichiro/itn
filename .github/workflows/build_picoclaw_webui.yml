@@ -1,4 +1,4 @@
-name: PicoClaw Builder (Auto-Release)
+name: PicoClaw Multi-Variant Builder
 
 on:
   schedule:
@@ -20,11 +20,8 @@ jobs:
         run: |
           UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/sipeed/picoclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
-          
-          # Kiểm tra cờ đã có UI chưa
           HAS_UI=$( [ -f "picoclaw/has_webui.txt" ] && echo "true" || echo "false" )
           LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ] && [ "$HAS_UI" = "true" ]; then
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
@@ -34,29 +31,31 @@ jobs:
             echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
           fi
 
-      - name: Build Web UI
+      - name: Setup Node.js
         if: steps.check_status.outputs.has_update == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Build Web UI
+        if: steps.check_status.outputs.has_update == 'true'
         run: |
           git clone --branch ${{ steps.check_status.outputs.tag_name }} --single-branch https://github.com/sipeed/picoclaw.git source-code
           cd source-code/ui && npm install && npm run build
           mkdir -p ../web_dist && cp -r dist/* ../web_dist/
 
-      - name: Build Binaries
+      - name: Setup Go
         if: steps.check_status.outputs.has_update == 'true'
         uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+
+      - name: Build Binaries
+        if: steps.check_status.outputs.has_update == 'true'
         run: |
           cd source-code
           export GOOS=android && export GOARCH=arm64 && export CGO_ENABLED=0
-          
-          # 1. Build bản không UI
           go build -ldflags="-s -w" -o ../picoclaw_no_ui ./cmd/picoclaw
-          
-          # 2. Build bản có UI
           cp -r ../web_dist/* ./cmd/picoclaw/internal/onboard/web/
           go build -ldflags="-s -w" -o ../picoclaw_full ./cmd/picoclaw
 
@@ -65,11 +64,9 @@ jobs:
         run: |
           mkdir -p picoclaw/history
           [ -f "picoclaw/picoclaw" ] && mv picoclaw/picoclaw picoclaw/history/picoclaw-old
-          
           cp picoclaw_full picoclaw/picoclaw
           cp picoclaw_no_ui picoclaw/picoclaw_no_ui
           echo "true" > picoclaw/has_webui.txt
-          
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add picoclaw/
