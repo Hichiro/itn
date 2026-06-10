@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Hàm tiện ích: Ghi cấu hình tự động bật SSH vào .bashrc nếu chưa có
+# ========================================================
+# HÀM TIỆN ÍCH: TỰ ĐỘNG KHỞI ĐỘNG CÁC DỊCH VỤ CÙNG TERMUX
+# ========================================================
+
 enable_ssh_autostart() {
     if ! grep -q 'sshd' ~/.bashrc; then
         cat << 'SSH_BOOT' >> ~/.bashrc
@@ -14,8 +17,33 @@ SSH_BOOT
     fi
 }
 
-echo "=== 1. KIEM TRA VA CAU HINH SSH ==="
+enable_9router_autostart() {
+    if ! grep -q '9router' ~/.bashrc; then
+        cat << 'ROUTER_BOOT' >> ~/.bashrc
+
+# Tự động khởi động 9Router bằng pm2 nếu chưa chạy
+if command -v pm2 >/dev/null 2>&1; then
+    if ! pm2 jlist | grep -q '"name":"9router"'; then
+        pm2 start 9router --name "9router" > /dev/null 2>&1
+    fi
+elif command -v 9router >/dev/null 2>&1 && ! pgrep -f "9router" > /dev/null; then
+    nohup 9router > /dev/null 2>&1 &
+fi
+ROUTER_BOOT
+        echo "Da thiet lap tu dong khoi dong 9Router cung Termux."
+    fi
+}
+
+# Khởi tạo tệp cấu hình môi trường ban đầu
 touch ~/.bashrc
+mkdir -p $HOME/go/bin
+mkdir -p $HOME/.picoclaw
+
+# ========================================================
+# CHƯƠNG TRÌNH CHÍNH: KIỂM TRA VÀ CÀI ĐẶT CÁC THÀNH PHẦN
+# ========================================================
+
+echo "=== 1. KIEM TRA VA CAU HINH SSH ==="
 if pgrep -x "sshd" > /dev/null; then
     echo "Dich vu SSH hien dang hoat dong binh thuong."
     enable_ssh_autostart
@@ -38,9 +66,38 @@ else
     fi
 fi
 
-echo "=== 2. KHOI TAO DUONG DAN HE THONG PICOCLAW ==="
-mkdir -p $HOME/go/bin
-mkdir -p $HOME/.picoclaw
+echo "=== 2. KIEM TRA VA CAU HINH 9ROUTER ==="
+if pgrep -f "9router" > /dev/null; then
+    echo "Dich vu 9Router hien dang hoat dong binh thuong."
+    enable_9router_autostart
+else
+    echo "Canh bao: Dich vu 9Router hien tai KHONG hoat dong."
+    read -p "Ban co muon kich hoat va cai dat 9Router (Cang bang tai API) khong? (y/n): " router_choice </dev/tty
+    if [[ "$router_choice" == [Yy] ]]; then
+        # Kiểm tra và cài đặt Node.js nếu chưa có
+        if ! command -v node >/dev/null 2>&1; then
+            echo "Dang cai dat nodejs (yeu cau bat buoc cua 9Router)..."
+            pkg install nodejs -y
+        fi
+        # Kiểm tra và cài đặt 9router toàn cục
+        if ! command -v 9router >/dev/null 2>&1; then
+            echo "Dang tai va cai dat 9router qua npm..."
+            npm install -g 9router
+        fi
+        # Cài đặt thêm pm2 để quản lý tiến trình ngầm cho nodejs ổn định hơn
+        if ! command -v pm2 >/dev/null 2>&1; then
+            echo "Dang cai dat pm2 de quan ly chay ngam cho 9router..."
+            npm install -g pm2
+        fi
+
+        echo "Dang khoi chay dich vu 9Router..."
+        pm2 start 9router --name "9router" > /dev/null 2>&1 || nohup 9router > /dev/null 2>&1 &
+        echo "Da kich hoat dich vu 9Router thanh cong (Port mac dinh: 20128)."
+        enable_9router_autostart
+    else
+        echo "Da bo qua cau hinh 9Router theo yeu cau."
+    fi
+fi
 
 echo "=== 3. KIEM TRA VA TAI PHIEN BAN PICOCLAW MOI NHAT ==="
 echo "Dang doc ma commit tu GitHub cua ban..."
@@ -108,7 +165,6 @@ fi
 echo "-> Da phat hien mui gio he thong: $USER_TZ"
 
 echo "=== 6. THIET LAP TU DONG KHOI DONG PICOCLAW ==="
-# Giải pháp an toàn: Dùng sed xóa chính xác dựa vào chuỗi định danh, tránh xóa nhầm khối lệnh khác
 sed -i '/# Tự động khởi động PicoClaw/,/fi/d' ~/.bashrc
 
 cat << PICOCLAW_BOOT >> ~/.bashrc
@@ -132,5 +188,5 @@ else
 fi
 
 echo "================================================="
-echo " CÀI ĐẶT MỚI PICOCLAW HOÀN TẤT THÀNH CÔNG!"
+echo " CÀI ĐẶT TOÀN BỘ HỆ THỐNG HOÀN TẤT THÀNH CÔNG!"
 echo "================================================="
