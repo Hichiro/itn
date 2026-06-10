@@ -1,4 +1,4 @@
-name: Auto Build PicoClaw Multi-Variant for Termux
+name: Auto Build PicoClaw for Termux
 
 on:
   schedule:
@@ -36,7 +36,7 @@ jobs:
             echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
           fi
 
-      - name: Clone and Setup Source
+      - name: Clone source code
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch --depth 1 \
@@ -60,31 +60,23 @@ jobs:
         if: steps.check_upstream.outputs.has_update == 'true'
         uses: pnpm/action-setup@v4
         with:
-          version: 10.33.0   # Phù hợp với yêu cầu của project
+          version: 10.33.0
 
-      - name: Build Web UI Assets
+      - name: Build Web UI Assets (for Launcher)
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          cd source-code
-          if [ -d "web/frontend" ]; then
-            echo "🔨 Installing frontend dependencies..."
-            cd web/frontend
-            pnpm install --frozen-lockfile
-            echo "🔨 Building frontend..."
-            pnpm run build
-            mkdir -p ../../../dist_ui
-            cp -r dist/* ../../../dist_ui/ || echo "Warning: dist folder not found"
-            echo "✅ Web UI built successfully"
-          else
-            echo "⚠️  web/frontend not found, skipping UI build"
-          fi
+          cd source-code/web/frontend || echo "⚠️ No frontend folder, skipping UI build"
+          pnpm install --frozen-lockfile
+          pnpm run build || echo "UI build failed, continuing..."
+          mkdir -p ../../../dist_ui
+          cp -r dist/* ../../../dist_ui/ 2>/dev/null || true
 
-      - name: Fix embed workspace & Build Binaries
+      - name: Build Binaries (picoclaw + picoclaw-launcher)
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
           cd source-code
           
-          # Fix embed
+          # Fix embed workspace
           mkdir -p workspace cmd/picoclaw/internal/onboard/workspace
           echo "static" > workspace/placeholder.txt
           echo "static" > cmd/picoclaw/internal/onboard/workspace/placeholder.txt
@@ -93,51 +85,37 @@ jobs:
           export GOARCH=arm64
           export CGO_ENABLED=0
           
-          echo "🔨 Building core binary (picoclaw)..."
-          if [ -d "cmd/picoclaw" ]; then
-            go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
-                     -o ../picoclaw_bin ./cmd/picoclaw
-          else
-            go build -ldflags="-s -w" -o ../picoclaw_bin .
-          fi
+          echo "🔨 Building core binary: picoclaw"
+          go build -ldflags="-s -w -X main.version=${{ steps.check_upstream.outputs.tag_name }}" \
+                   -o ../picoclaw_bin ./cmd/picoclaw
 
-          echo "🔨 Building Launcher binary..."
-          # Thử dùng make trước, fallback sang go build
+          echo "🔨 Building launcher: picoclaw-launcher"
           make build-launcher OUTPUT=../picoclaw-launcher_bin 2>/dev/null || \
-            go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || \
-            echo "⚠️ Launcher build failed, continuing with core only"
+            go build -ldflags="-s -w" -o ../picoclaw-launcher_bin ./cmd/launcher || true
 
           ls -lh ../picoclaw_bin ../picoclaw-launcher_bin 2>/dev/null || true
 
-      - name: Package and Release variants
+      - name: Commit binaries to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          mkdir -p picoclaw/history pkg_no_ui pkg_with_ui/ui
+          mkdir -p picoclaw/history
 
-          # Copy binaries
-          cp source-code/../picoclaw_bin pkg_no_ui/picoclaw
-          cp source-code/../picoclaw_bin pkg_with_ui/picoclaw
-          chmod +x pkg_no_ui/picoclaw pkg_with_ui/picoclaw
-
-          # Copy UI nếu có
-          if [ -d "dist_ui" ]; then
-            cp -r dist_ui/* pkg_with_ui/ui/ 2>/dev/null || true
+          # Di chuyển bản cũ vào history
+          if [ -f "picoclaw/picoclaw" ]; then
+            OLD_TAG=$(cat picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
+            mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG 2>/dev/null || true
+            mv picoclaw/picoclaw-launcher picoclaw/history/picoclaw-launcher-$OLD_TAG 2>/dev/null || true
           fi
 
-          # Package
-          tar -czf picoclaw/picoclaw_no_ui.tar.gz -C pkg_no_ui picoclaw
-          tar -czf picoclaw/picoclaw_with_ui.tar.gz -C pkg_with_ui .
+          # Copy bản mới
+          cp picoclaw_bin picoclaw/picoclaw
+          cp picoclaw-launcher_bin picoclaw/picoclaw-launcher 2>/dev/null || true
+          
+          chmod +x picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
 
-          # History management
-          if [ -f "picoclaw/picoclaw_no_ui.tar.gz" ]; then
-            OLD_TAG=$(git log -1 --format=%s | grep -oE '[vV]?[0-9]+\.[0-9]+\.[0-9]+' || echo "old")
-            mv picoclaw/picoclaw_no_ui.tar.gz picoclaw/history/picoclaw-no-ui-$OLD_TAG.tar.gz 2>/dev/null || true
-            mv picoclaw/picoclaw_with_ui.tar.gz picoclaw/history/picoclaw-with-ui-$OLD_TAG.tar.gz 2>/dev/null || true
-          fi
-
+          # Giữ tối đa 3 bản cũ
           cd picoclaw/history
-          ls -t picoclaw-no-ui-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
-          ls -t picoclaw-with-ui-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
+          ls -t picoclaw-* 2>/dev/null | tail -n +4 | xargs -I {} rm -- {} || true
           cd ../..
 
           # Commit
@@ -145,5 +123,5 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add picoclaw/
-          git commit -m "Release PicoClaw ${{ steps.check_upstream.outputs.tag_name }} (no-ui + with-ui) for Termux [skip ci]" || echo "No changes"
+          git commit -m "Release PicoClaw + Launcher ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
           git pull --rebase origin main && git push origin main
