@@ -1,86 +1,164 @@
 #!/bin/bash
 
-# ==============================================================================
-# SCRIPT TỰ ĐỘNG CÀI ĐẶT MÔI TRƯỜNG PICOCLAW TRÊN GOOGLE CLOUD (DEBIAN)
-# (Phiên bản: Tự động cấu hình SWAP 2GB + Tối ưu hóa ổ đĩa)
-# ==============================================================================
+# ========================================================
+# HÀM TIỆN ÍCH: TỰ ĐỘNG KHỞI ĐỘNG CÙNG HỆ THỐNG (SYSTEMD)
+# ========================================================
 
-# Định nghĩa các biến cấu hình
-PORT=18800
-INSTALL_DIR="$HOME/picoclaw"
+create_picoclaw_service() {
+    local exec_path="$1"
+    local exec_args="$2"
+    local service_name="$3"
 
-# Định dạng màu sắc hiển thị cho Log
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+    echo "⚙️ Đang cấu hình dịch vụ hệ thống cho $service_name..."
+    
+    sudo tee /etc/systemd/system/${service_name}.service > /dev/null <<EOF
+[Unit]
+Description=PicoClaw ${service_name} Service
+After=network.target
 
-echo -e "${BLUE}=== BẮT ĐẦU QUÁ TRÌNH CÀI ĐẶT MÔI TRƯỜNG PICOCLAW TRÊN DEBIAN ===${NC}"
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=$HOME
+Environment=TZ=Asia/Ho_Chi_Minh
+ExecStart=${exec_path} ${exec_args}
+Restart=always
+RestartSec=5
 
-# Kiểm tra quyền root/sudo
-if [ "$EUID" -ne 0 ] && ! command -v sudo &> /dev/null; then
-    echo -e "${YELLOW}Cảnh báo: Không tìm thấy lệnh 'sudo'. Đang cố gắng cài đặt sudo bằng quyền root...${NC}"
-    echo "Vui lòng nhập mật khẩu root nếu được yêu cầu:"
-    su -c "apt update && apt install sudo -y" || { echo "Không thể cài đặt sudo. Vui lòng chạy script này bằng quyền root."; exit 1; }
-fi
-
-# 1. Tự động cấu hình bộ nhớ RAM ảo (SWAP) 2GB
-echo -e "${YELLOW}[1/6] Đang cấu hình bộ nhớ ảo SWAP 2GB cho hệ thống...${NC}"
-if [ -f /swapfile ]; then
-    echo -e "${GREEN}Hệ thống đã có SWAP, bỏ qua bước này.${NC}"
-else
-    sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-    sudo swapon /swapfile
-    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-    # Tối ưu độ nhạy SWAP (chỉ dùng khi thực sự thiếu RAM vật lý)
-    sudo sysctl vm.swappiness=10
-    echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-    echo -e "${GREEN}Cấu hình SWAP thành công!${NC}"
-fi
-
-# 2. Cập nhật hệ thống và cài đặt các gói phụ trợ cho Debian
-echo -e "${YELLOW}[2/6] Đang cập nhật hệ thống và cài đặt phụ kiện cho Debian...${NC}"
-sudo apt update && sudo apt upgrade -y
-sudo apt install wget curl git unzip screen ufw -y
-
-# 3. Cấu hình tường lửa cục bộ (UFW)
-echo -e "${YELLOW}[3/6] Đang cấu hình tường lửa UFW mở cổng $PORT...${NC}"
-sudo ufw allow $PORT/tcp
-sudo ufw --force enable
-
-# 4. Tạo cấu trúc thư mục ứng dụng
-echo -e "${YELLOW}[4/6] Đang khởi tạo cấu trúc thư mục PicoClaw...${NC}"
-mkdir -p "$INSTALL_DIR/Data/.picoclaw"
-cd "$INSTALL_DIR"
-
-# Tạo file chạy giả lập/đại diện nếu chưa có file binary chính thức
-if [ ! -f "picoclaw-launcher" ]; then
-    touch picoclaw-launcher
-    chmod +x picoclaw-launcher
-fi
-
-# 5. Tạo script khởi chạy nhanh ứng dụng trong Screen ẩn
-echo -e "${YELLOW}[5/6] Đang tạo lệnh khởi chạy tự động...${NC}"
-cat <<EOF > start_agent.sh
-#!/bin/bash
-echo "Đang kích hoạt PicoClaw trong màn hình ngầm (Screen)..."
-screen -dmS picoclaw_session ./picoclaw-launcher -host 0.0.0.0 -port $PORT -console
-echo "Kích hoạt thành công!"
-echo "Sử dụng lệnh: 'screen -r picoclaw_session' để xem log hệ thống."
+[Install]
+WantedBy=multi-user.target
 EOF
-chmod +x start_agent.sh
 
-# 6. Dọn dẹp dung lượng hệ thống để tối ưu ổ đĩa 10GB
-echo -e "${YELLOW}[6/6] Đang dọn dẹp các gói cài đặt thừa để tối ưu ổ cứng...${NC}"
-sudo apt-get autoremove -y && sudo apt-get autoclean -y && sudo apt-get clean -y
-sudo journalctl --vacuum-size=50M
+    sudo systemctl daemon-reload
+    sudo systemctl enable ${service_name}
+    sudo systemctl restart ${service_name}
+    echo "✓ Đã thiết lập chạy ngầm và tự khởi động cùng máy ảo cho ${service_name}."
+}
 
-echo -e "${GREEN}=== CÀI ĐẶT MÔI TRƯỜNG HOÀN TẤT ===${NC}"
-echo -e "${BLUE}Thư mục ứng dụng:${NC} $INSTALL_DIR"
-echo -e "${BLUE}Cổng dịch vụ mở sẵn:${NC} $PORT"
-echo -e "${YELLOW}HƯỚNG DẪN TIẾP THEO:${NC}"
-echo -e "1. Hãy tự tạo hoặc tải file cấu hình của bạn vào thư mục:"
-echo -e "   $INSTALL_DIR/Data/.picoclaw/"
-echo -e "2. Sau đó chạy lệnh './start_agent.sh' để kích hoạt ứng dụng."
+# ========================================================
+# CHƯƠNG TRÌNH CHÍNH
+# ========================================================
+
+echo "================================================="
+echo "   CÀI ĐẶT & CẤU HÌNH PICOCLAW TRÊN DEBIAN VM    "
+echo "================================================="
+
+sudo apt-get update && sudo apt-get install -y curl procps bc
+
+mkdir -p $HOME/go/bin $HOME/.picoclaw /tmp
+
+# ====================== 1. TỰ ĐỘNG TÍNH TOÁN VÀ TẠO SWAP ======================
+echo ""
+echo "=== 1. KIỂM TRA VÀ CẤU HÌNH SWAP (RAM ẢO) ==="
+CURRENT_SWAP=$(free -m | awk '/^Swap:/{print $2}')
+
+if [ "$CURRENT_SWAP" -gt 0 ]; then
+    echo "✓ Máy ảo đã có sẵn ${CURRENT_SWAP}MB Swap."
+else
+    # Lấy dung lượng RAM vật lý (tính bằng MB)
+    TOTAL_RAM=$(free -m | awk '/^Mem:/{print $2}')
+    # Tính toán Swap bằng 2 lần RAM
+    SWAP_SIZE_MB=$((TOTAL_RAM * 2))
+    
+    echo "Phát hiện RAM vật lý: ${TOTAL_RAM}MB."
+    read -p "Bạn có muốn tự động tạo ${SWAP_SIZE_MB}MB Swap (Gấp 2 lần RAM) không? (y/n, Mặc định: y): " swap_choice
+    swap_choice=${swap_choice:-y}
+    
+    if [[ "$swap_choice" == [Yy] ]]; then
+        echo "Đang khởi tạo ${SWAP_SIZE_MB}MB Swap..."
+        sudo fallocate -l ${SWAP_SIZE_MB}M /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=${SWAP_SIZE_MB}
+        sudo chmod 600 /swapfile
+        sudo mkswap /swapfile
+        sudo swapon /swapfile
+        echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+        
+        echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+        sudo sysctl -p > /dev/null
+        echo "✓ Đã kích hoạt và tối ưu Swap thành công."
+    fi
+fi
+
+# ====================== 2. PICOCLAW CORE (MẶC ĐỊNH KHỞI CHẠY) ======================
+echo ""
+echo "=== 2. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW CORE ==="
+if [ -f "$HOME/go/bin/picoclaw" ]; then
+    echo "✓ Đã tìm thấy file thực thi PicoClaw Core."
+fi
+
+read -p "Bạn có muốn tải/cập nhật PicoClaw Core không? (y/n, Mặc định: y): " core_choice
+core_choice=${core_choice:-y}
+
+if [[ "$core_choice" == [Yy] ]]; then
+    echo "Đang tải PicoClaw Core..."
+    cd /tmp
+    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o picoclaw
+    cp -f picoclaw $HOME/go/bin/picoclaw
+    chmod +x $HOME/go/bin/picoclaw
+    echo "✓ Đã cập nhật file chạy PicoClaw Core."
+fi
+
+# ====================== 3. PICOCLAW LAUNCHER (WEBUI - TÙY CHỌN, MẶC ĐỊNH KHÔNG) ======================
+echo ""
+echo "=== 3. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW LAUNCHER (WEBUI) ==="
+INSTALL_LAUNCHER=false
+
+if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+    echo "✓ Đã tìm thấy file thực thi PicoClaw Launcher."
+    INSTALL_LAUNCHER=true
+fi
+
+read -p "Bạn có muốn cài đặt/cập nhật PicoClaw Launcher (WebUI) không? (y/n, Mặc định: n): " launcher_choice
+launcher_choice=${launcher_choice:-n}
+
+if [[ "$launcher_choice" == [Yy] ]]; then
+    echo "Đang tải PicoClaw Launcher..."
+    cd /tmp
+    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw-launcher" -o picoclaw-launcher
+    cp -f picoclaw-launcher $HOME/go/bin/picoclaw-launcher
+    chmod +x $HOME/go/bin/picoclaw-launcher
+    echo "✓ Đã cập nhật file chạy PicoClaw Launcher."
+    INSTALL_LAUNCHER=true
+fi
+
+# Cập nhật PATH hệ thống
+if ! grep -q 'go/bin' ~/.bashrc; then
+    echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+fi
+export PATH="$HOME/go/bin:$PATH"
+
+# ====================== 4. KÍCH HOẠT DỊCH VỤ CHẠY NGẦM ======================
+echo ""
+echo "=== 4. THIẾT LẬP DỊCH VỤ CHẠY NGẦM CLOUD ==="
+
+sudo systemctl stop picoclaw 2>/dev/null
+pkill -f "picoclaw" 2>/dev/null
+sleep 1
+
+# Kiểm tra lựa chọn cấu hình để chạy dịch vụ tương ứng
+if [ "$INSTALL_LAUNCHER" = true ] && [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+    echo "Khởi chạy phiên bản có giao diện WebUI..."
+    create_service_args="--public --port 18800 -no-browser"
+    create_picoclaw_service "$HOME/go/bin/picoclaw-launcher" "$create_service_args" "picoclaw"
+    RUNNING_MODE="PicoClaw Launcher (WebUI)"
+    URL_INFO="• Web UI: http://<IP_MÁY_ẢO_GOOGLE>:18800"
+else
+    if [ -f "$HOME/go/bin/picoclaw" ]; then
+        echo "Khởi chạy phiên bản Core tĩnh (Mặc định)..."
+        create_service_args="onboard --port 18800"
+        create_picoclaw_service "$HOME/go/bin/picoclaw" "$create_service_args" "picoclaw"
+        RUNNING_MODE="PicoClaw Core (No WebUI)"
+        URL_INFO="• Chế độ: Chạy nền lõi Core (Cổng dịch vụ nội bộ: 18800)"
+    else
+        echo "❌ Lỗi: Không tìm thấy file thực thi nào để khởi chạy dịch vụ."
+        exit 1
+    fi
+fi
+
+echo ""
+echo "================================================="
+echo "           HOÀN TẤT CÀI ĐẶT TRÊN VM!"
+echo "================================================="
+echo "• Chế độ hoạt động: $RUNNING_MODE"
+echo "$URL_INFO"
+echo "• Trạng thái dịch vụ: Chạy ngầm 24/7 bằng Systemd"
+echo "================================================="
