@@ -43,9 +43,23 @@ echo "================================================="
 echo "   CÀI ĐẶT & CẤU HÌNH PICOCLAW TRÊN DEBIAN VM    "
 echo "================================================="
 
-sudo apt-get update && sudo apt-get install -y curl procps bc
+# Cài đặt thêm tar để giải nén file cấu trúc mới
+sudo apt-get update && sudo apt-get install -y curl procps bc jq tar
 
 mkdir -p $HOME/go/bin $HOME/.picoclaw /tmp
+
+# Lấy thông tin phiên bản mới nhất từ GitHub
+echo "🔍 Đang kiểm tra phiên bản mới nhất trên GitHub..."
+LATEST_TAG=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.tag_name')
+
+if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
+    echo "⚠️ Không thể kết nối tới GitHub API. Sẽ dùng fallback link cấu trúc mới."
+    DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/latest/download/picoclaw_Linux_x86_64.tar.gz"
+    LATEST_TAG="latest"
+else
+    echo "🔥 Phát hiện phiên bản ổn định mới nhất: $LATEST_TAG"
+    DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/download/${LATEST_TAG}/picoclaw_Linux_x86_64.tar.gz"
+fi
 
 # ====================== 1. TỰ ĐỘNG TÍNH TOÁN VÀ TẠO SWAP ======================
 echo ""
@@ -55,13 +69,11 @@ CURRENT_SWAP=$(free -m | awk '/^Swap:/{print $2}')
 if [ "$CURRENT_SWAP" -gt 0 ]; then
     echo "✓ Máy ảo đã có sẵn ${CURRENT_SWAP}MB Swap."
 else
-    # Lấy dung lượng RAM vật lý (tính bằng MB)
     TOTAL_RAM=$(free -m | awk '/^Mem:/{print $2}')
-    # Tính toán Swap bằng 2 lần RAM
     SWAP_SIZE_MB=$((TOTAL_RAM * 2))
     
     echo "Phát hiện RAM vật lý: ${TOTAL_RAM}MB."
-    read -p "Bạn có muốn tự động tạo ${SWAP_SIZE_MB}MB Swap (Gấp 2 lần RAM) không? (y/n, Mặc định: y): " swap_choice
+    read -p "Bạn có muốn tự động tạo ${SWAP_SIZE_MB}MB Swap (Gấp 2 lần RAM) không? (y/n, Mặc định: y): " swap_choice </dev/tty
     swap_choice=${swap_choice:-y}
     
     if [[ "$swap_choice" == [Yy] ]]; then
@@ -78,46 +90,66 @@ else
     fi
 fi
 
-# ====================== 2. PICOCLAW CORE (MẶC ĐỊNH KHỞI CHẠY) ======================
+# ====================== 2 & 3. TẢI VÀ GIẢI NÉN GÓI PICOCLAW TRỌN GÓI ======================
 echo ""
-echo "=== 2. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW CORE ==="
+echo "=== 2. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW ==="
+NEED_DOWNLOAD=true
+
 if [ -f "$HOME/go/bin/picoclaw" ]; then
-    echo "✓ Đã tìm thấy file thực thi PicoClaw Core."
+    echo "✓ Đã tìm thấy bản PicoClaw cũ trên máy."
+    read -p "Bạn có muốn kiểm tra và tải đè phiên bản mới nhất ($LATEST_TAG) không? (y/n, Mặc định: y): " update_choice </dev/tty
+    update_choice=${update_choice:-y}
+    if [[ "$update_choice" != [Yy] ]]; then
+        NEED_DOWNLOAD=false
+    fi
 fi
 
-read -p "Bạn có muốn tải/cập nhật PicoClaw Core không? (y/n, Mặc định: y): " core_choice
-core_choice=${core_choice:-y}
-
-if [[ "$core_choice" == [Yy] ]]; then
-    echo "Đang tải PicoClaw Core..."
+if [ "$NEED_DOWNLOAD" = true ]; then
+    echo "Đang tải gói PicoClaw ($LATEST_TAG)..."
     cd /tmp
-    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o picoclaw
-    cp -f picoclaw $HOME/go/bin/picoclaw
-    chmod +x $HOME/go/bin/picoclaw
-    echo "✓ Đã cập nhật file chạy PicoClaw Core."
+    curl -L -fsSL "$DOWNLOAD_URL" -o picoclaw.tar.gz
+    
+    if [ $? -eq 0 ] && [ -s picoclaw.tar.gz ]; then
+        echo "📦 Đang giải nén gói cài đặt..."
+        # Tạo thư mục tạm để xả nén
+        mkdir -p /tmp/picoclaw_extracted
+        tar -xzf picoclaw.tar.gz -C /tmp/picoclaw_extracted
+        
+        # Di chuyển các file thực thi (Core và Launcher) vào thư mục go/bin
+        if [ -f /tmp/picoclaw_extracted/picoclaw ]; then
+            cp -f /tmp/picoclaw_extracted/picoclaw $HOME/go/bin/picoclaw
+            chmod +x $HOME/go/bin/picoclaw
+            echo "✓ Đã cập nhật PicoClaw Core."
+        fi
+        
+        if [ -f /tmp/picoclaw_extracted/picoclaw-launcher ]; then
+            cp -f /tmp/picoclaw_extracted/picoclaw-launcher $HOME/go/bin/picoclaw-launcher
+            chmod +x $HOME/go/bin/picoclaw-launcher
+            echo "✓ Đã cập nhật PicoClaw Launcher."
+        fi
+        
+        # Dọn dẹp rác sau khi giải nén xong
+        rm -rf /tmp/picoclaw.tar.gz /tmp/picoclaw_extracted
+    else
+        echo "❌ Lỗi: Không thể tải file từ GitHub. Giữ nguyên bản cũ (nếu có)."
+    fi
+else
+    echo "⏭️ Bỏ qua tải dữ liệu (Đang sử dụng phiên bản hiện tại)."
 fi
 
-# ====================== 3. PICOCLAW LAUNCHER (WEBUI - TÙY CHỌN, MẶC ĐỊNH KHÔNG) ======================
+# Hỏi tùy chọn bật WebUI (Launcher) hay chạy Core trần
 echo ""
-echo "=== 3. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW LAUNCHER (WEBUI) ==="
+echo "=== 3. LỰA CHỌN CHẾ ĐỘ CHẠY ==="
 INSTALL_LAUNCHER=false
-
-if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
-    echo "✓ Đã tìm thấy file thực thi PicoClaw Launcher."
-    INSTALL_LAUNCHER=true
-fi
-
-read -p "Bạn có muốn cài đặt/cập nhật PicoClaw Launcher (WebUI) không? (y/n, Mặc định: n): " launcher_choice
+read -p "Bạn có muốn kích hoạt giao diện WebUI (Launcher) không? (y/n, Mặc định: n): " launcher_choice </dev/tty
 launcher_choice=${launcher_choice:-n}
 
 if [[ "$launcher_choice" == [Yy] ]]; then
-    echo "Đang tải PicoClaw Launcher..."
-    cd /tmp
-    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw-launcher" -o picoclaw-launcher
-    cp -f picoclaw-launcher $HOME/go/bin/picoclaw-launcher
-    chmod +x $HOME/go/bin/picoclaw-launcher
-    echo "✓ Đã cập nhật file chạy PicoClaw Launcher."
-    INSTALL_LAUNCHER=true
+    if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+        INSTALL_LAUNCHER=true
+    else
+        echo "⚠️ Cảnh báo: File launcher không tồn tại trong gói phần mềm. Mặc định lùi về bản Core."
+    fi
 fi
 
 # Cập nhật PATH hệ thống
@@ -134,22 +166,21 @@ sudo systemctl stop picoclaw 2>/dev/null
 pkill -f "picoclaw" 2>/dev/null
 sleep 1
 
-# Kiểm tra lựa chọn cấu hình để chạy dịch vụ tương ứng
-if [ "$INSTALL_LAUNCHER" = true ] && [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+if [ "$INSTALL_LAUNCHER" = true ]; then
     echo "Khởi chạy phiên bản có giao diện WebUI..."
     create_service_args="--public --port 18800 -no-browser"
     create_picoclaw_service "$HOME/go/bin/picoclaw-launcher" "$create_service_args" "picoclaw"
-    RUNNING_MODE="PicoClaw Launcher (WebUI)"
+    RUNNING_MODE="PicoClaw Launcher (WebUI) - Bản: $LATEST_TAG"
     URL_INFO="• Web UI: http://<IP_MÁY_ẢO_GOOGLE>:18800"
 else
     if [ -f "$HOME/go/bin/picoclaw" ]; then
         echo "Khởi chạy phiên bản Core tĩnh (Mặc định)..."
         create_service_args="onboard --port 18800"
         create_picoclaw_service "$HOME/go/bin/picoclaw" "$create_service_args" "picoclaw"
-        RUNNING_MODE="PicoClaw Core (No WebUI)"
+        RUNNING_MODE="PicoClaw Core (No WebUI) - Bản: $LATEST_TAG"
         URL_INFO="• Chế độ: Chạy nền lõi Core (Cổng dịch vụ nội bộ: 18800)"
     else
-        echo "❌ Lỗi: Không tìm thấy file thực thi nào để khởi chạy dịch vụ."
+        echo "❌ Lỗi nghiêm trọng: Không tìm thấy file thực thi nào để khởi chạy dịch vụ."
         exit 1
     fi
 fi
