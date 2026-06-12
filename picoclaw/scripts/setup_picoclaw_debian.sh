@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # ==============================================================================
-# SCRIPT PICOCLAW TỐI ƯU CHO GOOGLE CLOUD FREE TIER (DEBIAN - 1GB RAM)
-# (Bản ẩn: Không tạo config - Tự bật SWAP - Tự khởi động cùng hệ thống Systemd)
+# SCRIPT PICOCLAW TỐI ƯU CHO GOOGLE CLOUD (DEBIAN)
+# (Tự động tính SWAP theo RAM - Không tạo config - Chạy ngầm Systemd)
 # ==============================================================================
 
 PORT=18800
@@ -14,7 +14,7 @@ BLUE='\033[0;34m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
-echo -e "${BLUE}=== BẮT ĐẦU CÀI ĐẶT TỐI ƯU CHO VPS FREE TIER ===${NC}"
+echo -e "${BLUE}=== BẮT ĐẦU CÀI ĐẶT TỐI ƯU HỆ THỐNG ===${NC}"
 
 # Kiểm tra quyền sudo/root
 if [ "$EUID" -ne 0 ] && ! command -v sudo &> /dev/null; then
@@ -22,24 +22,42 @@ if [ "$EUID" -ne 0 ] && ! command -v sudo &> /dev/null; then
     su -c "apt update && apt install sudo -y" || { echo "Lỗi: Cần quyền root."; exit 1; }
 fi
 
-# 1. TẠO RAM ẢO (SWAP 2GB) - BẮT BUỘC CHO MÁY 1GB RAM ĐỂ CHỐNG SẬP
+# 1. TỰ ĐỘNG TÍNH TOÁN VÀ CẤU HÌNH RAM ẢO (SWAP) THEO RAM THỰC TẾ
 if [ $(sudo swapon --show | wc -l) -eq 0 ]; then
-    echo -e "${YELLOW}[1/5] Khởi tạo 2GB RAM ảo (Swapfile) chống treo máy...${NC}"
-    sudo fallocate -l 2G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+    # Lấy tổng dung lượng RAM thực tế (đơn vị MB)
+    TOTAL_RAM=$(free -m | awk '/^Mem:/{print $2}')
+    echo -e "${BLUE}Phát hiện RAM vật lý của hệ thống:${NC} ${TOTAL_RAM} MB"
+
+    # Tính toán dung lượng SWAP tối ưu (đơn vị MB)
+    if [ "$TOTAL_RAM" -le 2048 ]; then
+        # RAM <= 2GB: SWAP = 2 * RAM
+        SWAP_SIZE=$((TOTAL_RAM * 2))
+    elif [ "$TOTAL_RAM" -gt 2048 ] && [ "$TOTAL_RAM" -le 8192 ]; then
+        # 2GB < RAM <= 8GB: SWAP = 1 * RAM
+        SWAP_SIZE=$TOTAL_RAM
+    else
+        # RAM > 8GB: SWAP cố định 4GB (4096 MB)
+        SWAP_SIZE=4096
+    fi
+
+    echo -e "${YELLOW}[1/5] Đang khởi tạo ${SWAP_SIZE}MB RAM ảo (Swapfile) tự động...${NC}"
+    
+    # Tạo file Swap với kích thước đã tính toán
+    sudo dd if=/dev/zero of=/swapfile bs=1M count=$SWAP_SIZE status=progress
     sudo chmod 600 /swapfile
     sudo mkswap /swapfile
     sudo swapon /swapfile
     echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-    echo -e "${GREEN}-> Đã bật Swap 2GB thành công.${NC}"
+    echo -e "${GREEN}-> Đã bật Swap ${SWAP_SIZE}MB thành công.${NC}"
 else
-    echo -e "${GREEN}[1/5] Hệ thống đã có RAM ảo (Swap). Bỏ qua...${NC}"
+    echo -e "${GREEN}[1/5] Hệ thống đã có RAM ảo (Swap). Bỏ qua bước này...${NC}"
 fi
 
 # 2. CẬP NHẬT & CÀI ĐẶT GÓI PHỤ TRỢ MINIMAL (RÚT GỌN)
 echo -e "${YELLOW}[2/5] Cập nhật hệ thống tối giản...${NC}"
 sudo apt update && sudo apt upgrade -y
 sudo apt install wget curl git unzip ufw -y
-sudo apt clean # Dọn dẹp bộ đệm cài đặt ngay lập tức để tiết kiệm đĩa
+sudo apt clean # Dọn dẹp bộ đệm cài đặt để tiết kiệm đĩa
 
 # 3. CẤU HÌNH TƯỜNG LỬA CỤC BỘ
 echo -e "${YELLOW}[3/5] Mở cổng tường lửa nội bộ $PORT...${NC}"
@@ -76,17 +94,12 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 
-# Nạp lại cấu hình dịch vụ hệ thống nhưng chưa chạy ngay (chờ có file binary thật)
+# Nạp lại cấu hình dịch vụ hệ thống
 sudo systemctl daemon-reload
 sudo systemctl enable picoclaw.service
 
-echo -e "${GREEN}=== CÀI ĐẶT HOÀN TẤT (ĐÃ TỐI ƯU CẤU HÌNH YẾU) ===${NC}"
+echo -e "${GREEN}=== CÀI ĐẶT HOÀN TẤT (ĐÃ TỰ ĐỘNG CÂN BẰNG TÀI NGUYÊN) ===${NC}"
 echo -e "${BLUE}Thư mục ứng dụng ẩn:${NC} $INSTALL_DIR"
 echo -e "${BLUE}Cổng mở sẵn:${NC} $PORT"
-echo -e "${YELLOW}HƯỚNG DẪN TIẾP THEO:${NC}"
-echo -e "1. Copy file chạy thực tế của bạn đè vào: ${BLUE}$INSTALL_DIR/picoclaw-launcher${NC}"
-echo -e "2. Tạo file cấu hình của bạn trong thư mục: ${BLUE}$INSTALL_DIR/Data/.picoclaw/${NC}"
-echo -e "3. Kích hoạt ứng dụng chạy bằng lệnh:"
-echo -e "   ${GREEN}sudo systemctl start picoclaw${NC}"
-echo -e "4. Xem LOG trực tiếp của ứng dụng bằng lệnh:"
-echo -e "   ${GREEN}sudo journalctl -u picoclaw -f${NC}"
+echo -e "${YELLOW}Lưu ý tiếp theo:${NC}"
+echo -e "Hãy nạp file chạy và cấu hình của bạn vào rồi gõ lệnh: ${GREEN}sudo systemctl start picoclaw${NC}"
