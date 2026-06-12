@@ -137,6 +137,41 @@ else
     echo "⏭️ Bỏ qua tải dữ liệu (Đang sử dụng phiên bản hiện tại)."
 fi
 
+# ====================== QUÉT VÀ THÊM FILE CONFIG NẾU THIẾU ======================
+echo ""
+echo "=== 2.5 KIỂM TRA CẤU HÌNH CONFIG TRÊN MÁY ==="
+
+MISSING_CONFIG=false
+if [ ! -f "$HOME/config.json" ]; then
+    echo "🔍 Không tìm thấy file config.json"
+    MISSING_CONFIG=true
+fi
+if [ ! -f "$HOME/.security.yml" ]; then
+    echo "🔍 Không tìm thấy file .security.yml"
+    MISSING_CONFIG=true
+fi
+
+if [ "$MISSING_CONFIG" = true ]; then
+    read -p "Phát hiện máy chưa có đủ file cấu hình. Bạn có muốn tải thêm bộ config sẵn từ GitHub không? (y/n, Mặc định: y): " config_choice </dev/tty
+    config_choice=${config_choice:-y}
+    
+    if [[ "$config_choice" == [Yy] ]]; then
+        echo "⚙️ Đang tải cấu hình sẵn..."
+        
+        if [ ! -f "$HOME/config.json" ]; then
+            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/config.json" -o $HOME/config.json
+            [ $? -eq 0 ] && [ -s $HOME/config.json ] && echo "✓ Đã tải config.json" || echo "⚠️ Lỗi tải config.json"
+        fi
+        
+        if [ ! -f "$HOME/.security.yml" ]; then
+            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/.security.yml" -o $HOME/.security.yml
+            [ $? -eq 0 ] && [ -s $HOME/.security.yml ] && echo "✓ Đã tải .security.yml" || echo "⚠️ Lỗi tải .security.yml"
+        fi
+    fi
+else
+    echo "✓ Máy ảo đã có sẵn đầy đủ file cấu hình (config.json & .security.yml)."
+fi
+
 # Hỏi tùy chọn bật WebUI (Launcher) hay chạy Core trần
 echo ""
 echo "=== 3. LỰA CHỌN CHẾ ĐỘ CHẠY ==="
