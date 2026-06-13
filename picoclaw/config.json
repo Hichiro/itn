@@ -52,7 +52,7 @@
   },
   "channel_list": {
     "telegram": {
-      "enabled": true,
+      "enabled": false,
       "type": "telegram",
       "allow_from": [
         ""
