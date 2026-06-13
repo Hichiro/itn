@@ -241,22 +241,6 @@ sleep 2
 # 3. Kiểm tra kết quả sau khi khởi chạy
 if systemctl is-active --quiet picoclaw; then
     echo "================================================="
-    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!             "
-    echo "================================================="
-    echo "• Chế độ: $RUNNING_MODE"
-    [ "$FINAL_LAUNCHER" = true ] && print_access_links
-    echo "================================================="
-else
-    echo "================================================="
-    echo "  ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
-    echo "================================================="
-    # In ra 10 dòng log lỗi cuối cùng để dễ debug
-    sudo journalctl -u picoclaw -n 10 --no-pager
-    echo "================================================="
-fi
-
-if systemctl is-active --quiet picoclaw; then
-    echo "================================================="
     echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
     echo "================================================="
     echo "• Chế độ: $RUNNING_MODE"
@@ -276,5 +260,12 @@ if systemctl is-active --quiet picoclaw; then
             echo "  - Qua IP Public:      http://$PUBLIC_IP:18800"
         fi
     fi
+    echo "================================================="
+else
+    echo "================================================="
+    echo "  ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
+    echo "================================================="
+    # In ra 10 dòng log lỗi cuối cùng để dễ debug
+    sudo journalctl -u picoclaw -n 10 --no-pager
     echo "================================================="
 fi
