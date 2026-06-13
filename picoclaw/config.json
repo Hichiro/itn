@@ -13,7 +13,9 @@
       "allow_read_outside_workspace": false,
       "provider": "",
       "model_name": "gemma-a4b",
-      "model_fallbacks": ["gemma-31b"],
+      "model_fallbacks": [
+        "gemma-31b"
+      ],
       "max_tokens": 8192,
       "context_window": 65536,
       "temperature": 0.5,
@@ -39,6 +41,21 @@
         "separate_messages": false
       },
       "split_on_marker": false,
+      "turn_profile": {
+        "enabled": false,
+        "history": {
+          "mode": "default"
+        },
+        "system_prompt": {
+          "mode": "default"
+        },
+        "skills": {
+          "mode": "default"
+        },
+        "tools": {
+          "mode": "default"
+        }
+      },
       "max_llm_retries": 3,
       "llm_retry_backoff_secs": 5
     }
@@ -51,12 +68,42 @@
     "cold_path_trigger": "after_turn"
   },
   "channel_list": {
+    "discord": {
+      "enabled": false,
+      "type": "discord",
+      "reasoning_channel_id": "",
+      "group_trigger": {},
+      "typing": {},
+      "placeholder": {
+        "enabled": false
+      },
+      "settings": {
+        "proxy": "",
+        "mention_only": false
+      }
+    },
+    "pico": {
+      "enabled": false,
+      "type": "pico",
+      "reasoning_channel_id": "",
+      "group_trigger": {},
+      "typing": {},
+      "placeholder": {
+        "enabled": false
+      },
+      "settings": {
+        "streaming": {
+          "enabled": true
+        },
+        "ping_interval": 30,
+        "read_timeout": 60,
+        "write_timeout": 10,
+        "max_connections": 100
+      }
+    },
     "telegram": {
       "enabled": false,
       "type": "telegram",
-      "allow_from": [
-        ""
-      ],
       "reasoning_channel_id": "",
       "group_trigger": {},
       "typing": {
@@ -65,19 +112,29 @@
       "placeholder": {
         "enabled": true,
         "text": [
-          "Thinking... ðŸ’­"
+          "Thinking... 💭"
         ]
       },
       "settings": {
         "base_url": "",
         "proxy": "",
-        "streaming": {
-          "enabled": true,
-          "throttle_seconds": 3,
-          "min_growth_chars": 300
-        },
-        "use_markdown_v2": true,
-        "media_group_delay_ms": 800
+        "use_markdown_v2": false,
+        "media_group_delay_ms": 500
+      }
+    },
+    "whatsapp": {
+      "enabled": false,
+      "type": "whatsapp",
+      "reasoning_channel_id": "",
+      "group_trigger": {},
+      "typing": {},
+      "placeholder": {
+        "enabled": false
+      },
+      "settings": {
+        "bridge_url": "ws://localhost:3001",
+        "use_native": false,
+        "session_store_path": ""
       }
     }
   },
@@ -145,7 +202,7 @@
     "host": "localhost",
     "port": 18790,
     "hot_reload": false,
-    "log_level": "error"
+    "log_level": "warn"
   },
   "events": {
     "logging": {
@@ -171,10 +228,6 @@
     "filter_min_length": 8,
     "web": {
       "enabled": true,
-      "brave": {
-        "enabled": false,
-        "max_results": 5
-      },
       "duckduckgo": {
         "enabled": true,
         "max_results": 5
@@ -182,10 +235,6 @@
       "gemini": {
         "enabled": false,
         "model": "gemini-2.5-flash",
-        "max_results": 5
-      },
-      "perplexity": {
-        "enabled": false,
         "max_results": 5
       },
       "glm_search": {
@@ -196,7 +245,7 @@
       },
       "provider": "auto",
       "prefer_native": true,
-      "fetch_limit_bytes": 524288,
+      "fetch_limit_bytes": 10485760,
       "format": "plaintext"
     },
     "cron": {
@@ -347,10 +396,10 @@
   },
   "devices": {
     "enabled": false,
-    "monitor_usb": false
+    "monitor_usb": true
   },
   "voice": {
     "model_name": "gemini-audio",
     "echo_transcription": true
-  }
+  },
 }
