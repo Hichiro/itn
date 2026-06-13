@@ -52,7 +52,7 @@
   },
   "channel_list": {
     "pico": {
-      "enabled": true,
+      "enabled": false,
       "type": "pico",
       "reasoning_channel_id": "",
       "group_trigger": {},
