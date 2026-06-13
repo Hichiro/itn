@@ -51,27 +51,11 @@
     "cold_path_trigger": "after_turn"
   },
   "channel_list": {
-    "pico": {
-      "enabled": false,
-      "type": "pico",
-      "reasoning_channel_id": "",
-      "group_trigger": {},
-      "typing": {},
-      "placeholder": {
-        "enabled": false
-      },
-      "settings": {
-        "ping_interval": 30,
-        "read_timeout": 60,
-        "write_timeout": 10,
-        "max_connections": 100
-      }
-    },
     "telegram": {
       "enabled": true,
       "type": "telegram",
       "allow_from": [
-        "xxx"
+        ""
       ],
       "reasoning_channel_id": "",
       "group_trigger": {},
@@ -94,21 +78,6 @@
         },
         "use_markdown_v2": true,
         "media_group_delay_ms": 800
-      }
-    },
-    "whatsapp": {
-      "enabled": false,
-      "type": "whatsapp",
-      "reasoning_channel_id": "",
-      "group_trigger": {},
-      "typing": {},
-      "placeholder": {
-        "enabled": false
-      },
-      "settings": {
-        "bridge_url": "ws://localhost:3001",
-        "use_native": false,
-        "session_store_path": ""
       }
     }
   },
@@ -240,26 +209,43 @@
       "enable_deny_patterns": true,
       "allow_remote": true,
       "custom_deny_patterns": [
-        "rm -rf",
-        "del /f",
-        "rmdir /s",
-        "format",
-        "mkfs",
-        "diskpart",
-        "/dev/sd[a-z]",
-        "shutdown",
-        "reboot",
-        "poweroff",
-        ":(){ :|:\u0026 };:"
+        "\b(?:rm\s+-rf|rm\s+-r)\b",
+        "\bdd\s+of=\S+\b",
+        "\bdd\s+if=\S+\b",
+        "\bshred\b",
+        "\bwipefs\b",
+        "\bmkfs\.[a-z0-9]+\b",
+        "\b(mkfs|mkfs\.ext[234]|mkfs\.xfs|mkfs\.btrfs)\b",
+        "\bfdisk\b",
+        "\bparted\b",
+        "\bsfdisk\b",
+        "\bsgdisk\b",
+        "\bblkdiscard\b",
+        "\b(?:shutdown|reboot|poweroff)\b",
+        "\b(?::\\\s*\{\s*:\|:\s*&\s*\};)\b",
+        "\b(?:chmod\s+0777\s+|chown\s+root:root\s+).*\b",
+        "\bcurl\s+\S+\|\s*sh\b",
+        "\bwget\s+\S+\|\s*sh\b",
+        "\bnohup\s+rm\b",
+        "\b/dev/sd[a-z]\b",
+        "\b/dev/nvme\d+n\d+\b",
+        "\b(dd|shred|wipe|srm)\b"
       ],
-      "custom_allow_patterns": [
-        "^ls",
-        "^pwd",
-        "^cat",
-        "^git\\s+",
-        "^python3\\s+",
-        "^node\\s+"
-      ],
+      "custom_allow_patterns":  [
+        "^(?:/bin/|/usr/bin/)?ls(?:\s|$)",
+        "^(?:/bin/|/usr/bin/)?pwd(?:\s|$)",
+        "^(?:/bin/|/usr/bin/)?cat(?:\s|$)",
+        "^git\b",
+        "^python3\b",
+        "^python\b",
+        "^node\b",
+        "^ssh\b",
+        "^scp\b",
+        "^curl\b",
+        "^wget\b",
+        "^systemctl\b",
+        "^journalctl\b"
+        ],
       "timeout_seconds": 60
     },
     "skills": {
