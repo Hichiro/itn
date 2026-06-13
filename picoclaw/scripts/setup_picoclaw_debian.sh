@@ -26,6 +26,9 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 EOF
+    sudo systemctl daemon-reload
+    sudo systemctl enable ${service_name} &>/dev/null
+}
 
 print_access_links() {
     echo "• Các địa chỉ WebUI có thể truy cập:"
@@ -36,10 +39,6 @@ print_access_links() {
     if [ -n "$PUBLIC_IP" ]; then
         echo "  - Qua IP Public:      http://$PUBLIC_IP:18800"
     fi
-}
-
-    sudo systemctl daemon-reload
-    sudo systemctl enable ${service_name} &>/dev/null
 }
 
 # ========================================================
