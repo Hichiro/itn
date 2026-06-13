@@ -1,36 +1,7 @@
 channel_list:
-  dingtalk:
-    settings: {}
-  discord:
-    settings: {}
-  feishu:
-    settings: {}
-  irc:
-    settings: {}
-  line:
-    settings: {}
-  maixcam:
-    settings: {}
-  matrix:
-    settings: {}
-  onebot:
-    settings: {}
-  pico:
-    settings:
-      token: {}
-  qq:
-    settings: {}
-  slack:
-    settings: {}
   telegram:
     settings:
       token: {}
-  wecom:
-    settings: {}
-  weixin:
-    settings: {}
-  whatsapp:
-    settings: {}
 model_list:
   gemini-audio:0:
     api_keys:
@@ -62,6 +33,5 @@ web:
   gemini: {}
   perplexity: {}
   glm_search: {}
-  baidu_search: {}
 skills:
   registries: {}
