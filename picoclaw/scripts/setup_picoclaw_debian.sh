@@ -142,34 +142,34 @@ echo ""
 echo "=== 2.5 KIỂM TRA CẤU HÌNH CONFIG TRÊN MÁY ==="
 
 MISSING_CONFIG=false
-if [ ! -f "$HOME/config.json" ]; then
-    echo "🔍 Không tìm thấy file config.json"
+if [ ! -f "$HOME/.picoclaw/config.json" ]; then
+    echo "🔍 Không tìm thấy file config.json tại $HOME/.picoclaw"
     MISSING_CONFIG=true
 fi
-if [ ! -f "$HOME/.security.yml" ]; then
-    echo "🔍 Không tìm thấy file .security.yml"
+if [ ! -f "$HOME/.picoclaw/.security.yml" ]; then
+    echo "🔍 Không tìm thấy file .security.yml tại $HOME/.picoclaw"
     MISSING_CONFIG=true
 fi
 
 if [ "$MISSING_CONFIG" = true ]; then
-    read -p "Phát hiện máy chưa có đủ file cấu hình. Bạn có muốn tải thêm bộ config sẵn từ GitHub không? (y/n, Mặc định: y): " config_choice </dev/tty
+    read -p "Phát hiện máy chưa có đủ file cấu hình trong thư mục .picoclaw. Bạn có muốn tải thêm bộ config sẵn từ GitHub không? (y/n, Mặc định: y): " config_choice </dev/tty
     config_choice=${config_choice:-y}
     
     if [[ "$config_choice" == [Yy] ]]; then
-        echo "⚙️ Đang tải cấu hình sẵn..."
+        echo "⚙️ Đang tải cấu hình sẵn về $HOME/.picoclaw..."
         
-        if [ ! -f "$HOME/config.json" ]; then
-            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/config.json" -o $HOME/config.json
-            [ $? -eq 0 ] && [ -s $HOME/config.json ] && echo "✓ Đã tải config.json" || echo "⚠️ Lỗi tải config.json"
+        if [ ! -f "$HOME/.picoclaw/config.json" ]; then
+            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/config.json" -o $HOME/.picoclaw/config.json
+            [ $? -eq 0 ] && [ -s $HOME/.picoclaw/config.json ] && echo "✓ Đã tải config.json về thư mục .picoclaw" || echo "⚠️ Lỗi tải config.json"
         fi
         
-        if [ ! -f "$HOME/.security.yml" ]; then
-            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/.security.yml" -o $HOME/.security.yml
-            [ $? -eq 0 ] && [ -s $HOME/.security.yml ] && echo "✓ Đã tải .security.yml" || echo "⚠️ Lỗi tải .security.yml"
+        if [ ! -f "$HOME/.picoclaw/.security.yml" ]; then
+            curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/.security.yml" -o $HOME/.picoclaw/.security.yml
+            [ $? -eq 0 ] && [ -s $HOME/.picoclaw/.security.yml ] && echo "✓ Đã tải .security.yml về thư mục .picoclaw" || echo "⚠️ Lỗi tải .security.yml"
         fi
     fi
 else
-    echo "✓ Máy ảo đã có sẵn đầy đủ file cấu hình (config.json & .security.yml)."
+    echo "✓ Máy ảo đã có sẵn đầy đủ file cấu hình tại $HOME/.picoclaw (config.json & .security.yml)."
 fi
 
 # Hỏi tùy chọn bật WebUI (Launcher) hay chạy Core trần
@@ -208,23 +208,4 @@ if [ "$INSTALL_LAUNCHER" = true ]; then
     RUNNING_MODE="PicoClaw Launcher (WebUI) - Bản: $LATEST_TAG"
     URL_INFO="• Web UI: http://<IP_MÁY_ẢO_GOOGLE>:18800"
 else
-    if [ -f "$HOME/go/bin/picoclaw" ]; then
-        echo "Khởi chạy phiên bản Core tĩnh (Mặc định)..."
-        create_service_args="onboard --port 18800"
-        create_picoclaw_service "$HOME/go/bin/picoclaw" "$create_service_args" "picoclaw"
-        RUNNING_MODE="PicoClaw Core (No WebUI) - Bản: $LATEST_TAG"
-        URL_INFO="• Chế độ: Chạy nền lõi Core (Cổng dịch vụ nội bộ: 18800)"
-    else
-        echo "❌ Lỗi nghiêm trọng: Không tìm thấy file thực thi nào để khởi chạy dịch vụ."
-        exit 1
-    fi
-fi
-
-echo ""
-echo "================================================="
-echo "           HOÀN TẤT CÀI ĐẶT TRÊN VM!"
-echo "================================================="
-echo "• Chế độ hoạt động: $RUNNING_MODE"
-echo "$URL_INFO"
-echo "• Trạng thái dịch vụ: Chạy ngầm 24/7 bằng Systemd"
-echo "================================================="
+    if
