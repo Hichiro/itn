@@ -210,52 +210,40 @@ else
     exit 1
 fi
 
-# ====================== 4. HỎI NGƯỜI DÙNG TRƯỚC KHI KHỞI ĐỘNG LẠI ======================
+# ====================== 4. ÁP DỤNG CẤU HÌNH ======================
 echo ""
-echo "=== 4. ÁP DỤNG CẤU HÌNH ==="
+echo "=== 4. TỰ ĐỘNG KHỞI CHẠY & KIỂM TRA ==="
 
-# Bỏ qua hỏi nếu không có thay đổi nào và hệ thống đang chạy
-if [ "$HAS_CHANGES" = false ]; then
+if [ "$HAS_CHANGES" = false ] && [ "$IS_INSTALLED" = true ]; then
     if systemctl is-active --quiet picoclaw; then
-        echo "✅ Mọi thứ không có gì thay đổi. Dịch vụ PicoClaw vẫn đang hoạt động ổn định!"
+        echo "✅ Không có thay đổi nào mới. Dịch vụ PicoClaw vẫn đang hoạt động ổn định!"
         exit 0
     else
-        echo "⚠️ Không có thay đổi cấu hình, nhưng dịch vụ hiện ĐANG DỪNG."
-        DEFAULT_CHOICE="y"
-        PROMPT_MSG="🚀 Bạn có muốn BẬT dịch vụ ngay bây giờ không? (y/n, Mặc định: y): "
-    fi
-else
-    if [ "$IS_INSTALLED" = false ]; then
-        DEFAULT_CHOICE="y"
-        PROMPT_MSG="🚀 Phát hiện cài mới, bạn có muốn KHỞI ĐỘNG dịch vụ ngay bây giờ không? (y/n, Mặc định: y): "
-    else
-        DEFAULT_CHOICE="n"
-        PROMPT_MSG="🚀 Cấu hình đã thay đổi. Bạn có muốn KHỞI ĐỘNG LẠI dịch vụ để áp dụng ngay không? (y/n, Mặc định: n): "
+        echo "⚠️ Không có thay đổi, nhưng dịch vụ hiện ĐANG DỪNG hoặc GẶP LỖI."
+        read -p "🚀 Bạn có muốn thử KHỞI ĐỘNG LẠI dịch vụ ngay bây giờ không? (y/n, Mặc định: y): " restart_choice </dev/tty
+        restart_choice=${restart_choice:-y}
+        if [[ "$restart_choice" != [Yy] ]]; then
+            echo "⏭️ Đã bỏ qua khởi động lại."
+            exit 0
+        fi
     fi
 fi
 
-read -p "$PROMPT_MSG" restart_choice </dev/tty
-restart_choice=${restart_choice:-$DEFAULT_CHOICE}
+echo "🚀 Đang tự động áp dụng cấu hình và khởi chạy dịch vụ..."
+sudo systemctl restart picoclaw
+sleep 2
 
-if [[ "$restart_choice" == [Yy] ]]; then
-    echo "🔄 Đang kích hoạt dịch vụ picoclaw..."
-    sudo systemctl restart picoclaw
-    sleep 2
-
-    if systemctl is-active --quiet picoclaw; then
-        echo "================================================="
-        echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
-        echo "================================================="
-        echo "• Chế độ: $RUNNING_MODE"
-        [ "$FINAL_LAUNCHER" = true ] && echo "• WebUI URL: http://<IP_MÁY_ẢO_CỦA_BẠN>:18800"
-        echo "================================================="
-    else
-        echo "================================================="
-        echo "   ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
-        echo "================================================="
-        sudo journalctl -u picoclaw -n 4 --no-pager
-        echo "================================================="
-    fi
+if systemctl is-active --quiet picoclaw; then
+    echo "================================================="
+    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
+    echo "================================================="
+    echo "• Chế độ: $RUNNING_MODE"
+    [ "$FINAL_LAUNCHER" = true ] && echo "• WebUI URL: http://<IP_MÁY_ẢO_CỦA_BẠN>:18800"
+    echo "================================================="
 else
-    echo "⏭️ Đã bỏ qua bước khởi động. Cấu hình mới đã được ghi nhận vào hệ thống."
+    echo "================================================="
+    echo "   ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
+    echo "================================================="
+    sudo journalctl -u picoclaw -n 4 --no-pager
+    echo "================================================="
 fi
