@@ -251,7 +251,7 @@ if systemctl is-active --quiet picoclaw; then
         
         # Lấy tất cả IP nội bộ (LAN/WLAN)
         for ip in $(hostname -I 2>/dev/null); do
-            echo "  - Qua mạng LAN:        http://$ip:18800"
+            echo "  - Qua mạng LAN:       http://$ip:18800"
         done
         
         # Lấy IP Public (mất khoảng 1-2s)
