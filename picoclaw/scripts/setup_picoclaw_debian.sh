@@ -9,8 +9,6 @@ create_picoclaw_service() {
     local exec_args="$2"
     local service_name="$3"
 
-    echo "⚙️ Đang cập nhật file cấu hình dịch vụ hệ thống cho $service_name..."
-    
     sudo tee /etc/systemd/system/${service_name}.service > /dev/null <<EOF
 [Unit]
 Description=PicoClaw ${service_name} Service
@@ -44,6 +42,8 @@ echo "================================================="
 sudo apt-get update -y && sudo apt-get install -y curl procps bc jq tar
 
 mkdir -p $HOME/go/bin $HOME/.picoclaw /tmp
+VERSION_FILE="$HOME/.picoclaw/.version"
+HAS_CHANGES=false
 
 # ====================== BƯỚC KIỂM TRA SƠ BỘ TÌNH TRẠNG CÀI ĐẶT ======================
 SERVICE_FILE="/etc/systemd/system/picoclaw.service"
@@ -72,6 +72,7 @@ if [ "$IS_INSTALLED" = true ]; then
 else
     echo ""
     echo "💡 Thông báo: Phát hiện PicoClaw CHƯA TỪNG ĐƯỢC CÀI ĐẶT trên máy ảo này. Bắt đầu thiết lập mới..."
+    HAS_CHANGES=true
 fi
 
 # ====================== 1. KIỂM TRA FILE CẤU HÌNH ======================
@@ -90,6 +91,7 @@ if [ "$MISSING_CONFIG" = true ]; then
         curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/config.json" -o $HOME/.picoclaw/config.json
         curl -L -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/.security.yml" -o $HOME/.picoclaw/.security.yml
         echo "✓ Đã tải cấu hình mẫu vào $HOME/.picoclaw"
+        HAS_CHANGES=true
     fi
 else
     echo "✓ Đã có sẵn đầy đủ file cấu hình tại $HOME/.picoclaw."
@@ -100,7 +102,6 @@ echo ""
 echo "=== 2. KIỂM TRA PHIÊN BẢN CẬP NHẬT ==="
 LATEST_TAG=$(curl -s https://api.github.com/repos/sipeed/picoclaw/releases/latest | jq -r '.tag_name')
 
-# [CẢI TIẾN LOGIC 1]: Fallback phòng trường hợp GitHub API trả về rỗng/null
 if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" == "null" ]; then
     LATEST_TAG="latest"
     DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/latest/download/picoclaw_Linux_x86_64.tar.gz"
@@ -108,15 +109,29 @@ else
     DOWNLOAD_URL="https://github.com/sipeed/picoclaw/releases/download/${LATEST_TAG}/picoclaw_Linux_x86_64.tar.gz"
 fi
 
-NEED_DOWNLOAD=true
-if [ "$IS_INSTALLED" = true ]; then
-    read -p "🔄 Bạn có muốn kiểm tra và tải đè bản mới nhất ($LATEST_TAG) từ GitHub không? (y/n, Mặc định: y): " update_choice </dev/tty
-    update_choice=${update_choice:-y}
-    if [[ "$update_choice" != [Yy] ]]; then
-        NEED_DOWNLOAD=false
-    fi
+LOCAL_VERSION="Chưa rõ"
+if [ -f "$VERSION_FILE" ]; then
+    LOCAL_VERSION=$(cat "$VERSION_FILE")
+fi
+
+NEED_DOWNLOAD=false
+
+if [ "$IS_INSTALLED" = false ]; then
+    echo "📥 Đang tiến hành cài đặt phiên bản mới nhất ($LATEST_TAG)..."
+    NEED_DOWNLOAD=true
 else
-    echo "📥 Đang tiến hành tải phiên bản mới nhất ($LATEST_TAG)..."
+    if [ "$LATEST_TAG" == "latest" ]; then
+        read -p "⚠️ Lỗi mạng, không xác định được phiên bản. Bạn có muốn tải lại file không? (y/n, Mặc định: n): " update_choice </dev/tty
+        update_choice=${update_choice:-n}
+        if [[ "$update_choice" == [Yy] ]]; then NEED_DOWNLOAD=true; fi
+    elif [ "$LOCAL_VERSION" == "$LATEST_TAG" ]; then
+        echo "✓ Phiên bản trên máy ($LOCAL_VERSION) đã là mới nhất. Bỏ qua tải về."
+    else
+        echo "🔥 Phát hiện phiên bản mới: $LATEST_TAG (Bản trên máy: $LOCAL_VERSION)"
+        read -p "🔄 Bạn có muốn cập nhật lên bản $LATEST_TAG không? (y/n, Mặc định: y): " update_choice </dev/tty
+        update_choice=${update_choice:-y}
+        if [[ "$update_choice" == [Yy] ]]; then NEED_DOWNLOAD=true; fi
+    fi
 fi
 
 if [ "$NEED_DOWNLOAD" = true ]; then
@@ -128,7 +143,10 @@ if [ "$NEED_DOWNLOAD" = true ]; then
         [ -f /tmp/picoclaw_extracted/picoclaw ] && cp -f /tmp/picoclaw_extracted/picoclaw $HOME/go/bin/picoclaw && chmod +x $HOME/go/bin/picoclaw
         [ -f /tmp/picoclaw_extracted/picoclaw-launcher ] && cp -f /tmp/picoclaw_extracted/picoclaw-launcher $HOME/go/bin/picoclaw-launcher && chmod +x $HOME/go/bin/picoclaw-launcher
         rm -rf /tmp/picoclaw.tar.gz /tmp/picoclaw_extracted
+        
+        echo "$LATEST_TAG" > "$VERSION_FILE"
         echo "✓ Cập nhật file thực thi hoàn tất."
+        HAS_CHANGES=true
     else
         echo "❌ Lỗi: Không thể tải file từ GitHub. Script sẽ dùng file hiện tại trên máy (nếu có)."
     fi
@@ -159,6 +177,7 @@ else
         if [[ "$change_choice" == [Yy] ]]; then
             FINAL_LAUNCHER=false
             echo "➔ Sẽ sửa cấu hình chuyển về chế độ Core."
+            HAS_CHANGES=true
         else
             FINAL_LAUNCHER=true
             echo "➔ Giữ nguyên cấu hình chế độ Launcher."
@@ -170,6 +189,7 @@ else
         if [[ "$change_choice" == [Yy] ]]; then
             FINAL_LAUNCHER=true
             echo "➔ Sẽ sửa cấu hình kích hoạt chế độ Launcher."
+            HAS_CHANGES=true
         else
             FINAL_LAUNCHER=false
             echo "➔ Giữ nguyên cấu hình chế độ Core."
@@ -179,7 +199,6 @@ fi
 
 export PATH="$HOME/go/bin:$PATH"
 
-# [CẢI TIẾN LOGIC 3]: Kiểm tra file nhị phân có tồn tại thực tế trước khi tạo Service
 if [ "$FINAL_LAUNCHER" = true ] && [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
     create_picoclaw_service "$HOME/go/bin/picoclaw-launcher" "--public --port 18800 -no-browser" "picoclaw"
     RUNNING_MODE="PicoClaw Launcher (WebUI)"
@@ -191,17 +210,28 @@ else
     exit 1
 fi
 
-# ====================== 4. HỎI NGƯỜI DÙNG TRƯỚC KHI KHỔI ĐỘNG LẠI ======================
+# ====================== 4. HỎI NGƯỜI DÙNG TRƯỚC KHI KHỞI ĐỘNG LẠI ======================
 echo ""
 echo "=== 4. ÁP DỤNG CẤU HÌNH ==="
 
-# [CẢI TIẾN LOGIC 2]: Thay đổi giá trị mặc định của câu hỏi Khởi động tùy theo kịch bản cài đặt
-if [ "$IS_INSTALLED" = false ]; then
-    DEFAULT_CHOICE="y"
-    PROMPT_MSG="🚀 Phát hiện cài mới, bạn có muốn KHỔI ĐỘNG dịch vụ ngay bây giờ không? (y/n, Mặc định: y): "
+# Bỏ qua hỏi nếu không có thay đổi nào và hệ thống đang chạy
+if [ "$HAS_CHANGES" = false ]; then
+    if systemctl is-active --quiet picoclaw; then
+        echo "✅ Mọi thứ không có gì thay đổi. Dịch vụ PicoClaw vẫn đang hoạt động ổn định!"
+        exit 0
+    else
+        echo "⚠️ Không có thay đổi cấu hình, nhưng dịch vụ hiện ĐANG DỪNG."
+        DEFAULT_CHOICE="y"
+        PROMPT_MSG="🚀 Bạn có muốn BẬT dịch vụ ngay bây giờ không? (y/n, Mặc định: y): "
+    fi
 else
-    DEFAULT_CHOICE="n"
-    PROMPT_MSG="🚀 Bạn có muốn KHỔI ĐỘNG LẠI dịch vụ ngay bây giờ để áp dụng thay đổi không? (y/n, Mặc định: n): "
+    if [ "$IS_INSTALLED" = false ]; then
+        DEFAULT_CHOICE="y"
+        PROMPT_MSG="🚀 Phát hiện cài mới, bạn có muốn KHỞI ĐỘNG dịch vụ ngay bây giờ không? (y/n, Mặc định: y): "
+    else
+        DEFAULT_CHOICE="n"
+        PROMPT_MSG="🚀 Cấu hình đã thay đổi. Bạn có muốn KHỞI ĐỘNG LẠI dịch vụ để áp dụng ngay không? (y/n, Mặc định: n): "
+    fi
 fi
 
 read -p "$PROMPT_MSG" restart_choice </dev/tty
