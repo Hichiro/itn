@@ -225,7 +225,7 @@ fi
 echo ""
 echo "=== 4. TRẠNG THÁI HỆ THỐNG ==="
 
-# Nếu không có thay đổi, chỉ cần kiểm tra xem đang chạy không rồi in IP
+# 1. Kiểm tra nhanh nếu không có thay đổi và dịch vụ đang chạy
 if [ "$HAS_CHANGES" = false ]; then
     if systemctl is-active --quiet picoclaw; then
         echo "✅ Dịch vụ PicoClaw ĐANG CHẠY ổn định."
@@ -234,38 +234,25 @@ if [ "$HAS_CHANGES" = false ]; then
     fi
 fi
 
-# Nếu có thay đổi hoặc đang dừng, thực hiện restart
+# 2. Nếu có thay đổi hoặc dịch vụ đang dừng, thực hiện restart
 echo "🚀 Đang áp dụng cấu hình và khởi chạy dịch vụ..."
 sudo systemctl restart picoclaw
 sleep 2
 
+# 3. Kiểm tra kết quả sau khi khởi chạy
 if systemctl is-active --quiet picoclaw; then
     echo "================================================="
-    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
+    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!             "
     echo "================================================="
     echo "• Chế độ: $RUNNING_MODE"
     [ "$FINAL_LAUNCHER" = true ] && print_access_links
     echo "================================================="
 else
-    # ... phần log lỗi ...
-fi
-
-echo "🚀 Đang tự động áp dụng cấu hình và khởi chạy dịch vụ..."
-sudo systemctl restart picoclaw
-sleep 2
-
-if systemctl is-active --quiet picoclaw; then
     echo "================================================="
-    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
+    echo "  ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
     echo "================================================="
-    echo "• Chế độ: $RUNNING_MODE"
-    [ "$FINAL_LAUNCHER" = true ] && echo "• WebUI URL: http://<IP_MÁY_ẢO_CỦA_BẠN>:18800"
-    echo "================================================="
-else
-    echo "================================================="
-    echo "   ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
-    echo "================================================="
-    sudo journalctl -u picoclaw -n 4 --no-pager
+    # In ra 10 dòng log lỗi cuối cùng để dễ debug
+    sudo journalctl -u picoclaw -n 10 --no-pager
     echo "================================================="
 fi
 
