@@ -222,7 +222,7 @@
         "\\bsgdisk\\b",
         "\\bblkdiscard\\b",
         "\\b(?:shutdown|reboot|poweroff)\\b",
-        "\\b(?::\\\\\\\s*\\{\\s*:\\|:\\s*&\\s*\\};)\\b",
+        "\\b(?:[:]\\\s*\{\s*[:]\|[:]\s*&\s*\};)\\b",
         "\\b(?:chmod\\s+0777\\s+|chown\\s+root:root\\s+).*\\b",
         "\\bcurl\\s+\\S+\\|\\s*sh\\b",
         "\\bwget\\s+\\S+\\|\\s*sh\\b",
