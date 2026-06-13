@@ -234,16 +234,24 @@ sudo systemctl restart picoclaw
 sleep 2
 
 if systemctl is-active --quiet picoclaw; then
-    echo "================================================="
-    echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
-    echo "================================================="
-    echo "• Chế độ: $RUNNING_MODE"
-    [ "$FINAL_LAUNCHER" = true ] && echo "• WebUI URL: http://<IP_MÁY_ẢO_CỦA_BẠN>:18800"
-    echo "================================================="
-else
-    echo "================================================="
-    echo "   ❌ LỖI KHỞI CHẠY TIẾN TRÌNH!                  "
-    echo "================================================="
-    sudo journalctl -u picoclaw -n 4 --no-pager
-    echo "================================================="
-fi
+        echo "================================================="
+        echo "       🎉 HỆ THỐNG HOẠT ĐỘNG ỔN ĐỊNH!            "
+        echo "================================================="
+        echo "• Chế độ: $RUNNING_MODE"
+        if [ "$FINAL_LAUNCHER" = true ]; then
+            echo "• Các địa chỉ WebUI có thể truy cập:"
+            echo "  - Trực tiếp trên máy: http://localhost:18800"
+            echo "  - Trực tiếp trên máy: http://127.0.0.1:18800"
+            
+            # Lấy tất cả IP nội bộ (LAN/WLAN)
+            for ip in $(hostname -I 2>/dev/null); do
+                echo "  - Qua mạng LAN:       http://$ip:18800"
+            done
+            
+            # Lấy IP Public (mất khoảng 1-2s)
+            PUBLIC_IP=$(curl -s --max-time 2 ifconfig.me)
+            if [ -n "$PUBLIC_IP" ]; then
+                echo "  - Qua IP Public:      http://$PUBLIC_IP:18800"
+            fi
+        fi
+        echo "================================================="
