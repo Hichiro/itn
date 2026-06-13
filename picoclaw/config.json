@@ -39,21 +39,6 @@
         "separate_messages": false
       },
       "split_on_marker": false,
-      "turn_profile": {
-        "enabled": false,
-        "history": {
-          "mode": "default"
-        },
-        "system_prompt": {
-          "mode": "default"
-        },
-        "skills": {
-          "mode": "default"
-        },
-        "tools": {
-          "mode": "default"
-        }
-      },
       "max_llm_retries": 3,
       "llm_retry_backoff_secs": 5
     }
@@ -380,5 +365,5 @@
   "voice": {
     "model_name": "gemini-audio",
     "echo_transcription": true
-  },
+  }
 }
