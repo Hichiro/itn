@@ -24,7 +24,7 @@ channel_list:
     settings: {}
   telegram:
     settings:
-      token: 
+      token: {}
   wecom:
     settings: {}
   weixin:
