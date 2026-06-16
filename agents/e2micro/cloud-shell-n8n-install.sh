@@ -36,7 +36,8 @@ gcloud compute instances create e2micro \
 mkdir -p /var/n8n_data
 chown -R 1000:1000 /var/n8n_data
 docker rm -f n8n || true
-docker run -d --name n8n \
+docker run -d \
+    --name n8n \
     -p 5678:5678 \
     --restart always \
     -v /var/n8n_data:/home/node/.n8n \
