@@ -37,11 +37,12 @@ mkdir -p /var/n8n_data
 chown -R 1000:1000 /var/n8n_data
 docker rm -f n8n || true
 docker run -d \
-    --name n8n \
-    -p 5678:5678 \
-    --restart always \
-    -v /var/n8n_data:/home/node/.n8n \
-    -e EXECUTIONS_DATA_PRUNE=true \
-    -e EXECUTIONS_DATA_MAX_AGE=72 \
-    -e EXECUTIONS_DATA_PRUNE_TIMEOUT=3600 \
-    docker.io/n8nio/n8n:latest"
+  --name n8n \
+  -p 5678:5678 \
+  --restart always \
+  -v /var/n8n_data:/home/node/.n8n \
+  -e N8N_SECURE_COOKIE=false \
+  -e EXECUTIONS_DATA_PRUNE=true \
+  -e EXECUTIONS_DATA_MAX_AGE=72 \
+  -e EXECUTIONS_DATA_PRUNE_TIMEOUT=3600 \
+  docker.io/n8nio/n8n:latest"
