@@ -11,11 +11,11 @@
 # ------------------------------------------------------------------------------
 # Cách 1: Chạy trực tiếp từ xa qua URL GitHub (Nhanh nhất, không cần tải file)
 #   Mở Terminal/Cloud Shell trên máy tính của bạn và chạy lệnh sau:
-#   curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/cloud-shell-n8n-install.sh | bash
+#   curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/agents/e2micro/cloud-shell-n8n-install.sh | bash
 #
 # Cách 2: Tải file script về máy rồi thực thi
 #   1. Tải file: 
-#      curl -O https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/cloud-shell-n8n-install.sh
+#      curl -O https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/agents/e2micro/cloud-shell-n8n-install.sh
 #   2. Cấp quyền chạy: 
 #      chmod +x deploy-n8n-gcp.sh
 #   3. Thực thi: 
