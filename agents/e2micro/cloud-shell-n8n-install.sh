@@ -22,24 +22,20 @@
 #      ./deploy-n8n-gcp.sh
 # ==============================================================================
 
-gcloud compute instances create e2-micro \
+gcloud compute instances create n8n-server \
     --project=free-e2micro \
     --zone=us-west1-b \
     --machine-type=e2-micro \
+    --network-tier=PREMIUM \
     --image-family=cos-stable \
     --image-project=cos-cloud \
     --boot-disk-size=30GB \
     --boot-disk-type=pd-standard \
     --tags=n8n-server \
-    --metadata=startup-script-url=https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/agents/e2micro/e2micro-cos,startup-script="#! /bin/bash
-# 1. Tạo thư mục lưu trữ dữ liệu bền vững trên Host
+    --metadata=startup-script-url=https://raw.githubusercontent.com/xxx/refs/heads/main/agents/e2micro/e2micro-cos-swap.sh,startup-script="#! /bin/bash
 mkdir -p /var/n8n_data
 chown -R 1000:1000 /var/n8n_data
-
-# 2. Dọn dẹp các container cũ để tránh xung đột cổng
 docker rm -f n8n || true
-
-# 3. Chạy n8n Container với đầy đủ các cấu hình bạn yêu cầu
 docker run -d --name n8n \
     -p 5678:5678 \
     --restart always \
