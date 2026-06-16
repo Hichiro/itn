@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# Tên Script: deploy-n8n-gcp.sh
+# Tên Script: cloud-shell-n8n-install.sh
 # Mô tả: 
 #   Tự động khởi tạo máy ảo Compute Engine (e2-micro) chạy hệ điều hành 
 #   Container-Optimized OS (COS) trên Google Cloud Platform (GCP).
@@ -22,7 +22,7 @@
 #      ./deploy-n8n-gcp.sh
 # ==============================================================================
 
-gcloud compute instances create n8n-server \
+gcloud compute instances create e2micro \
     --project=free-e2micro \
     --zone=us-west1-b \
     --machine-type=e2-micro \
