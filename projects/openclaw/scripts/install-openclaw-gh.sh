@@ -57,7 +57,8 @@ rm -f openclaw-release.tar.gz
 
 # 5. CÀI ĐẶT THƯ VIỆN PRODUCTION TINH GỌN (CỰC NHẸ, KHÔNG TỐN TÀI NGUYÊN)
 echo "--- [4/5] Khởi tạo các gói phụ thuộc môi trường production... ---"
-pnpm install --production
+# Ép pnpm chạy ở chế độ không tương tác (frozen-lockfile không đổi cấu trúc)
+pnpm install --production --no-frozen-lockfile
 
 # Khởi tạo file môi trường .env từ file mẫu nếu chưa tồn tại
 if [ ! -f ".env" ]; then
