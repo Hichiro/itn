@@ -1,15 +1,19 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Tên Script: install-openclaw-gh.sh
-# Mô tả:      Kiểm tra môi trường, cài đặt các thành phần thiếu (config, node_modules),
+# Mô tả:      Kiểm tra môi trường, cài đặt thành phần thiếu (config, node_modules nhẹ),
 #             khởi động daemon chạy ngầm và xác minh trạng thái.
+#             Tối ưu hóa: Bỏ qua các gói AI cục bộ nặng nề, chỉ giữ lại các gói API.
 # Yêu cầu:    Debian 12+ (hoặc Ubuntu 22.04+), người dùng thường có sudo.
 # ==============================================================================
+
+# VÔ HIỆU HÓA HOÀN TOÀN COREPACK ĐỂ TRÁNH BỊ HỎI [Y/n]
+export COREPACK_DISABLE=1
 
 # ----------------------------------------------------------------------
 # 0️⃣ Cấu hình người dùng / repo GitHub
 # ----------------------------------------------------------------------
-GH_USER_REPO="Hichiro/itn"                 # <-- sửa <user>/<repo> của bạn
+GH_USER_REPO="Hichiro/itn"
 SCRIPT_URL="https://raw.githubusercontent.com/${GH_USER_REPO}/main/projects/openclaw/scripts/install-openclaw-gh.sh"
 
 # ----------------------------------------------------------------------
@@ -121,9 +125,10 @@ check_dependencies() {
 }
 
 install_dependencies() {
-    echo "📦 Đang cài đặt thư viện production (pnpm install)…"
+    echo "📦 Đang cài đặt thư viện production tinh gọn (bỏ qua mô hình AI cục bộ)…"
     export PNPM_SKIP_ASK=1
-    pnpm install --production --no-frozen-lockfile
+    # --omit=optional giúp loại bỏ hoàn toàn node-llama-cpp và các bản build phụ thuộc nặng nề
+    pnpm install --production --no-frozen-lockfile --omit=optional
 }
 
 check_config() {
@@ -144,7 +149,8 @@ check_service_active() {
 }
 
 install_service() {
-    pnpm install --global .
+    # Cài đặt CLI toàn cục cũng loại bỏ gói tùy chọn thừa
+    pnpm install --global . --omit=optional
     USER_PNPM_BIN="$(pnpm bin -g)"
 
     # Dừng daemon cũ nếu còn
@@ -158,6 +164,7 @@ After=network.target
 [Service]
 Type=simple
 User=${REAL_USER}
+Environment=COREPACK_DISABLE=1
 ExecStart=${USER_PNPM_BIN}/openclaw gateway start
 Restart=on-failure
 LimitNOFILE=65536
