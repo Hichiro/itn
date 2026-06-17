@@ -16,7 +16,7 @@ if [ -n "$DEVSHELL_PROJECT_ID" ]; then
     echo "--- Phát hiện Cloud Shell: Đang kết nối trực tiếp vào VM... ---"
     
     # Ép VM phải tự dùng curl để tải script từ GitHub, giữ sạch luồng gõ bàn phím (stdin)
-    gcloud compute ssh e2micro \
+    gcloud compute ssh e2micro-vm \
         --project=free-e2micro \
         --zone=us-west1-b \
         --tunnel-through-iap \
