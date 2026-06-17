@@ -69,7 +69,6 @@ gcloud compute instances create "$VM_NAME" \
     --network-interface=network-tier=STANDARD,subnet=default \
     --maintenance-policy=MIGRATE \
     --provisioning-model=STANDARD \
-    --tags=mcp-node \
     --create-disk=auto-delete=yes,boot=yes,image-family="$IMAGE_FAMILY",image-project="$IMAGE_PROJECT",mode=rw,size="$BOOT_DISK_SIZE",type="$BOOT_DISK_TYPE" \
     --metadata=startup-script-url="$SCRIPT_2_URL"
 
