@@ -8,7 +8,7 @@
 #   để thực thi các thiết lập hệ thống sâu hơn ngay khi khởi động.
 #
 # HƯỚNG DẪN CHẠY:
-#   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
+#   bash <(curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
 # ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
