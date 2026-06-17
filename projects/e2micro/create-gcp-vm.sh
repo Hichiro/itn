@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # ==============================================================================
-# Tên Script: deploy-gcp-manual.sh
 # Mô tả: 
 #   Tự động khởi tạo máy ảo Compute Engine cấu hình MIỄN PHÍ (e2-micro) trên
 #   Google Cloud Platform (GCP). Script hỗ trợ tương tác tự động lấy Project ID, 
@@ -11,7 +10,7 @@
 # HƯỚNG DẪN CHẠY BẰNG GCLOUD CLI:
 # ------------------------------------------------------------------------------
 # Cách chạy an toàn bằng link GitHub (Không lo bị lỗi nuốt lệnh read):
-#   bash <(curl -sL https://raw.githubusercontent.com/<User>/<Repo>/main/deploy-gcp-manual.sh)
+#   bash <(curl -sL https://raw.githubusercontent.com/Hichir/int/main/create-gcp-vm.sh)
 # ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
