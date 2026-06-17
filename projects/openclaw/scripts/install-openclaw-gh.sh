@@ -3,7 +3,7 @@
 # ==============================================================================
 # Tên Script: install-openclaw-gh.sh
 # Mô tả: Tải bản build OpenClaw sạch, tự động cài dependencies tinh gọn tại VM.
-#        Đã sửa lỗi phân quyền file ảo /dev/fd khi dùng lệnh sudo.
+#        Sửa lỗi cú pháp lệnh pnpm link trên các phiên bản pnpm mới.
 # CHẠY TRÊN: Máy ảo Debian 12 (Quyền root/sudo).
 # ==============================================================================
 
@@ -37,8 +37,9 @@ fi
 # 3. KÍCH HOẠT COREPACK VÀ PNPM TOÀN CỤC
 echo "--- [2/5] Đang cấu hình Corepack và cài đặt pnpm... ---"
 corepack enable
+
 if ! command -v pnpm &> /dev/null; then
-    corepack prepare pnpm@latest --activate
+    echo "y" | corepack prepare pnpm@latest --activate
 fi
 
 # 4. TẢI VÀ GIẢI NÉN BẢN PHÁT HÀNH SẠCH TỪ REPO
@@ -57,7 +58,6 @@ rm -f openclaw-release.tar.gz
 
 # 5. CÀI ĐẶT THƯ VIỆN PRODUCTION TINH GỌN (CỰC NHẸ, KHÔNG TỐN TÀI NGUYÊN)
 echo "--- [4/5] Khởi tạo các gói phụ thuộc môi trường production... ---"
-# Ép pnpm chạy ở chế độ không tương tác (frozen-lockfile không đổi cấu trúc)
 pnpm install --production --no-frozen-lockfile
 
 # Khởi tạo file môi trường .env từ file mẫu nếu chưa tồn tại
@@ -78,8 +78,8 @@ if ! grep -q "/root/.local/share/pnpm/bin" ~/.bashrc; then
     echo 'export PATH="/root/.local/share/pnpm/bin:$PATH"' >> ~/.bashrc
 fi
 
-# Đăng ký lệnh 'openclaw' vào hệ thống
-pnpm link --global
+# Sử dụng lệnh thay thế an toàn cho pnpm mới để đăng ký lệnh 'openclaw' toàn cục
+pnpm install --global .
 
 # Dừng cổng kết nối cũ nếu có để tránh xung đột
 openclaw gateway stop 2>/dev/null || true
