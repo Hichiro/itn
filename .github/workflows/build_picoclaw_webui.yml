@@ -28,14 +28,15 @@ jobs:
           
           UPSTREAM_COMMIT=$(git ls-remote https://github.com/sipeed/picoclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
           
-          LOCAL_COMMIT=$(cat picoclaw/last_build_commit.txt 2>/dev/null || echo "")
+          # Đổi sang lưu file commit log trong thư mục projects/picoclaw/
+          LOCAL_COMMIT=$(cat projects/picoclaw/last_build_commit.txt 2>/dev/null || echo "")
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "has_update=true" >> $GITHUB_OUTPUT
             echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
-            mkdir -p picoclaw
-            echo "$UPSTREAM_COMMIT" > picoclaw/last_build_commit.txt
+            mkdir -p projects/picoclaw
+            echo "$UPSTREAM_COMMIT" > projects/picoclaw/last_build_commit.txt
           fi
 
       - name: Clone source code
@@ -69,7 +70,7 @@ jobs:
         run: |
           cd source-code/web/frontend || { echo "No frontend folder"; exit 0; }
           pnpm install --frozen-lockfile
-          pnpm run build || echo "UI build failed, continuing..."
+          pnpm run build
           mkdir -p ../../../dist_ui
           cp -r dist/* ../../../dist_ui/ 2>/dev/null || true
 
@@ -104,32 +105,36 @@ jobs:
       - name: Commit binaries
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          mkdir -p picoclaw/history
+          git checkout main || git checkout -b main
 
-          # Backup old
-          if [ -f "picoclaw/picoclaw" ]; then
-            OLD_TAG=$(cat picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
-            mv picoclaw/picoclaw picoclaw/history/picoclaw-$OLD_TAG 2>/dev/null || true
-            mv picoclaw/picoclaw-launcher picoclaw/history/picoclaw-launcher-$OLD_TAG 2>/dev/null || true
+          # Tạo thư mục history nằm trong projects/picoclaw/
+          mkdir -p projects/picoclaw/history
+
+          # Backup file cũ dựa trên đường dẫn projects/picoclaw/
+          if [ -f "projects/picoclaw/picoclaw" ]; then
+            OLD_TAG=$(cat projects/picoclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
+            mv projects/picoclaw/picoclaw projects/picoclaw/history/picoclaw-$OLD_TAG 2>/dev/null || true
+            mv projects/picoclaw/picoclaw-launcher projects/picoclaw/history/picoclaw-launcher-$OLD_TAG 2>/dev/null || true
           fi
 
-          # Copy new binaries
-          cp picoclaw_bin picoclaw/picoclaw
+          # Copy sản phẩm mới vào đúng thư mục mong muốn (bỏ dấu gạch chéo '/' ở đầu để tránh nhận nhầm root hệ thống)
+          cp picoclaw_bin projects/picoclaw/picoclaw
           if [ -f "picoclaw-launcher_bin" ]; then
-            cp picoclaw-launcher_bin picoclaw/picoclaw-launcher
+            cp picoclaw-launcher_bin projects/picoclaw/picoclaw-launcher
           fi
 
-          chmod +x picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
+          chmod +x projects/picoclaw/picoclaw projects/picoclaw/picoclaw-launcher 2>/dev/null || true
 
-          # Debug
-          ls -la picoclaw/
+          # Debug kiểm tra file
+          ls -la projects/picoclaw/
 
-          # Git commit
+          # Cấu hình và push lên Git
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          git add picoclaw/picoclaw picoclaw/picoclaw-launcher 2>/dev/null || true
-          git add picoclaw/ 2>/dev/null || true
+          # Chỉ add toàn bộ thư mục projects/ là đủ bao gồm cả binaries, history và file txt log
+          git add projects/
           
           git commit -m "Release PicoClaw + Launcher ${{ steps.check_upstream.outputs.tag_name }} for Termux [skip ci]" || echo "No changes"
-          git pull --rebase origin main && git push origin main
+          git pull --rebase origin main
+          git push origin main
