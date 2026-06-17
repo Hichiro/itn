@@ -2,8 +2,8 @@ name: Auto Build OpenClaw for e2-micro
 
 on:
   schedule:
-    - cron: '0 19 * * 5'
-  workflow_dispatch:
+    - cron: '0 19 * * 5' # 02:00 sáng Thứ Bảy (Giờ VN)
+  workflow_dispatch:     # Cho phép chạy thủ công
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -44,28 +44,28 @@ jobs:
           git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch --depth 1 \
             https://github.com/openclaw/openclaw.git source-code
 
-      - name: Setup Bun Runtime
+      - name: Setup Node.js Environment
         if: steps.check_upstream.outputs.has_update == 'true'
-        uses: oven-sh/setup-bun@v2
+        uses: actions/setup-node@v4
         with:
-          bun-version: latest
+          node-version: '24' # Node 24 là phiên bản được OpenClaw khuyến nghị khuyên dùng
 
-      - name: Build and Package App
+      - name: Build OpenClaw Core and UI
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # Ép hệ thống nâng cấp Bun lên phiên bản mới nhất ngay tại thời điểm chạy
-          bun upgrade
-          echo "Bun version hiện tại: $(bun -v)"
-
           cd source-code
           
-          # Xóa bỏ hoàn toàn file lockfile cũ để tránh xung đột parser phiên bản
-          rm -f pnpm-lock.yaml package-lock.json yarn.lock
+          # Kích hoạt corepack để tự động nhận cấu hình pnpm chuẩn của dự án
+          corepack enable
           
-          # Tiến hành cài đặt thư viện production sạch trực tiếp từ package.json
-          bun install --production
+          # Cài đặt toàn bộ thư viện dependencies
+          pnpm install
           
-          # Đóng gói toàn bộ mã nguồn và thư viện
+          # Thực thi tuần tự 2 lệnh build cốt lõi và giao diện (UI) của OpenClaw
+          pnpm build
+          pnpm ui:build
+          
+          # Đóng gói sản phẩm đã build hoàn chỉnh
           tar -czf ../openclaw-release.tar.gz \
             --exclude='.git' \
             --exclude='.github' \
@@ -86,12 +86,11 @@ jobs:
           fi
 
           cp openclaw-release.tar.gz projects/openclaw/openclaw-release.tar.gz
-          ls -la projects/openclaw/
 
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           git add projects/
-          git commit -m "Automated Release OpenClaw Build ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes to commit"
+          git commit -m "Automated Release OpenClaw Build ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
           git pull --rebase origin main
           git push origin main
