@@ -3,12 +3,12 @@
 # ==============================================================================
 # Tên Script: deploy-gcp-manual.sh (Script 1)
 # Mô tả: 
-#   Tự động khởi tạo máy ảo Compute Engine cấu hình MIỄN PHÍ (e2-micro) trên GCP.
-#   Không cài đặt cấu hình tường lửa. Tự động gọi Script 2 qua link raw GitHub
-#   để thực thi các thiết lập hệ thống sâu hơn ngay khi khởi động.
+# Mô tả: Tự động tạo máy ảo cấu hình MIỄN PHÍ (e2-micro) trên GCP.
+#        Đã tích hợp tính năng tắt các dịch vụ giám sát chạy ngầm để tiết kiệm tài nguyên.
+# CHẠY TRÊN: Cloud Shell hoặc máy cá nhân có cài gcloud CLI.
 #
 # HƯỚNG DẪN CHẠY:
-#   bash <(curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
+#   bash <(curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/deploy-gcp-manual.sh)
 # ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
@@ -61,12 +61,21 @@ echo "------------------------------------------------"
 echo "=== [GCP] 1. Thiết lập dự án: $PROJECT_ID ==="
 gcloud config set project "$PROJECT_ID"
 
-echo "=== [GCP] 2. Đang tiến hành tạo máy ảo miễn phí... ==="
+echo "=== [GCP] 2. Tắt các dịch vụ giám sát ngầm để tránh phát sinh chi phí ==="
+gcloud services disable networkmanagement.googleapis.com --force 2>/dev/null
+gcloud services disable networkintelligence.googleapis.com --force 2>/dev/null
+gcloud services disable recommender.googleapis.com --force 2>/dev/null
+gcloud services disable monitoring.googleapis.com --force 2>/dev/null
+gcloud services disable clouderrorreporting.googleapis.com --force 2>/dev/null
+echo "Đã vô hiệu hóa các dịch vụ Network Analyzer, Cloud Monitoring và Error Reporting."
+
+echo "=== [GCP] 3. Đang tiến hành tạo máy ảo miễn phí... ==="
 gcloud compute instances create "$VM_NAME" \
     --project="$PROJECT_ID" \
     --zone="$ZONE" \
     --machine-type="$MACHINE_TYPE" \
     --network-interface=network-tier=STANDARD,subnet=default \
+    --no-restart-on-failure \
     --maintenance-policy=MIGRATE \
     --provisioning-model=STANDARD \
     --create-disk=auto-delete=yes,boot=yes,image-family="$IMAGE_FAMILY",image-project="$IMAGE_PROJECT",mode=rw,size="$BOOT_DISK_SIZE",type="$BOOT_DISK_TYPE" \
