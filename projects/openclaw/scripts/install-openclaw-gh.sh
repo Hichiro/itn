@@ -127,7 +127,6 @@ check_dependencies() {
 install_dependencies() {
     echo "📦 Đang cài đặt thư viện production tinh gọn (bỏ qua mô hình AI cục bộ)…"
     export PNPM_SKIP_ASK=1
-    # --omit=optional giúp loại bỏ hoàn toàn node-llama-cpp và các bản build phụ thuộc nặng nề
     pnpm install --production --no-frozen-lockfile --omit=optional
 }
 
@@ -149,8 +148,8 @@ check_service_active() {
 }
 
 install_service() {
-    # Cài đặt CLI toàn cục cũng loại bỏ gói tùy chọn thừa
-    pnpm install --global . --omit=optional
+    # FIX: Dùng --prod cho global install để cài đặt CLI nhẹ mà không lỗi cú pháp
+    pnpm install --global . --prod
     USER_PNPM_BIN="$(pnpm bin -g)"
 
     # Dừng daemon cũ nếu còn
@@ -239,7 +238,7 @@ echo "• Thư mục cài  : $INSTALL_DIR"
 echo "• Cấu hình     : $([[ -f "$INSTALL_DIR/.env" ]] && echo "Đã có (.env)" || echo "Thiếu")"
 echo "• Service      : $(systemctl is-active openclaw)"
 echo "• Lệnh CLI     : $(pnpm bin -g)/openclaw"
-echo "================================================="
+================================================="
 echo "✅ Cài đặt hoàn tất! Hãy chạy lệnh dưới đây để nạp lại cấu hình:"
 echo "   source ~/.bashrc"
 echo ""
