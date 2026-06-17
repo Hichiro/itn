@@ -52,7 +52,7 @@ BOOT_DISK_SIZE="30GB" # Dung lượng tối đa miễn phí
 BOOT_DISK_TYPE="pd-standard" # Loại ổ đĩa tiêu chuẩn miễn phí
 
 # Link raw của Script 2 trên GitHub để VM tự tải về thực thi khi boot
-SCRIPT_2_URL="https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-init-setup.sh"
+SCRIPT_2_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/vm-init-setup.sh"
 
 # =====================================================================
 # EXECUTION
