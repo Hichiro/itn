@@ -4,7 +4,7 @@
 # Tên Script: install-openclaw-gh.sh
 # Mô tả: Tải bản build OpenClaw sạch, tự động cài dependencies tinh gọn tại VM.
 #        Cô lập môi trường pnpm/openclaw hoàn toàn trong thư mục của USER thường.
-#        Tự động bypass hộp thoại xác nhận tải của Corepack bằng pipe chuẩn.
+#        Sử dụng Standalone pnpm Installer thay cho Corepack để vượt mốc Y/n.
 # CHẠY TRÊN: Máy ảo Debian 12 (Quyền user thường có cấu hình sudo không mật khẩu).
 # ==============================================================================
 
@@ -55,25 +55,24 @@ if ! command -v node &> /dev/null || [ $(node -v | cut -d'.' -f1) != "v24" ]; th
     sudo apt-get install -y nodejs wget tar git build-essential
 fi
 
-# 3. KÍCH HOẠT COREPACK VÀ PNPM TOÀN CỤC KHÔNG CHẠY BẰNG SUDO
-echo "--- [2/5] Đang cấu hình Corepack và cài đặt pnpm... ---"
-sudo corepack enable
+# 3. CÀI ĐẶT PNPM CHÍNH THỨC CHO USER (KHÔNG DÙNG COREPACK)
+echo "--- [2/5] Đang cài đặt pnpm vào môi trường User độc lập... ---"
 
-# Ép buộc pnpm thiết lập thư mục global bin nằm trong thư mục của User thường
+# Khai báo sẵn các biến môi trường cho phiên script hiện tại
 USER_PNPM_BIN="${REAL_HOME}/.local/share/pnpm"
 export PNPM_HOME="$USER_PNPM_BIN"
 export PATH="$USER_PNPM_BIN:$PATH"
 
-# Sử dụng pipe "echo y" để tự động vượt qua câu hỏi xác nhận của Corepack công khai
+# Tải và chạy script cài đặt Standalone của pnpm (Hoàn toàn tự động, không hỏi)
 if ! command -v pnpm &> /dev/null; then
-    echo "y" | corepack prepare pnpm@latest --activate
+    curl -fsSL https://get.pnpm.io/install.sh | env SHELL="$(which bash)" bash -
 fi
 
-# Cấu hình cứng để pnpm luôn cài lệnh vào thư mục của User thường
+# Cấu hình cứng để pnpm luôn lưu các thay đổi vào thư mục của User thường
 pnpm config set global-dir "${REAL_HOME}/.local/share/pnpm/store" --global
 pnpm config set global-bin-dir "${REAL_HOME}/.local/share/pnpm" --global
 
-# Thêm đường dẫn PATH vào .bashrc của User nếu chưa có
+# Thêm đường dẫn PATH vào .bashrc của User nếu pnpm installer chưa làm
 if ! grep -q "${USER_PNPM_BIN}" "${REAL_HOME}/.bashrc"; then
     echo "" >> "${REAL_HOME}/.bashrc"
     echo "# OpenClaw pnpm PATH" >> "${REAL_HOME}/.bashrc"
