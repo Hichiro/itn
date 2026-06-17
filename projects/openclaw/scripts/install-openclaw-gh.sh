@@ -71,6 +71,14 @@ fi
 
 # 6. LIÊN KẾT HỆ THỐNG VÀ KHỞI CHẠY DAEMON
 echo "--- [5/5] Cấu hình môi trường thực thi và kích hoạt OpenClaw... ---"
+
+# Cấu hình biến môi trường PATH cho pnpm bin toàn cục nếu chưa có
+export PATH="/root/.local/share/pnpm/bin:$PATH"
+if ! grep -q "/root/.local/share/pnpm/bin" ~/.bashrc; then
+    echo 'export PATH="/root/.local/share/pnpm/bin:$PATH"' >> ~/.bashrc
+fi
+
+# Đăng ký lệnh 'openclaw' vào hệ thống
 pnpm link --global
 
 # Dừng cổng kết nối cũ nếu có để tránh xung đột
