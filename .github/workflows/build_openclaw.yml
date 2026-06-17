@@ -59,9 +59,12 @@ jobs:
           pnpm build
           pnpm ui:build
           
+          # Đóng gói LOẠI BỎ hoàn toàn node_modules và các thư mục cache nặng
           tar -czf ../openclaw-release.tar.gz \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.cache' \
             .
           
           cd ..
@@ -70,16 +73,13 @@ jobs:
       - name: Commit build release
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          # 1. Cấu hình thông tin Git Bot trước
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # 2. Đồng bộ trạng thái nhánh main mới nhất từ Server để tránh lệch refs
           git fetch origin main
           git checkout main || git checkout -b main
           git reset --hard origin/main
 
-          # 3. Thực hiện sao lưu và cập nhật bản build mới vào thư mục hạ tầng
           mkdir -p projects/openclaw/history
 
           if [ -f "projects/openclaw/openclaw-release.tar.gz" ]; then
@@ -87,17 +87,11 @@ jobs:
             mv projects/openclaw/openclaw-release.tar.gz projects/openclaw/history/openclaw-release-$OLD_TAG.tar.gz 2>/dev/null || true
           fi
 
-          # Ghi lại file commit token mới nhất (nếu bước check_upstream trước đó bị reset mất)
           echo "${{ steps.check_upstream.outputs.tag_name }}" > projects/openclaw/last_build_version.txt
-
           cp openclaw-release.tar.gz projects/openclaw/openclaw-release.tar.gz
 
-          # 4. Add thay đổi và thực hiện Push an toàn chống xung đột
           git add projects/
           git commit -m "Automated Release OpenClaw Build ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes"
           
-          # Kéo code mới về theo cơ chế Rebase, nếu có xung đột nhẹ sẽ tự động giải quyết lịch sử tuyến tính
           git pull --rebase origin main
-          
-          # Đẩy sản phẩm lên repo
           git push origin main
