@@ -172,7 +172,7 @@ User=${REAL_USER}
 WorkingDirectory=${INSTALL_DIR}
 Environment=COREPACK_DISABLE=1 NODE_ENV=production
 # GIỚI HẠN BỘ NHỚ NODE TỐI ĐA 300MB ĐỂ TRÁNH LÀM SẬP VPS E2-MICRO
-ExecStart=/usr/bin/node --max-old-space-size=300 ${INSTALL_DIR}/dist/index.js gateway start
+ExecStart=/usr/bin/node --max-old-space-size=300 ${INSTALL_DIR}/dist/index.js gateway
 Restart=on-failure
 LimitNOFILE=65536
 
