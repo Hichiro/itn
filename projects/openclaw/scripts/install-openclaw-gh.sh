@@ -1,36 +1,46 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Tên Script: install-openclaw-gh.sh
-# Mô tả:      Tải bản build OpenClaw sạch, tự động cài dependencies trên Debian 12.
-#             Cô lập môi trường pnpm/openclaw trong $HOME của USER thường.
-# Yêu cầu:   Máy ảo Debian 12, người dùng thường có sudo không mật khẩu.
+# Mô tả:      Kiểm tra môi trường, cài đặt các thành phần thiếu,
+#             khởi động daemon và xác minh trạng thái.
+# Yêu cầu:   Debian 12 (hoặc Ubuntu 22.04+), người dùng thường có sudo không mật khẩu.
 # ==============================================================================
 
 # ----------------------------------------------------------------------
-# Cấu hình người dùng / kho GitHub
+# 0️⃣ Cấu hình người dùng / repo GitHub
 # ----------------------------------------------------------------------
-GH_USER_REPO="Hichiro/itn"
+GH_USER_REPO="Hichiro/itn"                 # <-- sửa <user>/<repo> của bạn
 SCRIPT_URL="https://raw.githubusercontent.com/${GH_USER_REPO}/main/projects/openclaw/scripts/install-openclaw-gh.sh"
 
 # ----------------------------------------------------------------------
-# 0️⃣ Kiểm tra môi trường tổng quan
+# 1️⃣ Kiểm tra môi trường tổng quan
 # ----------------------------------------------------------------------
-if [[ -f /etc/os-release ]]; then . /etc/os-release; else echo "❌ /etc/os-release không tồn tại" && exit 1; fi
+# 1.1 Hệ điều hành & phiên bản
+if [[ -f /etc/os-release ]]; then
+    . /etc/os-release
+else
+    echo "❌ Không tìm thấy /etc/os-release" && exit 1
+fi
 [[ "$ID" == "debian" || "$ID" == "ubuntu" ]] || { echo "❌ Chỉ hỗ trợ Debian/Ubuntu"; exit 1; }
-(( VERSION_ID >= 12 )) || { echo "❌ Yêu cầu Debian 12+"; exit 1; }
+(( VERSION_ID >= 12 )) || { echo "❌ Yêu cầu Debian 12+ (hiện: $VERSION_ID)"; exit 1; }
 
+# 1.2 Kiến trúc CPU (Node v24 chỉ có binary cho amd64)
 arch=$(dpkg --print-architecture)
-[[ "$arch" == "amd64" ]] || { echo "❌ Node v24 chỉ hỗ trợ amd64 (hiện: $arch)"; exit 1; }
+[[ "$arch" == "amd64" ]] || { echo "❌ Node v24 chỉ hỗ trợ amd64 (hiện: $arch)"; exit 1; }
 
-# sudo không mật khẩu (không bắt buộc – chỉ thông báo)
-sudo -n true 2>/dev/null || echo "⚠️  User không có sudo không mật khẩu – sẽ yêu cầu nhập khi cần."
+# 1.3 Kiểm tra sudo không mật khẩu (không bắt buộc, chỉ cảnh báo)
+sudo -n true 2>/dev/null || echo "⚠️  User không có sudo không mật khẩu – sẽ được hỏi khi cần."
 
-ping -c1 -W2 raw.githubusercontent.com >/dev/null 2>&1 || { echo "❌ Không thể kết nối tới GitHub"; exit 1; }
+# 1.4 Kết nối Internet
+ping -c1 -W2 raw.githubusercontent.com >/dev/null 2>&1 || { echo "❌ Không thể ping GitHub"; exit 1; }
 
-for cmd in curl wget; do command -v $cmd >/dev/null || { echo "❌ $cmd chưa được cài đặt – sudo apt-get install $cmd"; exit 1; }; done
+# 1.5 Công cụ tải
+for cmd in curl wget; do
+    command -v $cmd >/dev/null || { echo "❌ $cmd chưa được cài đặt – sudo apt-get install $cmd"; exit 1; }
+done
 
 # ----------------------------------------------------------------------
-# 1️⃣ Ngăn chạy trực tiếp dưới root
+# 2️⃣ Ngăn chạy trực tiếp dưới root
 # ----------------------------------------------------------------------
 if [ "$EUID" -eq 0 ] && [ -z "$SUDO_USER" ]; then
     echo "❌ Không chạy script bằng root trực tiếp. Hãy chạy dưới user thường."
@@ -38,7 +48,7 @@ if [ "$EUID" -eq 0 ] && [ -z "$SUDO_USER" ]; then
 fi
 
 # ----------------------------------------------------------------------
-# 2️⃣ Xác định người dùng thực thi
+# 3️⃣ Xác định người dùng thực thi
 # ----------------------------------------------------------------------
 if [ -n "$SUDO_USER" ]; then
     REAL_USER="$SUDO_USER"
@@ -47,79 +57,73 @@ else
     REAL_USER="$USER"
     REAL_HOME="$HOME"
 fi
-echo "▶ Cài đặt cho $REAL_USER ($REAL_HOME)"
+echo "▶ Đang thực hiện cho $REAL_USER ($REAL_HOME)"
 
 # ----------------------------------------------------------------------
-# 3️⃣ Thư mục cài đặt
+# 4️⃣ Định nghĩa các hàm kiểm tra / cài đặt
 # ----------------------------------------------------------------------
-INSTALL_DIR="${REAL_HOME}/openclaw-agent"
-if [[ -d "$INSTALL_DIR" ]]; then
-    read -p "📂 Thư mục $INSTALL_DIR đã tồn tại. Ghi đè? [y/N] " ans
-    [[ "$ans" =~ ^[Yy]$ ]] || { echo "🛑 Hủy cài đặt."; exit 0; }
-fi
-mkdir -p "$INSTALL_DIR"
+check_node() {
+    if command -v node &>/dev/null && [[ "$(node -v)" =~ ^v24 ]]; then
+        echo "✅ Node.js v24 đã có"
+        return 0
+    else
+        return 1
+    fi
+}
 
-# ----------------------------------------------------------------------
-# 4️⃣ Kiểm tra / cài Node.js v24
-# ----------------------------------------------------------------------
-if command -v node &>/dev/null && [[ "$(node -v)" =~ ^v24 ]]; then
-    echo "✅ Node.js v24 đã có."
-    NODE_INSTALLED=1
-else
-    NODE_INSTALLED=0
-fi
-
-if (( NODE_INSTALLED == 0 )); then
+install_node() {
     echo "🚀 Cài Node.js v24 (sudo)…"
     curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
     sudo apt-get update
     sudo apt-get install -y nodejs
-fi
+}
 
-# ----------------------------------------------------------------------
-# 5️⃣ Kiểm tra / cài pnpm (standalone)
-# ----------------------------------------------------------------------
-if ! command -v pnpm &>/dev/null; then
+check_pnpm() {
+    command -v pnpm &>/dev/null
+}
+
+install_pnpm() {
     echo "🚀 Cài pnpm (standalone)…"
     env COREPACK_DISABLE=1 SHELL="$(which bash)" \
         curl -fsSL https://get.pnpm.io/install.sh | bash -s -- --disable-version-check
     export PATH="$HOME/.local/share/pnpm:$PATH"
-else
-    echo "✅ pnpm đã có."
-fi
+}
 
-# ----------------------------------------------------------------------
-# 6️⃣ Tải và giải nén bản phát hành OpenClaw
-# ----------------------------------------------------------------------
-cd "$INSTALL_DIR"
-DOWNLOAD_URL="https://raw.githubusercontent.com/${GH_USER_REPO}/main/projects/openclaw/openclaw-release.tar.gz"
-echo "⬇️  Tải release …"
-wget -qO openclaw-release.tar.gz "$DOWNLOAD_URL"
-tar -xzf openclaw-release.tar.gz && rm -f openclaw-release.tar.gz
+check_release() {
+    [[ -d "$INSTALL_DIR/.git" || -f "$INSTALL_DIR/package.json" ]]
+}
 
-# ----------------------------------------------------------------------
-# 7️⃣ Cài dependencies Node – **không hỏi**
-# ----------------------------------------------------------------------
-echo "📦 pnpm install --production …"
-# Biến này buộc pnpm (và corepack nếu còn) không hiện bất kỳ prompt nào
-export PNPM_SKIP_ASK=1
-pnpm install --production --no-frozen-lockfile
+download_release() {
+    mkdir -p "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
+    DOWNLOAD_URL="https://raw.githubusercontent.com/${GH_USER_REPO}/main/projects/openclaw/openclaw-release.tar.gz"
+    echo "⬇️  Tải release từ $DOWNLOAD_URL …"
+    wget -qO openclaw-release.tar.gz "$DOWNLOAD_URL"
+    tar -xzf openclaw-release.tar.gz && rm -f openclaw-release.tar.gz
+}
 
-# Tạo .env nếu chưa có
-if [ ! -f ".env" ]; then
-    [[ -f ".env.example" ]] && cp .env.example .env || touch .env
-fi
+check_dependencies() {
+    pnpm install --production --no-frozen-lockfile >/dev/null 2>&1
+}
 
-# ----------------------------------------------------------------------
-# 8️⃣ Đăng ký daemon system‑wide (systemd)
-# ----------------------------------------------------------------------
-pnpm install --global .
-USER_PNPM_BIN="$(pnpm bin -g)"
+install_dependencies() {
+    echo "📦 pnpm install --production …"
+    export PNPM_SKIP_ASK=1       # vô hiệu hoá mọi prompt
+    pnpm install --production --no-frozen-lockfile
+}
 
-# Dừng daemon cũ (nếu còn)
-"$USER_PNPM_BIN/openclaw" gateway stop 2>/dev/null || true
+check_service_active() {
+    systemctl is-active --quiet openclaw
+}
 
-sudo tee /etc/systemd/system/openclaw.service > /dev/null <<EOF
+install_service() {
+    pnpm install --global .
+    USER_PNPM_BIN="$(pnpm bin -g)"
+
+    # Dừng daemon cũ nếu còn
+    "$USER_PNPM_BIN/openclaw" gateway stop 2>/dev/null || true
+
+    sudo tee /etc/systemd/system/openclaw.service > /dev/null <<EOF
 [Unit]
 Description=OpenClaw daemon (system‑wide)
 After=network.target
@@ -135,15 +139,65 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 
-sudo systemctl daemon-reload
-sudo systemctl enable --now openclaw.service
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now openclaw.service
+}
 
 # ----------------------------------------------------------------------
-# 9️⃣ Kết thúc
+# 5️⃣ Thực hiện kiểm tra & cài đặt (lần đầu hoặc khi thiếu)
+# ----------------------------------------------------------------------
+INSTALL_DIR="${REAL_HOME}/openclaw-agent"
+
+# 5.1 Node.js
+if ! check_node; then
+    install_node
+else
+    echo "✅ Node.js đã có – bỏ qua cài đặt."
+fi
+
+# 5.2 pnpm
+if ! check_pnpm; then
+    install_pnpm
+else
+    echo "✅ pnpm đã có – bỏ qua cài đặt."
+fi
+
+# 5.3 Release (mã nguồn OpenClaw)
+if ! check_release; then
+    echo "🚀 Tải và giải nén bản phát hành OpenClaw…"
+    download_release
+else
+    echo "✅ Release đã tồn tại trong $INSTALL_DIR"
+fi
+
+# 5.4 Các phụ thuộc Node
+cd "$INSTALL_DIR"
+if ! check_dependencies; then
+    install_dependencies
+else
+    echo "✅ Các phụ thuộc Node đã được cài (production)."
+fi
+
+# 5.5 Service daemon
+if ! check_service_active; then
+    echo "🚀 Đăng ký và khởi động daemon systemd..."
+    install_service
+else
+    echo "✅ Daemon openclaw đang chạy."
+fi
+
+# ----------------------------------------------------------------------
+# 6️⃣ Xác minh cuối cùng
 # ----------------------------------------------------------------------
 echo "================================================="
-echo "✅ Cài đặt OpenClaw thành công!"
-echo "📂 Thư mục cài đặt : $INSTALL_DIR"
-echo "🚀 Lệnh CLI       : $USER_PNPM_BIN/openclaw"
-echo "🧭 Kiểm tra daemon: sudo systemctl status openclaw"
+echo "🔎 Kiểm tra trạng thái cuối cùng"
+echo "• Node.js      : $(node -v)"
+echo "• pnpm         : $(pnpm -v)"
+echo "• Thư mục cài  : $INSTALL_DIR"
+echo "• Service      : $(systemctl is-active openclaw)"
+echo "• Lệnh CLI    : $(pnpm bin -g)/openclaw"
+echo "================================================="
+echo "✅ Cài đặt và kiểm tra hoàn tất. Bạn có thể sử dụng:"
+echo "   openclaw gateway status"
+echo "   openclaw onboard"
 echo "================================================="
