@@ -1,0 +1,104 @@
+name: Auto Build OpenClaw Release for e2-micro
+
+on:
+  schedule:
+    - cron: '0 19 * * 5' # Tự động chạy vào lúc 02:00 sáng Thứ Bảy hàng tuần (Giờ Việt Nam)
+  workflow_dispatch:     # Cho phép nhấn nút kích hoạt thủ công bất kỳ lúc nào
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+permissions:
+  contents: write
+
+jobs:
+  check-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for new stable tags
+        id: check_upstream
+        run: |
+          # 1. Quét tìm Tag phiên bản mới nhất từ kho lưu trữ OpenClaw gốc
+          UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/openclaw/openclaw.git | awk -F'/' '{print $3}' | grep -E '^[vV]?[0-9]+\.[0-9]+\.[0-9]+$' | tail -n 1)
+          [ -z "$UPSTREAM_TAG" ] && UPSTREAM_TAG=$(git ls-remote --tags --sort='v:refname' https://github.com/openclaw/openclaw.git | awk -F'/' '{print $3}' | grep -vE '(alpha|beta|rc|nightly|\^)' | tail -n 1)
+          
+          # 2. Lấy mã băm Commit của Tag đó
+          UPSTREAM_COMMIT=$(git ls-remote https://github.com/openclaw/openclaw.git refs/tags/$UPSTREAM_TAG | grep -v '\^{}' | awk '{print $1}')
+          
+          # 3. So sánh với lịch sử bản build trước đó lưu trong dự án của bạn
+          LOCAL_COMMIT=$(cat projects/openclaw/last_build_commit.txt 2>/dev/null || echo "")
+          
+          if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
+            echo "has_update=false" >> $GITHUB_OUTPUT
+            echo "--- Không có bản cập nhật mới từ OpenClaw gốc. ---"
+          else
+            echo "has_update=true" >> $GITHUB_OUTPUT
+            echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
+            mkdir -p projects/openclaw
+            echo "$UPSTREAM_COMMIT" > projects/openclaw/last_build_commit.txt
+            echo "--- Phát hiện phiên bản mới: $UPSTREAM_TAG ---"
+          fi
+
+      - name: Clone source code
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          git clone --branch ${{ steps.check_upstream.outputs.tag_name }} --single-branch --depth 1 \
+            https://github.com/openclaw/openclaw.git source-code
+
+      - name: Setup Bun Runtime
+        if: steps.check_upstream.outputs.has_update == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Build and Package App
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          cd source-code
+          
+          # Tiến hành cài đặt thư viện production sạch, tốc độ cao bằng Bun
+          bun install --production
+          
+          # Đóng gói toàn bộ source code + node_modules thành file nén duy nhất
+          tar -czf ../openclaw-release.tar.gz \
+            --exclude='.git' \
+            --exclude='.github' \
+            .
+          
+          cd ..
+          ls -lh openclaw-release.tar.gz
+
+      - name: Commit build release
+        if: steps.check_upstream.outputs.has_update == 'true'
+        run: |
+          git checkout main || git checkout -b main
+
+          # Tạo cấu trúc thư mục lưu trữ tương tự PicoClaw
+          mkdir -p projects/openclaw/history
+
+          # Sao lưu (Backup) bản build cũ vào thư mục history nếu tồn tại
+          if [ -f "projects/openclaw/openclaw-release.tar.gz" ]; then
+            OLD_TAG=$(cat projects/openclaw/last_build_commit.txt 2>/dev/null | head -c 8 || echo "old")
+            mv projects/openclaw/openclaw-release.tar.gz projects/openclaw/history/openclaw-release-$OLD_TAG.tar.gz 2>/dev/null || true
+          fi
+
+          # Di chuyển gói sản phẩm mới vào đúng thư mục quản lý hạ tầng
+          cp openclaw-release.tar.gz projects/openclaw/openclaw-release.tar.gz
+
+          # Kiểm tra cấu trúc thư mục sau khi build thành công
+          ls -la projects/openclaw/
+
+          # Thiết lập thông tin Git Bot của hệ thống và tiến hành đẩy lên repo
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          git add projects/
+          
+          git commit -m "Automated Release OpenClaw Build ${{ steps.check_upstream.outputs.tag_name }} [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main
+          git push origin main
