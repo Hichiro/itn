@@ -9,7 +9,7 @@
 # 1. PHẦN TỰ ĐỘNG HÓA KẾT NỐI (CHẠY TRÊN CLOUD SHELL NẾU ĐƯỢC GỌI TỪ NGOÀI)
 if [ -n "$DEVSHELL_PROJECT_ID" ]; then
     echo "--- Phát hiện Cloud Shell: Đang kết nối vào VM... ---"
-    gcloud compute ssh e2micro --project=free-e2micro --zone=us-west1-b --tunnel-through-iap --command="bash -s" < "$0"
+    gcloud compute ssh e2micro-vm --project=free-e2micro --zone=us-west1-b --tunnel-through-iap --command="bash -s" < "$0"
     exit
 fi
 
