@@ -1,16 +1,14 @@
 #!/bin/bash
 
 # ==============================================================================
+# Tên Script: deploy-gcp-manual.sh (Script 1)
 # Mô tả: 
-#   Tự động khởi tạo máy ảo Compute Engine cấu hình MIỄN PHÍ (e2-micro) trên
-#   Google Cloud Platform (GCP). Script hỗ trợ tương tác tự động lấy Project ID, 
-#   chọn tên VM và lựa chọn hệ điều hành tối ưu (Debian 12 hoặc COS).
-#   Máy ảo sau khi tạo sẽ tự động kích hoạt 2GB RAM ảo (SWAP) phù hợp theo từng OS.
+#   Tự động khởi tạo máy ảo Compute Engine cấu hình MIỄN PHÍ (e2-micro) trên GCP.
+#   Không cài đặt cấu hình tường lửa. Tự động gọi Script 2 qua link raw GitHub
+#   để thực thi các thiết lập hệ thống sâu hơn ngay khi khởi động.
 #
-# HƯỚNG DẪN CHẠY BẰNG GCLOUD CLI:
-# ------------------------------------------------------------------------------
-# Cách chạy an toàn bằng link GitHub (Không lo bị lỗi nuốt lệnh read):
-#   bash <(curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
+# HƯỚNG DẪN CHẠY:
+#   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
 # ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
@@ -53,6 +51,9 @@ MACHINE_TYPE="e2-micro" # Máy ảo miễn phí
 BOOT_DISK_SIZE="30GB" # Dung lượng tối đa miễn phí
 BOOT_DISK_TYPE="pd-standard" # Loại ổ đĩa tiêu chuẩn miễn phí
 
+# Link raw của Script 2 trên GitHub để VM tự tải về thực thi khi boot
+SCRIPT_2_URL="https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-init-setup.sh"
+
 # =====================================================================
 # EXECUTION
 # =====================================================================
@@ -60,16 +61,7 @@ echo "------------------------------------------------"
 echo "=== [GCP] 1. Thiết lập dự án: $PROJECT_ID ==="
 gcloud config set project "$PROJECT_ID"
 
-echo "=== [GCP] 2. Tạo tường lửa SSH tối giản ==="
-gcloud compute firewall-rules create allow-ssh-minimal \
-    --direction=INGRESS \
-    --priority=1000 \
-    --network=default \
-    --action=ALLOW \
-    --rules=tcp:22 \
-    --target-tags=mcp-node 2>/dev/null || echo "Tường lửa đã tồn tại, bỏ qua..."
-
-echo "=== [GCP] 3. Đang tiến hành tạo máy ảo miễn phí... ==="
+echo "=== [GCP] 2. Đang tiến hành tạo máy ảo miễn phí... ==="
 gcloud compute instances create "$VM_NAME" \
     --project="$PROJECT_ID" \
     --zone="$ZONE" \
@@ -79,41 +71,11 @@ gcloud compute instances create "$VM_NAME" \
     --provisioning-model=STANDARD \
     --tags=mcp-node \
     --create-disk=auto-delete=yes,boot=yes,image-family="$IMAGE_FAMILY",image-project="$IMAGE_PROJECT",mode=rw,size="$BOOT_DISK_SIZE",type="$BOOT_DISK_TYPE" \
-    --metadata=startup-script="#! /bin/bash
-    # Xác định đường dẫn file SWAP an toàn dựa trên OS (COS bắt buộc dùng /var)
-    if [ -d '/var' ] && [ ! -w '/' ]; then
-        SWAP_PATH='/var/swapfile'
-    else
-        SWAP_PATH='/swapfile'
-    fi
-
-    # Tối ưu log hệ thống (chỉ áp dụng nếu là Debian)
-    if [ -d '/etc/systemd/' ]; then
-        mkdir -p /etc/systemd/journald.conf.d/
-        echo -e '[Journal]\nSystemMaxUse=50M' > /etc/systemd/journald.conf.d/maxuse.conf
-        systemctl restart systemd-journald 2>/dev/null
-    fi
-
-    # CẤU HÌNH TỰ ĐỘNG BẬT SWAP 2GB
-    if [ ! -f \"\$SWAP_PATH\" ]; then
-        dd if=/dev/zero of=\"\$SWAP_PATH\" bs=1M count=2048
-        chmod 600 \"\$SWAP_PATH\"
-        mkswap \"\$SWAP_PATH\"
-    fi
-    
-    swapon \"\$SWAP_PATH\"
-
-    # Ghi cấu hình vĩnh viễn nếu hệ thống cho phép sửa fstab (Debian)
-    if [ -w '/etc/fstab' ]; then
-        if ! grep -q \"\$SWAP_PATH\" /etc/fstab; then
-            echo \"\$SWAP_PATH none swap sw 0 0\" >> /etc/fstab
-        fi
-    fi
-    "
+    --metadata=startup-script-url="$SCRIPT_2_URL"
 
 if [ $? -eq 0 ]; then
     echo "---------------------------------------------------------------------"
-    echo "[SUCCESS] Máy ảo $VM_NAME đã được tạo và cấu hình SWAP tự động thành công!"
+    echo "[SUCCESS] Máy ảo $VM_NAME đã được tạo thành công!"
     echo "---------------------------------------------------------------------"
     echo "Kết nối vào máy ảo bằng lệnh:"
     echo "gcloud compute ssh --zone \"$ZONE\" \"$VM_NAME\" --project \"$PROJECT_ID\""
