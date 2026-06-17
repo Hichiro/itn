@@ -55,11 +55,26 @@ jobs:
         run: |
           cd source-code
           corepack enable
+          
+          # XOÁ CÁC GÓI AI LOCAL NẶNG ĐỂ TRÁNH TRÀN RAM MÁY ẢO E2-MICRO
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            if (pkg.dependencies) {
+              delete pkg.dependencies['node-llama-cpp'];
+              delete pkg.dependencies['@node-llama-cpp/linux-x64'];
+              delete pkg.dependencies['@node-llama-cpp/linux-x64-cuda'];
+              delete pkg.dependencies['@node-llama-cpp/linux-x64-cuda-ext'];
+              delete pkg.dependencies['@node-llama-cpp/linux-x64-vulkan'];
+            }
+            fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2));
+          "
+
           pnpm install
           pnpm build
           pnpm ui:build
           
-          # Đóng gói LOẠI BỎ hoàn toàn node_modules và các thư mục cache nặng
+          # Đóng gói LOẠI BỎ node_modules và các thư mục cache nặng
           tar -czf ../openclaw-release.tar.gz \
             --exclude='.git' \
             --exclude='.github' \
