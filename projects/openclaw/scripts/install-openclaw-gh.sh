@@ -3,17 +3,33 @@
 # ==============================================================================
 # Tên Script: install-openclaw-gh.sh
 # Mô tả: Tải bản build OpenClaw sạch, tự động cài dependencies tinh gọn tại VM.
-#        Sửa lỗi cú pháp lệnh pnpm link trên các phiên bản pnpm mới.
-# CHẠY TRÊN: Máy ảo Debian 12 (Quyền root/sudo).
+#        Chặn cài đặt bằng tài khoản root để đảm bảo an toàn hệ thống.
+# CHẠY TRÊN: Máy ảo Debian 12 (Quyền user thường có cấu hình sudo).
 # ==============================================================================
 
 # Thông tin tài khoản và kho lưu trữ GitHub của bạn
 GH_USER_REPO="Hichiro/itn" 
 SCRIPT_URL="https://raw.githubusercontent.com/${GH_USER_REPO}/main/projects/openclaw/scripts/install-openclaw-gh.sh"
 
-# 1. SỬA LỖI /dev/fd: Tải về file vật lý trong /tmp trước khi nâng quyền root
+# 1. CHẶN ROOT & TỰ ĐỘNG XỬ LÝ QUYỀN TRÊN USER THƯỜNG
+# Kiểm tra nếu người dùng thực sự đăng nhập trực tiếp bằng root (SUDO_USER không tồn tại)
+if [ "$EUID" -eq 0 ] && [ -z "$SUDO_USER" ]; then
+    echo "================================================="
+    echo "❌ LỖI BẢO MẬT: KHÔNG ĐƯỢC PHÉP CÀI ĐẶT BẰNG TÀI KHOẢN ROOT!"
+    echo "================================================="
+    echo "Để bảo vệ hệ thống khỏi các rủi ro tiêm lệnh (prompt injection) từ AI,"
+    echo "OpenClaw yêu cầu phải được cài đặt và chạy dưới quyền user thường."
+    echo ""
+    echo "👉 Hướng dẫn khắc phục:"
+    echo " 1. Thoát tài khoản root bằng lệnh: exit"
+    echo " 2. Chạy lại script bằng tài khoản user của bạn."
+    echo "================================================="
+    exit 1
+fi
+
+# Nếu là user thường chạy script, tự động dùng sudo tải file tạm và chạy nâng quyền
 if [ "$EUID" -ne 0 ]; then
-    echo "Đang yêu cầu nâng quyền root bằng sudo..."
+    echo "Đang xác thực quyền quản trị để cài đặt gói hệ thống..."
     curl -fsSL "$SCRIPT_URL" -o /tmp/install-openclaw-gh.sh
     exec sudo bash /tmp/install-openclaw-gh.sh "$@"
 fi
@@ -22,6 +38,9 @@ fi
 trap 'rm -f /tmp/install-openclaw-gh.sh' EXIT
 
 set -e
+
+# Xác định thư mục home chuẩn của user thực tế (ngay cả khi đang chạy dưới sudo)
+REAL_USER_HOME=$(eval echo "~$SUDO_USER")
 
 echo "================================================="
 echo "🚀 ĐANG TRIỂN KHAI OPENCLAW NATIVE TỪ BẢN BUILD GITHUB"
@@ -67,30 +86,39 @@ if [ ! -f ".env" ]; then
     else
         touch .env
     fi
+    # Phân quyền lại file .env cho user thực sở hữu
+    chown "$SUDO_USER:$SUDO_USER" .env
 fi
 
 # 6. LIÊN KẾT HỆ THỐNG VÀ KHỞI CHẠY DAEMON
 echo "--- [5/5] Cấu hình môi trường thực thi và kích hoạt OpenClaw... ---"
 
-# Cấu hình biến môi trường PATH cho pnpm bin toàn cục nếu chưa có
-export PATH="/root/.local/share/pnpm/bin:$PATH"
-if ! grep -q "/root/.local/share/pnpm/bin" ~/.bashrc; then
-    echo 'export PATH="/root/.local/share/pnpm/bin:$PATH"' >> ~/.bashrc
+# Cấu hình biến môi trường PATH cho pnpm bin toàn cục của USER THỰC TẾ
+USER_PNPM_BIN="${REAL_USER_HOME}/.local/share/pnpm/bin"
+export PATH="${USER_PNPM_BIN}:$PATH"
+
+if ! grep -q "${USER_PNPM_BIN}" "${REAL_USER_HOME}/.bashrc"; then
+    echo "export PATH=\"${USER_PNPM_BIN}:\$PATH\"" >> "${REAL_USER_HOME}/.bashrc"
+    chown "$SUDO_USER:$SUDO_USER" "${REAL_USER_HOME}/.bashrc"
 fi
 
 # Sử dụng lệnh thay thế an toàn cho pnpm mới để đăng ký lệnh 'openclaw' toàn cục
 pnpm install --global .
 
+# Chuyển giao quyền sở hữu thư mục cài đặt /opt/openclaw cho user để không bị lỗi Permission sau này
+chown -R "$SUDO_USER:$SUDO_USER" "$INSTALL_DIR"
+
 # Dừng cổng kết nối cũ nếu có để tránh xung đột
 openclaw gateway stop 2>/dev/null || true
 
-# Kích hoạt dịch vụ daemon chạy ngầm theo tài liệu chuẩn OpenClaw
-openclaw onboard --install-daemon
+# Thực thi lệnh onboard với tư cách của user thường để tạo config tại thư mục home của user
+sudo -u "$SUDO_USER" env "PATH=$PATH" openclaw onboard --install-daemon
 
 echo "================================================="
 echo "🎉 HOÀN TẤT CÀI ĐẶT OPENCLAW SẠCH TỪ GITHUB ACTIONS!"
 echo "================================================="
 echo "• Thư mục cài đặt: $INSTALL_DIR"
+echo "• Tài khoản sở hữu: $SUDO_USER"
 echo "• Kiểm tra trạng thái hệ thống: openclaw gateway status"
 echo "• Bắt đầu cấu hình agent ban đầu: openclaw onboard"
 echo "================================================="
