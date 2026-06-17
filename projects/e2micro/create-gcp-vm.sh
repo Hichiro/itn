@@ -1,24 +1,35 @@
 #!/bin/bash
+
+# ==============================================================================
+# Tên Script: deploy-gcp-manual.sh
 # Mô tả: 
 #   Tự động khởi tạo máy ảo Compute Engine cấu hình MIỄN PHÍ (e2-micro) trên
-#   Google Cloud Platform (GCP). Script hỗ trợ tương tác nhập Project ID, tên VM 
-#   và lựa chọn hệ điều hành tối ưu (Debian 12 hoặc COS).
+#   Google Cloud Platform (GCP). Script hỗ trợ tương tác tự động lấy Project ID, 
+#   chọn tên VM và lựa chọn hệ điều hành tối ưu (Debian 12 hoặc COS).
 #   Máy ảo sau khi tạo sẽ tự động kích hoạt 2GB RAM ảo (SWAP) phù hợp theo từng OS.
 #
 # HƯỚNG DẪN CHẠY BẰNG GCLOUD CLI:
-#   Chạy trực tiếp từ xa qua URL GitHub (Nhanh nhất, không cần tải file)
-#   Mở Terminal hoặc Cloud Shell của bạn và thực thi lệnh sau:
-#   curl -sL https://raw.githubusercontent.com/<Tên_User>/<Tên_Repo>/main/create-gcp-vm.sh | bash
+# ------------------------------------------------------------------------------
+# Cách chạy an toàn bằng link GitHub (Không lo bị lỗi nuốt lệnh read):
+#   bash <(curl -sL https://raw.githubusercontent.com/<User>/<Repo>/main/deploy-gcp-manual.sh)
+# ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
 
-# 1. Hỏi Project ID
-read -p "Nhập GCP Project ID của bạn: " PROJECT_ID
-if [ -z "$PROJECT_ID" ]; then echo "[ERROR] Project ID không được để trống!"; exit 1; fi
+# 1. Tự động lấy Project ID hiện tại từ hệ thống gcloud
+DETECTED_PROJECT=$(gcloud config get-value project 2>/dev/null)
+
+if [ -n "$DETECTED_PROJECT" ]; then
+    read -p "Tìm thấy Project ID hiện tại là [$DETECTED_PROJECT]. Nhấn Enter để dùng luôn hoặc nhập Project ID mới: " PROJECT_ID
+    PROJECT_ID=${PROJECT_ID:-$DETECTED_PROJECT}
+else
+    read -p "Không tìm thấy project mặc định. Vui lòng nhập GCP Project ID của bạn: " PROJECT_ID
+    if [ -z "$PROJECT_ID" ]; then echo "[ERROR] Project ID không được để trống!"; exit 1; fi
+fi
 
 # 2. Hỏi VM Name
-read -p "Nhập tên Máy ảo muốn tạo (mặc định: openclaw-vm): " VM_NAME
-VM_NAME=${VM_NAME:-e2micro}
+read -p "Nhập tên Máy ảo muốn tạo (mặc định: e2micro-vm): " VM_NAME
+VM_NAME=${VM_NAME:-e2micro-vm}
 
 # 3. Lựa chọn IMAGE_FAMILY
 echo "------------------------------------------------"
@@ -50,7 +61,16 @@ echo "------------------------------------------------"
 echo "=== [GCP] 1. Thiết lập dự án: $PROJECT_ID ==="
 gcloud config set project "$PROJECT_ID"
 
-echo "=== [GCP] 2. Đang tiến hành tạo máy ảo miễn phí... ==="
+echo "=== [GCP] 2. Tạo tường lửa SSH tối giản ==="
+gcloud compute firewall-rules create allow-ssh-minimal \
+    --direction=INGRESS \
+    --priority=1000 \
+    --network=default \
+    --action=ALLOW \
+    --rules=tcp:22 \
+    --target-tags=mcp-node 2>/dev/null || echo "Tường lửa đã tồn tại, bỏ qua..."
+
+echo "=== [GCP] 3. Đang tiến hành tạo máy ảo miễn phí... ==="
 gcloud compute instances create "$VM_NAME" \
     --project="$PROJECT_ID" \
     --zone="$ZONE" \
