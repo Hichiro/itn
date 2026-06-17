@@ -4,14 +4,14 @@
 # Tên Script: vm-ssh-setup.sh (Script 3)
 # Mô tả: Đặt mật khẩu và cấu hình mở quyền truy cập SSH bằng mật khẩu cho Debian.
 #
-# CÁCH CHẠY DUY NHẤT TỪ CLOUD SHELL (Copy dán và ấn Enter):
-#   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-password-setup.sh)
+# CÁCH CHẠY TỪ CLOUD SHELL (Copy dán và ấn Enter):
+#   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh)
 # ==============================================================================
 
 # Link raw của chính Script 3 trên GitHub của bạn
 SCRIPT_3_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh"
 
-# 1. PHẦN XỬ LÝ KHI CHẠY TỪ CLOUD SHELL (Tự động SSH vào VM và ra lệnh tải file an toàn)
+# 1. PHẦN XỬ LÝ KHI CHẠY TỪ CLOUD SHELL
 if [ -n "$DEVSHELL_PROJECT_ID" ]; then
     echo "--- Phát hiện Cloud Shell: Đang kết nối trực tiếp vào VM... ---"
     
@@ -24,11 +24,16 @@ if [ -n "$DEVSHELL_PROJECT_ID" ]; then
     exit
 fi
 
-# 2. PHẦN CẤU HÌNH BÊN TRONG VM (Chỉ chạy khi lệnh SSH phía trên được kích hoạt)
+# 2. PHẦN CẤU HÌNH BÊN TRONG VM
+# Sửa lỗi /dev/fd: Tải về file vật lý trong /tmp trước khi chạy với sudo
 if [ "$EUID" -ne 0 ]; then
     echo "Đang yêu cầu nâng quyền root bằng sudo..."
-    exec sudo bash <(curl -sL $SCRIPT_3_URL)
+    curl -sL "$SCRIPT_3_URL" -o /tmp/vm-password-setup.sh
+    exec sudo bash /tmp/vm-password-setup.sh
 fi
+
+# Tự động xóa file tạm sau khi script kết thúc chạy với quyền root
+trap 'rm -f /tmp/vm-password-setup.sh' EXIT
 
 # Tự động phát hiện hệ điều hành để tránh lỗi trên COS
 if [ -d '/var' ] && [ ! -w '/' ]; then
