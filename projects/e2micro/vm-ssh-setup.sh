@@ -1,29 +1,39 @@
 #!/bin/bash
 
 # ==============================================================================
-# Tên Script: vm-password-setup.sh (Script 3)
+# Tên Script: vm-ssh-setup.sh (Script 3)
 # Mô tả: Đặt mật khẩu và cấu hình mở quyền truy cập SSH bằng mật khẩu cho Debian.
-# CHẠY TRÊN: Có thể chạy từ Cloud Shell (tự động kết nối) hoặc chạy trực tiếp trong VM.
+#
+# CÁCH CHẠY DUY NHẤT TỪ CLOUD SHELL (Copy dán và ấn Enter):
+#   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-password-setup.sh)
 # ==============================================================================
 
-# 1. PHẦN TỰ ĐỘNG HÓA KẾT NỐI (CHẠY TRÊN CLOUD SHELL NẾU ĐƯỢC GỌI TỪ NGOÀI)
+# Link raw của chính Script 3 trên GitHub của bạn
+SCRIPT_3_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh"
+
+# 1. PHẦN XỬ LÝ KHI CHẠY TỪ CLOUD SHELL (Tự động SSH vào VM và ra lệnh tải file an toàn)
 if [ -n "$DEVSHELL_PROJECT_ID" ]; then
-    echo "--- Phát hiện Cloud Shell: Đang kết nối vào VM... ---"
-    gcloud compute ssh e2micro-vm --project=free-e2micro --zone=us-west1-b --tunnel-through-iap --command="bash -s" < "$0"
+    echo "--- Phát hiện Cloud Shell: Đang kết nối trực tiếp vào VM... ---"
+    
+    # Ép VM phải tự dùng curl để tải script từ GitHub, giữ sạch luồng gõ bàn phím (stdin)
+    gcloud compute ssh e2micro \
+        --project=free-e2micro \
+        --zone=us-west1-b \
+        --tunnel-through-iap \
+        --command="bash <(curl -sL $SCRIPT_3_URL)"
     exit
 fi
 
-# 2. PHẦN CẤU HÌNH TRONG VM
+# 2. PHẦN CẤU HÌNH BÊN TRONG VM (Chỉ chạy khi lệnh SSH phía trên được kích hoạt)
 if [ "$EUID" -ne 0 ]; then
     echo "Đang yêu cầu nâng quyền root bằng sudo..."
-    exec sudo "$0" "$@"
+    exec sudo bash <(curl -sL $SCRIPT_3_URL)
 fi
 
 # Tự động phát hiện hệ điều hành để tránh lỗi trên COS
 if [ -d '/var' ] && [ ! -w '/' ]; then
     echo "[LƯU Ý] Phát hiện hệ điều hành Container-Optimized OS (COS)."
     echo "COS không hỗ trợ xác thực SSH bằng mật khẩu do phân vùng hệ thống bị khóa."
-    echo "Tiến hành bỏ qua bước cấu hình file sshd_config..."
     IS_COS=true
 else
     IS_COS=false
