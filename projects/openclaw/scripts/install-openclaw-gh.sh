@@ -59,25 +59,18 @@ fi
 echo "--- [2/5] Đang cài đặt pnpm vào môi trường User độc lập... ---"
 
 # Khai báo sẵn các biến môi trường cho phiên script hiện tại
-USER_PNPM_BIN="${REAL_HOME}/.local/share/pnpm"
-export PNPM_HOME="$USER_PNPM_BIN"
-export PATH="$USER_PNPM_BIN:$PATH"
-
-# Tải và chạy script cài đặt Standalone của pnpm (Hoàn toàn tự động, không hỏi)
-if ! command -v pnpm &> /dev/null; then
-    curl -fsSL https://get.pnpm.io/install.sh | env SHELL="$(which bash)" bash -
+if command -v pnpm &> /dev/null; then
+# Nếu pnpm đã tồn tại và là standalone (có PNPM_HOME trong output của --version hoặc nằm trong HOME), giữ nguyên
+PNPM_PATH="$(command -v pnpm)"
+if echo "$PNPM_PATH" | grep -q "${REAL_HOME}" ; then
+echo "pnpm đã cài trong phạm vi user: $PNPM_PATH — bỏ qua cài đặt."
+else
+echo "pnpm đã cài ở hệ thống: $PNPM_PATH — sẽ bỏ qua cài đặt để tránh can thiệp system-wide."
 fi
-
-# Cấu hình cứng để pnpm luôn lưu các thay đổi vào thư mục của User thường
-pnpm config set global-dir "${REAL_HOME}/.local/share/pnpm/store" --global
-pnpm config set global-bin-dir "${REAL_HOME}/.local/share/pnpm" --global
-
-# Thêm đường dẫn PATH vào .bashrc của User nếu pnpm installer chưa làm
-if ! grep -q "${USER_PNPM_BIN}" "${REAL_HOME}/.bashrc"; then
-    echo "" >> "${REAL_HOME}/.bashrc"
-    echo "# OpenClaw pnpm PATH" >> "${REAL_HOME}/.bashrc"
-    echo "export PNPM_HOME=\"${USER_PNPM_BIN}\"" >> "${REAL_HOME}/.bashrc"
-    echo "export PATH=\"\${PNPM_HOME}:\$PATH\"" >> "${REAL_HOME}/.bashrc"
+else
+echo "pnpm chưa tồn tại — tiến hành cài đặt standalone (non-interactive)..."
+env COREPACK_DISABLE=1 SHELL="$(which bash)" \
+curl -fsSL https://get.pnpm.io/install.sh | bash -s -- --disable-version-check
 fi
 
 # 4. TẢI VÀ GIẢI NÉN BẢN PHÁT HÀNH SẠCH TỪ REPO
