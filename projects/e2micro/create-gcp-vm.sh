@@ -10,7 +10,7 @@
 # HƯỚNG DẪN CHẠY BẰNG GCLOUD CLI:
 # ------------------------------------------------------------------------------
 # Cách chạy an toàn bằng link GitHub (Không lo bị lỗi nuốt lệnh read):
-#   bash <(curl -sL https://raw.githubusercontent.com/Hichir/int/main/create-gcp-vm.sh)
+#   bash <(curl -sL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/create-gcp-vm.sh)
 # ==============================================================================
 
 echo "=== CẤU HÌNH THÔNG TIN MÁY ẢO GCP ==="
@@ -26,7 +26,7 @@ else
     if [ -z "$PROJECT_ID" ]; then echo "[ERROR] Project ID không được để trống!"; exit 1; fi
 fi
 
-# 2. Hỏi VM Name
+# 2. Hỏi VM Name (Mặc định: e2micro-vm)
 read -p "Nhập tên Máy ảo muốn tạo (mặc định: e2micro-vm): " VM_NAME
 VM_NAME=${VM_NAME:-e2micro-vm}
 
