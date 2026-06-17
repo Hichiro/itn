@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # ==============================================================================
 # Tên Script: install-openclaw-gh.sh
-# Mô tả:      Kiểm tra môi trường, cài đặt các thành phần thiếu,
-#             khởi động daemon và xác minh trạng thái.
-# Yêu cầu:   Debian 12 (hoặc Ubuntu 22.04+), người dùng thường có sudo không mật khẩu.
+# Mô tả:      Kiểm tra môi trường, cài đặt các thành phần thiếu (config, node_modules),
+#             khởi động daemon chạy ngầm và xác minh trạng thái.
+# Yêu cầu:    Debian 12+ (hoặc Ubuntu 22.04+), người dùng thường có sudo.
 # ==============================================================================
 
 # ----------------------------------------------------------------------
@@ -21,21 +21,29 @@ if [[ -f /etc/os-release ]]; then
 else
     echo "❌ Không tìm thấy /etc/os-release" && exit 1
 fi
+
 [[ "$ID" == "debian" || "$ID" == "ubuntu" ]] || { echo "❌ Chỉ hỗ trợ Debian/Ubuntu"; exit 1; }
-(( VERSION_ID >= 12 )) || { echo "❌ Yêu cầu Debian 12+ (hiện: $VERSION_ID)"; exit 1; }
 
-# 1.2 Kiến trúc CPU (Node v24 chỉ có binary cho amd64)
+# So sánh phiên bản an toàn cho cả số nguyên và số thập phân
+if [[ "$ID" == "debian" ]]; then
+    (( VERSION_ID >= 12 )) || { echo "❌ Yêu cầu Debian 12+ (hiện: $VERSION_ID)"; exit 1; }
+elif [[ "$ID" == "ubuntu" ]]; then
+    is_valid_ubuntu=$(awk -v ver="$VERSION_ID" 'BEGIN { print (ver >= 22.04) ? 1 : 0 }')
+    [[ "$is_valid_ubuntu" -eq 1 ]] || { echo "❌ Yêu cầu Ubuntu 22.04+ (hiện: $VERSION_ID)"; exit 1; }
+fi
+
+# 1.2 Kiến trúc CPU
 arch=$(dpkg --print-architecture)
-[[ "$arch" == "amd64" ]] || { echo "❌ Node v24 chỉ hỗ trợ amd64 (hiện: $arch)"; exit 1; }
+[[ "$arch" == "amd64" ]] || { echo "❌ Node v24 chỉ hỗ trợ amd64 (hiện: $arch)"; exit 1; }
 
-# 1.3 Kiểm tra sudo không mật khẩu (không bắt buộc, chỉ cảnh báo)
+# 1.3 Kiểm tra sudo
 sudo -n true 2>/dev/null || echo "⚠️  User không có sudo không mật khẩu – sẽ được hỏi khi cần."
 
 # 1.4 Kết nối Internet
 ping -c1 -W2 raw.githubusercontent.com >/dev/null 2>&1 || { echo "❌ Không thể ping GitHub"; exit 1; }
 
 # 1.5 Công cụ tải
-for cmd in curl wget; do
+for cmd in curl wget awk; do
     command -v $cmd >/dev/null || { echo "❌ $cmd chưa được cài đặt – sudo apt-get install $cmd"; exit 1; }
 done
 
@@ -86,7 +94,13 @@ install_pnpm() {
     echo "🚀 Cài pnpm (standalone)…"
     env COREPACK_DISABLE=1 SHELL="$(which bash)" \
         curl -fsSL https://get.pnpm.io/install.sh | bash -s -- --disable-version-check
-    export PATH="$HOME/.local/share/pnpm:$PATH"
+    
+    export PNPM_HOME="$REAL_HOME/.local/share/pnpm"
+    export PATH="$PNPM_HOME:$PATH"
+    
+    if ! grep -q "PNPM_HOME" "$REAL_HOME/.bashrc"; then
+        echo -e "\n# OpenClaw pnpm PATH\nexport PNPM_HOME=\"$PNPM_HOME\"\nexport PATH=\"\$PNPM_HOME:\$PATH\"" >> "$REAL_HOME/.bashrc"
+    fi
 }
 
 check_release() {
@@ -103,13 +117,26 @@ download_release() {
 }
 
 check_dependencies() {
-    pnpm install --production --no-frozen-lockfile >/dev/null 2>&1
+    [[ -d "node_modules" ]]
 }
 
 install_dependencies() {
-    echo "📦 pnpm install --production …"
-    export PNPM_SKIP_ASK=1       # vô hiệu hoá mọi prompt
+    echo "📦 Đang cài đặt thư viện production (pnpm install)…"
+    export PNPM_SKIP_ASK=1
     pnpm install --production --no-frozen-lockfile
+}
+
+check_config() {
+    [[ -f ".env" ]]
+}
+
+setup_config() {
+    echo "⚙️  Khởi tạo file cấu hình .env mặc định..."
+    if [[ -f ".env.example" ]]; then
+        cp .env.example .env
+    else
+        touch .env
+    fi
 }
 
 check_service_active() {
@@ -125,7 +152,7 @@ install_service() {
 
     sudo tee /etc/systemd/system/openclaw.service > /dev/null <<EOF
 [Unit]
-Description=OpenClaw daemon (system‑wide)
+Description=OpenClaw daemon (system-wide)
 After=network.target
 
 [Service]
@@ -144,16 +171,17 @@ EOF
 }
 
 # ----------------------------------------------------------------------
-# 5️⃣ Thực hiện kiểm tra & cài đặt (lần đầu hoặc khi thiếu)
+# 5️⃣ Thực hiện kiểm tra & cài đặt
 # ----------------------------------------------------------------------
 INSTALL_DIR="${REAL_HOME}/openclaw-agent"
 
 # 5.1 Node.js
 if ! check_node; then
     install_node
-else
-    echo "✅ Node.js đã có – bỏ qua cài đặt."
 fi
+
+export PNPM_HOME="$REAL_HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 
 # 5.2 pnpm
 if ! check_pnpm; then
@@ -162,7 +190,7 @@ else
     echo "✅ pnpm đã có – bỏ qua cài đặt."
 fi
 
-# 5.3 Release (mã nguồn OpenClaw)
+# 5.3 Release
 if ! check_release; then
     echo "🚀 Tải và giải nén bản phát hành OpenClaw…"
     download_release
@@ -170,34 +198,45 @@ else
     echo "✅ Release đã tồn tại trong $INSTALL_DIR"
 fi
 
-# 5.4 Các phụ thuộc Node
+# 5.4 Cấu hình & Phụ thuộc Node
 cd "$INSTALL_DIR"
+
+if ! check_config; then
+    setup_config
+else
+    echo "✅ File cấu hình .env đã tồn tại."
+fi
+
 if ! check_dependencies; then
     install_dependencies
 else
-    echo "✅ Các phụ thuộc Node đã được cài (production)."
+    echo "✅ Các thư viện Node đã được cài đặt."
 fi
 
-# 5.5 Service daemon
+# 5.5 Service daemon chạy ngầm
 if ! check_service_active; then
     echo "🚀 Đăng ký và khởi động daemon systemd..."
     install_service
 else
-    echo "✅ Daemon openclaw đang chạy."
+    echo "✅ Daemon openclaw đang chạy ngầm."
 fi
 
 # ----------------------------------------------------------------------
 # 6️⃣ Xác minh cuối cùng
 # ----------------------------------------------------------------------
 echo "================================================="
-echo "🔎 Kiểm tra trạng thái cuối cùng"
+echo "🔎 KIỂM TRA TRẠNG THÁI CUỐI CÙNG"
 echo "• Node.js      : $(node -v)"
 echo "• pnpm         : $(pnpm -v)"
 echo "• Thư mục cài  : $INSTALL_DIR"
+echo "• Cấu hình     : $([[ -f "$INSTALL_DIR/.env" ]] && echo "Đã có (.env)" || echo "Thiếu")"
 echo "• Service      : $(systemctl is-active openclaw)"
-echo "• Lệnh CLI    : $(pnpm bin -g)/openclaw"
+echo "• Lệnh CLI     : $(pnpm bin -g)/openclaw"
 echo "================================================="
-echo "✅ Cài đặt và kiểm tra hoàn tất. Bạn có thể sử dụng:"
+echo "✅ Cài đặt hoàn tất! Hãy chạy lệnh dưới đây để nạp lại cấu hình:"
+echo "   source ~/.bashrc"
+echo ""
+echo "Bạn có thể quản lý Agent bằng các lệnh:"
 echo "   openclaw gateway status"
 echo "   openclaw onboard"
 echo "================================================="
