@@ -1,4 +1,4 @@
-name: Auto Build OpenClaw Release for e2-micro
+name: Auto Build OpenClaw for e2-micro
 
 on:
   schedule:
