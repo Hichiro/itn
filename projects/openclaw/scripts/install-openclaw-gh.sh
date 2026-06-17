@@ -58,6 +58,18 @@ fi
 echo "--- [2/5] Đang cấu hình Corepack và cài đặt pnpm... ---"
 sudo corepack enable
 
+# Bỏ qua hộp thoại xác nhận tải của Corepack một cách tự động
+export COREPACK_ENABLE_DOWNLOADS=1
+
+# Ép buộc pnpm thiết lập thư mục global bin nằm trong thư mục của User thường
+USER_PNPM_BIN="${REAL_HOME}/.local/share/pnpm"
+export PNPM_HOME="$USER_PNPM_BIN"
+export PATH="$USER_PNPM_BIN:$PATH"
+
+if ! command -v pnpm &> /dev/null; then
+    corepack prepare pnpm@latest --activate
+fi
+
 # Ép buộc pnpm thiết lập thư mục global bin nằm trong thư mục của User thường
 USER_PNPM_BIN="${REAL_HOME}/.local/share/pnpm"
 export PNPM_HOME="$USER_PNPM_BIN"
