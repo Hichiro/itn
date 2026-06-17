@@ -31,7 +31,8 @@ jobs:
           echo "Latest Stable Tag: $UPSTREAM_TAG"
           echo "Upstream commit for tag: $UPSTREAM_COMMIT"
           
-          LOCAL_COMMIT=$(cat zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
+          # ĐỔI: Đọc file commit từ thư mục projects/zeroclaw/
+          LOCAL_COMMIT=$(cat projects/zeroclaw/last_build_commit.txt 2>/dev/null || echo "")
           echo "Local last build commit: $LOCAL_COMMIT"
           
           if [ "$UPSTREAM_COMMIT" = "$LOCAL_COMMIT" ]; then
@@ -39,8 +40,9 @@ jobs:
             echo "has_update=false" >> $GITHUB_OUTPUT
           else
             echo "New stable update found!"
-            mkdir -p zeroclaw
-            echo "$UPSTREAM_COMMIT" > zeroclaw/last_build_commit.txt
+            # ĐỔI: Tạo thư mục lưu trữ mới
+            mkdir -p projects/zeroclaw
+            echo "$UPSTREAM_COMMIT" > projects/zeroclaw/last_build_commit.txt
             echo "has_update=true" >> $GITHUB_OUTPUT
             echo "tag_name=$UPSTREAM_TAG" >> $GITHUB_OUTPUT
           fi
@@ -85,14 +87,22 @@ jobs:
       - name: Commit and push files to repository
         if: steps.check_upstream.outputs.has_update == 'true'
         run: |
-          cp source-code/target/aarch64-linux-android/release/zeroclaw ./zeroclaw/zeroclaw
+          # Đảm bảo đang ở đúng nhánh main của bạn để đẩy code lên không bị lỗi rẽ nhánh
+          git checkout main || git checkout -b main
           
+          # ĐỔI: Copy sản phẩm binary đã build vào đúng thư mục dự án mới
+          mkdir -p projects/zeroclaw
+          cp source-code/target/aarch64-linux-android/release/zeroclaw ./projects/zeroclaw/zeroclaw
+          chmod +x ./projects/zeroclaw/zeroclaw 2>/dev/null || true
+          
+          # Cấu hình Git Bot
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          git add zeroclaw/last_build_commit.txt zeroclaw/zeroclaw
+          # ĐỔI: Add toàn bộ thư mục projects/ thay vì chỉ định đích danh từng file (đảm bảo gom sạch thay đổi)
+          git add projects/
           
-          git commit -m "Release ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes"
+          git commit -m "Release ZeroClaw ${{ steps.get_version.outputs.version }} [skip ci]" || echo "No changes"
           
           git pull --rebase origin main
           git push origin main
