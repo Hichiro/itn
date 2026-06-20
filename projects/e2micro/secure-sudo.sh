@@ -11,7 +11,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (LOOPING)     "
+echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -43,7 +43,6 @@ while true; do
         continue
     fi
 
-    # Khắc phục Octal Bug: Ép về hệ cơ số 10 (ví dụ: biến '08' thành '8')
     choice=$((10#$input))
 
     if [ "$choice" -eq 0 ]; then
@@ -76,8 +75,6 @@ if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "Nếu bạn làm việc này, bạn sẽ bị mất quyền sudo"
     echo "ngoại trừ lệnh apt-get. Bạn có chắc chắn không?"
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    
-    # SỬA LỖI TRÔI LỆNH: Thêm </dev/tty tại đây
     read -p "Nhập 'YES' để xác nhận: " CONFIRM </dev/tty
     if [ "$CONFIRM" != "YES" ]; then
         echo "❌ Đã hủy thao tác để bảo vệ bạn."
@@ -88,53 +85,48 @@ fi
 # 5. Thực hiện siết quyền
 echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
 
-# A. Xử lý sửa đổi file google_sudoers an toàn
+# A. Kiểm tra trạng thái google_sudoers (Giữ nguyên cấu hình gốc của bạn nếu đã chuẩn)
 if [ -f "$GOOGLE_SUDOERS" ]; then
-    echo "📦 Đang sao lưu $GOOGLE_SUDOERS -> ${GOOGLE_SUDOERS}.bak"
-    cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
-
     if grep -q "NOPASSWD:ALL" "$GOOGLE_SUDOERS"; then
-        # Tạo file nháp để test trước cú pháp
+        echo "📦 Phát hiện NOPASSWD:ALL cũ, đang tiến hành siết lại về mặc định..."
+        cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
         TMP_SUDOERS=$(mktemp)
         cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
         sed -i 's/NOPASSWD:ALL/ALL/' "$TMP_SUDOERS"
         sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
 
-        # CHỐT CHẶN KIỂM TRA VISUDO
         if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
             cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
-            echo "✅ Đã vô hiệu hóa NOPASSWD cho nhóm google-sudoers."
+            echo "✅ Đã cấu hình google-sudoers yêu cầu mật khẩu thành công."
         else
-            echo "❌ LỖI: Phát hiện sai cú pháp khi sửa đổi google_sudoers! Hủy áp dụng để giữ an toàn."
+            echo "❌ LỖI: Cú pháp sửa đổi google_sudoers không hợp lệ. Giữ nguyên file cũ."
         fi
         rm -f "$TMP_SUDOERS"
     else
-        echo "ℹ️  google-sudoers đã không có NOPASSWD. Bỏ qua."
+        echo "ℹ️  Nhóm google-sudoers hiện tại đã yêu cầu mật khẩu mặc định. Giữ nguyên."
     fi
-else
-    echo "⚠️  Không tìm thấy $GOOGLE_SUDOERS. Bỏ qua."
 fi
 
-# B. Thiết lập quyền giới hạn cho user mới chọn
-NEW_CONFIG="/etc/sudoers.d/${USER_NAME}-apt"
-echo "📝 Đang cấu hình quyền apt-get cho: $USER_NAME"
+# B. Thiết lập đặc quyền NOPASSWD riêng cho apt-get
+# Đổi tên file thành z_${USER_NAME}-apt để đảm bảo được load CUỐI CÙNG
+NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
+echo "📝 Đang cấu hình đặc quyền apt-get không mật khẩu cho: $USER_NAME"
 
-# Viết vào file tạm để kiểm tra trước
 TMP_APT=$(mktemp)
+# Cú pháp chuẩn chỉnh, chỉ bỏ qua mật khẩu cho đúng 3 lệnh apt-get
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$TMP_APT"
 
-# CHỐT CHẶN KIỂM TRA VISUDO
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    echo "✅ Đã thiết lập file cấu hình: $NEW_CONFIG"
+    echo "✅ Đã tạo file cấu hình: $NEW_CONFIG"
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cấu pháp sudo cấp cho $USER_NAME không hợp lệ! Không ghi đè hệ thống."
+    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền không hợp lệ! Không ghi đè hệ thống."
 fi
 rm -f "$TMP_APT"
 
 # 6. Kiểm tra kết quả trực quan
 echo -e "\n--- 🏁 HOÀN TẤT! ---"
-echo "🔍 Kiểm tra quyền hiện tại của $USER_NAME:"
+echo "🔍 Quyền hạn thực tế áp dụng cho $USER_NAME:"
 sudo -l -U "$USER_NAME"
 echo "===================================================="
