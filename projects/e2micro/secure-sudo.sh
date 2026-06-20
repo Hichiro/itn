@@ -8,17 +8,21 @@
 
 # --- Cấu hình ---
 POLICY="/usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade"
-LOG_FILE="/var/log/secure-sudo.log"
 
 # --- Hàm hỗ trợ ---
 log() { echo -e "[$(date +'%Y-%m-%dT%H:%M:%S')] $1"; }
 error_exit() { log "❌ $1"; exit 1; }
 
 # --- Kiểm tra quyền Root ---
+# Thay vì tự sudo, chúng ta yêu cầu người dùng chạy lệnh đúng ngay từ đầu
 if [ "$EUID" -ne 0 ]; then
-    log "Cần quyền root để thực hiện cấu hình bảo mật."
-    sudo "$0" "$@"
-    exit $?
+    echo "----------------------------------------------------------------"
+    echo "❌ LỖI: Script này yêu cầu quyền ROOT để chỉnh sửa /etc/sudoers."
+    echo "Vui lòng chạy lại bằng lệnh sau:"
+    echo ""
+    echo "    curl -sSL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/security/secure-sudo.sh | sudo bash"
+    echo "----------------------------------------------------------------"
+    exit 1
 fi
 
 # --- Chọn User ---
@@ -34,7 +38,6 @@ target_user=${users[$((choice-1))]}
 log "Đang cấu hình cho user: $target_user"
 
 # 1. Vô hiệu hóa quyền root toàn phần cũ (comment lại)
-# Tìm dòng chứa ALL=(ALL) ALL và thêm tag [SECURE-MOD] vào đầu
 sed -i "/$target_user.*ALL=(ALL) ALL/s/^/# [SECURE-MOD] /" /etc/sudoers || log "⚠️ Không tìm thấy quyền root toàn phần cũ để comment."
 
 # 2. Tạo dòng cấu hình mới
