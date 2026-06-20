@@ -11,13 +11,13 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "   🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (ULTIMATE)  "
+echo "   🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (BULLETPROOF) "
 echo "===================================================="
 
 # 2. Lấy danh sách user
 USERS=($(grep -E '/bin/bash|/bin/sh' /etc/passwd | grep -v 'root' | cut -d: -f1))
 
-# 3. Hiển thị menu thủ công (để kiểm soát tốt hơn)
+# 3. Hiển thị menu
 echo "--- 📋 DANH SÁCH CÁC USER CÓ THỂ ĐĂNG NHẬP ---"
 for i in "${!USERS[@]}"; do
     printf "%2d) %s\n" "$((i+1))" "${USERS[$i]}"
@@ -25,25 +25,26 @@ done
 echo " 0) Thoát"
 echo "----------------------------------------------------"
 
-# 4. Nhập lựa chọn
-read -p "👉 Nhập số thứ tự bạn chọn: " choice
+# 4. Nhập lựa chọn - SỬ DỤNG LOGIC MỚI
+read -p "👉 Nhập số thứ tự bạn chọn: " input
 
-# Xử lý nếu người dùng nhập cả dòng "1) u_hichiro" thay vì chỉ nhập "1"
-# Chúng ta sẽ dùng regex để chỉ lấy con số ở đầu dòng
-choice=$(echo "$choice" | grep -oE '^[0-9]+' || echo "")
+# CHIÊU CUỐI: Chỉ giữ lại các chữ số, loại bỏ mọi ký tự khác (khoảng trắng, dấu ngoặc, chữ...)
+# Ví dụ: "1) u_hichiro" -> "1" | "  2  " -> "2" | "abc" -> ""
+choice=$(echo "$input" | tr -dc '0-9')
 
+# Kiểm tra nếu không có số nào được nhập hoặc nhập số 0
 if [[ -z "$choice" || "$choice" -eq 0 ]]; then
     echo "👋 Đã thoát hoặc lựa chọn không hợp lệ."
     exit 0
 fi
 
-# Kiểm tra xem số có nằm trong phạm vi không
+# Kiểm tra xem số có nằm trong phạm vi danh sách không
 if [ "$choice" -gt "${#USERS[@]}" ]; then
-    echo "❌ Lựa chọn không hợp lệ (Số quá lớn)."
+    echo "❌ Lựa chọn không hợp lệ (Số $choice vượt quá danh sách)."
     exit 1
 fi
 
-# Chuyển số thành index (vì mảng bắt đầu từ 0)
+# Chuyển số thành index
 index=$((choice - 1))
 USER_NAME="${USERS[$index]}"
 
