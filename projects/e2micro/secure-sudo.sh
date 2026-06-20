@@ -11,7 +11,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "     🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
+echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -121,12 +121,12 @@ fi
 
 # B. Kiểm tra và dọn dẹp file google_sudoers nếu chứa NOPASSWD nguy hiểm
 if [ -f "$GOOGLE_SUDOERS" ]; then
-    if grep -q "NOPASSWD:ALL" "$GOOGLE_SUDOERS"; then
+    if grep -q "NOPASSWD:[[:space:]]*ALL" "$GOOGLE_SUDOERS"; then
         echo "📦 Phát hiện NOPASSWD:ALL cũ trong file gốc, đang siết lại về mặc định..."
         cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
         TMP_SUDOERS=$(mktemp)
         cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
-        sed -i 's/NOPASSWD:ALL/ALL/' "$TMP_SUDOERS"
+        sed -i 's/NOPASSWD:[[:space:]]*ALL/ALL/g' "$TMP_SUDOERS"
         sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
 
         if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
@@ -142,24 +142,18 @@ NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
 echo "📝 Đang mở khoá đặc quyền apt không mật khẩu cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
+# Bổ sung cờ -y vào các lệnh apt để người dùng có thể dùng mà không bị chặn
+echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt full-upgrade, /usr/bin/apt full-upgrade -y" > "$TMP_APT"
 
-# 1. Ghi cấu hình chuẩn
-echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt full-upgrade" > "$TMP_APT"
-
-# 👉 2. CHÌA KHÓA NẰM Ở ĐÂY: Phải ép quyền 0440 cho file tạm thì visudo mới chịu kiểm tra!
-chmod 0440 "$TMP_APT"
-
-# 3. Tiến hành kiểm tra an toàn
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
     echo "✅ Đã áp dụng file cấu hình đặc quyền: $NEW_CONFIG"
 else
-    # Mở log ra nếu vẫn lỗi để xem lỗi thực sự là gì thay vì giấu đi
-    visudo -cf "$TMP_APT"
     echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai! Hủy bỏ để tránh lỗi hệ thống."
 fi
 rm -f "$TMP_APT"
+
 
 # 6. Kiểm tra kết quả trực quan
 echo -e "\n--- 🏁 HOÀN TẤT QUY TRÌNH! ---"
