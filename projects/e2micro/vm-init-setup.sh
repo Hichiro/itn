@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==============================================================================
-# Tên Script: vm-init-setup.sh (Script 2)
+# Tên Script: vm-init-setup.sh
 # Mô tả: Cấu hình SWAP và tối ưu log hệ thống. Tự động nhận diện OS.
 # CHẠY TRÊN: Chạy ngầm TỰ ĐỘNG bên trong VM thông qua quyền hệ thống khi khởi động.
 # ==============================================================================
