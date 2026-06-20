@@ -31,7 +31,7 @@ while true; do
     echo " 0) Thoát"
     echo "----------------------------------------------------"
 
-    read -p "👉 Nhập số thứ tự bạn chọn: " input
+    read -p "👉 Nhập số thứ tự bạn chọn: " input </dev/tty
 
     # TRƯỜNG HỢP 1: Chuỗi rỗng (Chỉ bấm Enter)
     if [[ -z "$input" ]]; then
