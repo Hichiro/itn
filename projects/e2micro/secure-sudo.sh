@@ -87,27 +87,42 @@ fi
 # 5. Thực hiện siết quyền
 echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
 
-# A. Xử lý sửa đổi file google_sudoers an toàn
+# A. Xử lý sửa đổi file google_sudoers (DIỆT GOD MODE)
 if [ -f "$GOOGLE_SUDOERS" ]; then
     echo "📦 Đang sao lưu $GOOGLE_SUDOERS -> ${GOOGLE_SUDOERS}.bak"
     cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
 
-    if grep -q "NOPASSWD:ALL" "$GOOGLE_SUDOERS"; then
-        TMP_SUDOERS=$(mktemp)
-        cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
-        sed -i 's/NOPASSWD:ALL/ALL/' "$TMP_SUDOERS"
-        sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
+    # Tạo file tạm để thực hiện các thao tác "phẫu thuật"
+    TMP_SUDOERS=$(mktemp)
+    cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
 
-        if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
-            cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
-            echo "✅ Đã vô hiệu hóa NOPASSWD cho nhóm google-sudoers."
-        else
-            echo "❌ LỖI: Phát hiện sai cú pháp khi sửa đổi google_sudoers! Hủy áp dụng."
-        fi
-        rm -f "$TMP_SUDOERS"
-    else
-        echo "ℹ️  google-sudoers đã không có NOPASSWD. Bỏ qua."
+    # 1. Tiêu diệt dòng God Mode: Xóa bất kỳ dòng nào chứa (ALL : ALL) ALL
+    if grep -q "(ALL : ALL) ALL" "$TMP_SUDOERS"; then
+        sed -i '/(ALL : ALL) ALL/d' "$TMP_SUDOERS"
+        echo "🛡️  Đã tiêu diệt dòng quyền hạn nguy hiểm (ALL : ALL) ALL."
     fi
+
+    # 2. Vô hiệu hóa NOPASSWD (nếu có)
+    if grep -q "NOPASSWD:ALL" "$TMP_SUDOERS"; then
+        sed -i 's/NOPASSWD:ALL/ALL/' "$TMP_SUDOERS"
+        echo "✅ Đã vô hiệu hóa NOPASSWD cho nhóm google-sudoers."
+    fi
+    # 3. Đảm bảo dòng cấu hình nhóm %google-sudoers luôn chuẩn và an toàn
+    # Nếu không có dòng %google-sudoers, ta thêm vào. Nếu có, ta chuẩn hóa nó.
+    if ! grep -q "^%google-sudoers" "$TMP_SUDOERS"; then
+        echo "%google-sudoers ALL=(ALL:ALL) ALL" >> "$TMP_SUDOERS"
+    else
+        sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
+    fi
+
+    # 4. CHỐT CHẶN KIỂM TRA VISUDO: Chỉ áp dụng nếu file mới hoàn toàn hợp lệ
+    if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
+        cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
+        echo "✅ Đã áp dụng cấu hình an toàn mới cho google_sudoers."
+    else
+        echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp sau khi sửa google_sudoers không hợp lệ! Hủy áp dụng để bảo vệ hệ thống."
+    fi
+    rm -f "$TMP_SUDOERS"
 else
     echo "⚠️  Không tìm thấy $GOOGLE_SUDOERS. Bỏ qua."
 fi
@@ -119,12 +134,13 @@ echo "📝 Đang cấu hình quyền apt-get cho: $USER_NAME"
 TMP_APT=$(mktemp)
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$TMP_APT"
 
+# CHỐT CHẶN KIỂM TRA VISUDO
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
     echo "✅ Đã thiết lập file cấu hình: $NEW_CONFIG"
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cấu pháp sudo cấp cho $USER_NAME không hợp lệ!"
+    echo "❌ LỖI NGHIÊM TRỌNG: Cấu pháp sudo cấp cho $USER_NAME không hợp lệ! Không ghi đè hệ thống."
 fi
 rm -f "$TMP_APT"
 
