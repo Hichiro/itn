@@ -11,7 +11,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
+echo "     🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -70,12 +70,12 @@ done
 # --- 🆕 BƯỚC MỚI: TÙY CHỌN LOẠI BỎ QUYỀN ADMIN TOÀN DIỆN ---
 echo -e "\n🛡️  TÙY CHỌN PHÂN QUYỀN:"
 echo "👉 Bạn có muốn TƯỚC TOÀN BỘ quyền Admin khác của '$USER_NAME' không?"
-echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoài apt-get)"
+echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoài apt)"
 read -p "🤔 Lựa chọn của bạn (Y/n) [Mặc định: Y]: " opt_remove </dev/tty
 
 if [[ -z "$opt_remove" || "$opt_remove" =~ ^[Yy]$ ]]; then
     STRIP_ADMIN=true
-    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc (Chỉ giữ lại apt-get)."
+    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc (Chỉ giữ lại apt)."
 else
     STRIP_ADMIN=false
     echo "🔹 Trạng thái chọn: GIỮ NGUYÊN quyền Admin gốc (Vẫn bắt nhập mật khẩu cho lệnh khác)."
@@ -137,12 +137,13 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
     fi
 fi
 
-# C. Thiết lập đặc quyền NOPASSWD riêng cho apt-get (Luôn luôn xếp cuối bảng chữ cái)
+# C. Thiết lập đặc quyền NOPASSWD riêng cho apt (Đã loại bỏ lệnh install)
 NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
-echo "📝 Đang mở khoá đặc quyền apt-get không mật khẩu cho: $USER_NAME"
+echo "📝 Đang mở khoá đặc quyền apt không mật khẩu cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
-echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$TMP_APT"
+# Chỉ cho phép chạy lệnh apt update và apt upgrade (bao gồm cả full-upgrade) không cần mật khẩu
+echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt full-upgrade" > "$TMP_APT"
 
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
