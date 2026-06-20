@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # ==============================================================================
-# Tên Script: vm-ssh-setup.sh (Script 3)
+# Tên Script: vm-ssh-setup.sh
 # Mô tả: Đặt mật khẩu và cấu hình mở quyền truy cập SSH bằng mật khẩu cho Debian.
 #
 # CÁCH CHẠY TỪ CLOUD SHELL (Copy dán và ấn Enter):
 #   bash <(curl -sL https://raw.githubusercontent.com/xxx/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh)
 # ==============================================================================
 
-# Link raw của chính Script 3 trên GitHub của bạn
-SCRIPT_3_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh"
+# Link raw của chính script này trên GitHub của bạn
+SCRIPT_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/vm-ssh-setup.sh"
 
 # 1. PHẦN XỬ LÝ KHI CHẠY TỪ CLOUD SHELL
 if [ -n "$DEVSHELL_PROJECT_ID" ]; then
@@ -20,7 +20,7 @@ if [ -n "$DEVSHELL_PROJECT_ID" ]; then
         --project=free-e2micro \
         --zone=us-west1-b \
         --tunnel-through-iap \
-        --command="bash <(curl -sL $SCRIPT_3_URL)"
+        --command="bash <(curl -sL $SCRIPT_URL)"
     exit
 fi
 
@@ -28,7 +28,7 @@ fi
 # Sửa lỗi /dev/fd: Tải về file vật lý trong /tmp trước khi chạy với sudo
 if [ "$EUID" -ne 0 ]; then
     echo "Đang yêu cầu nâng quyền root bằng sudo..."
-    curl -sL "$SCRIPT_3_URL" -o /tmp/vm-password-setup.sh
+    curl -sL "$SCRIPT_URL" -o /tmp/vm-password-setup.sh
     exec sudo bash /tmp/vm-password-setup.sh
 fi
 
