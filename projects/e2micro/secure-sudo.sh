@@ -2,49 +2,50 @@
 
 # 1. Kiểm tra quyền root
 if [[ $EUID -ne 0 ]]; then
-   echo "❌ LỖI: Script này cần chạy với quyền root (sudo)." 
+   echo "❌ LỖI: Script này cần chạy với quyền root." 
    exit 1
 fi
 
-USER_NAME="u_hichiro"
-MAIN_SUDOERS="/etc/sudoers"
+echo "--- 📋 DANH SÁCH CÁC USER CÓ THỂ ĐĂNG NHẬP ---"
+
+# Lấy danh sách user (loại bỏ root và các user hệ thống không có shell)
+# Chỉ lấy các user có /bin/bash hoặc /bin/sh
+USERS=($(grep -E '/bin/bash|/bin/sh' /etc/passwd | grep -v 'root' | cut -d: -f1))
+
+# 2. Hiển thị menu chọn
+PS3="👉 Hãy chọn số thứ tự của user bạn muốn siết quyền: "
+select USER_NAME in "${USERS[@]}" "Thoát"; do
+    case $USER_NAME in
+        "Thoát")
+            echo "Đã thoát."
+            exit 0
+            ;;
+        *)
+            if [ -n "$USER_NAME" ]; then
+                echo "✅ Bạn đã chọn: $USER_NAME"
+                break
+            else
+                echo "❌ Lựa chọn không hợp lệ."
+            fi
+            ;;
+    esac
+done
+
+# 3. Thực hiện siết quyền cho user đã chọn
+echo "--- 🛡️ ĐANG SIẾT CHẶT BẢO MẬT CHO: $USER_NAME ---"
+
+# Vô hiệu hóa NOPASSWD của google-sudoers
 GOOGLE_SUDOERS="/etc/sudoers.d/google_sudoers"
-NEW_CONFIG="/etc/sudoers.d/u_hichiro-apt"
-
-echo "--- 🛡️ ĐANG BẮT ĐẦU QUY TRÌNH SIẾT CHẶT BẢO MẬT ---"
-
-# 2. Vô hiệu hóa quyền "God Mode" từ Google (Không cần logout)
 if [ -f "$GOOGLE_SUDOERS" ]; then
-    echo "🔍 Đang vô hiệu hóa quyền trong $GOOGLE_SUDOERS..."
-    # Tìm dòng có %google-sudoers và thêm dấu # vào đầu dòng
-    sed -i "s/^%google-sudoers/# %google-sudoers/" "$GOOGLE_SUDOERS"
-    echo "✅ Đã vô hiệu hóa quyền của group google-sudoers."
-else
-    echo "ℹ️ Không tìm thấy file $GOOGLE_SUDOERS, bỏ qua."
+    sed -i "s/^%google-sudoers.*NOPASSWD:ALL/%google-sudoers ALL=(ALL:ALL) ALL/" "$GOOGLE_SUDOERS"
+    echo "✅ Đã chuyển google-sudoers sang chế độ yêu cầu mật khẩu."
 fi
 
-# 3. Dọn dẹp file /etc/sudoers chính (Tránh trùng lặp và rác)
-if grep -q "$USER_NAME" "$MAIN_SUDOERS"; then
-    echo "🔍 Đang dọn dẹp các dòng cấu hình cũ của $USER_NAME trong $MAIN_SUDOERS..."
-    # Tìm dòng có chứa tên user và apt-get, sau đó comment nó lại
-    sed -i "/$USER_NAME.*apt-get/s/^/# /" "$MAIN_SUDOERS"
-    echo "✅ Đã comment các dòng cũ trong file chính."
-else
-    echo "ℹ️ Không tìm thấy cấu hình cũ của $USER_NAME trong $MAIN_SUDOERS."
-fi
-
-# 4. Thiết lập quyền mới, sạch sẽ và chuyên nghiệp
-echo "🔍 Đang thiết lập quyền giới hạn mới tại $NEW_CONFIG..."
+# Thiết lập quyền giới hạn cho user đã chọn
+NEW_CONFIG="/etc/sudoers.d/${USER_NAME}-apt"
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$NEW_CONFIG"
 chmod 0440 "$NEW_CONFIG"
-echo "✅ Đã tạo file cấu hình mới."
 
-# 5. Kiểm tra kết quả cuối cùng
-echo ""
-echo "--- 🏁 QUY TRÌNH HOÀN TẤT! ---"
-echo "--- 📊 KẾT QUẢ KIỂM TRA QUYỀN CỦA $USER_NAME: ---"
-# Sử dụng sudo -l -U để kiểm tra chính xác quyền của user đó
+echo "✅ Đã tạo file cấu hình giới hạn tại $NEW_CONFIG."
+echo "--- 🏁 HOÀN TẤT! ---"
 sudo -l -U "$USER_NAME"
-
-echo ""
-echo "💡 Ghi chú: Nếu bạn vẫn thấy dòng 'ALL', hãy chạy lệnh: 'sudo gpasswd -d $USER_NAME google-sudoers' và đăng nhập lại."
