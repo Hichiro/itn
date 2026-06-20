@@ -11,7 +11,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (LOOPING)     "
+echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (ULTIMATE)    "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -43,7 +43,7 @@ while true; do
         continue
     fi
 
-    # Khắc phục Octal Bug: Ép về hệ cơ số 10 (ví dụ: biến '08' thành '8')
+    # Khắc phục Octal Bug: Ép về hệ cơ số 10
     choice=$((10#$input))
 
     if [ "$choice" -eq 0 ]; then
@@ -77,7 +77,6 @@ if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "ngoại trừ lệnh apt-get. Bạn có chắc chắn không?"
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     
-    # SỬA LỖI TRÔI LỆNH: Thêm </dev/tty tại đây
     read -p "Nhập 'YES' để xác nhận: " CONFIRM </dev/tty
     if [ "$CONFIRM" != "YES" ]; then
         echo "❌ Đã hủy thao tác để bảo vệ bạn."
@@ -94,18 +93,16 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
     cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
 
     if grep -q "NOPASSWD:ALL" "$GOOGLE_SUDOERS"; then
-        # Tạo file nháp để test trước cú pháp
         TMP_SUDOERS=$(mktemp)
         cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
         sed -i 's/NOPASSWD:ALL/ALL/' "$TMP_SUDOERS"
         sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
 
-        # CHỐT CHẶN KIỂM TRA VISUDO
         if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
             cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
             echo "✅ Đã vô hiệu hóa NOPASSWD cho nhóm google-sudoers."
         else
-            echo "❌ LỖI: Phát hiện sai cú pháp khi sửa đổi google_sudoers! Hủy áp dụng để giữ an toàn."
+            echo "❌ LỖI: Phát hiện sai cú pháp khi sửa đổi google_sudoers! Hủy áp dụng."
         fi
         rm -f "$TMP_SUDOERS"
     else
@@ -119,17 +116,15 @@ fi
 NEW_CONFIG="/etc/sudoers.d/${USER_NAME}-apt"
 echo "📝 Đang cấu hình quyền apt-get cho: $USER_NAME"
 
-# Viết vào file tạm để kiểm tra trước
 TMP_APT=$(mktemp)
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$TMP_APT"
 
-# CHỐT CHẶN KIỂM TRA VISUDO
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
     echo "✅ Đã thiết lập file cấu hình: $NEW_CONFIG"
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cấu pháp sudo cấp cho $USER_NAME không hợp lệ! Không ghi đè hệ thống."
+    echo "❌ LỖI NGHIÊM TRỌNG: Cấu pháp sudo cấp cho $USER_NAME không hợp lệ!"
 fi
 rm -f "$TMP_APT"
 
