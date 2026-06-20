@@ -11,46 +11,52 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "   🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (BULLETPROOF) "
+echo "   🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (LOOPING)    "
 echo "===================================================="
 
 # 2. Lấy danh sách user
 USERS=($(grep -E '/bin/bash|/bin/sh' /etc/passwd | grep -v 'root' | cut -d: -f1))
 
-# 3. Hiển thị menu
-echo "--- 📋 DANH SÁCH CÁC USER CÓ THỂ ĐĂNG NHẬP ---"
-for i in "${!USERS[@]}"; do
-    printf "%2d) %s\n" "$((i+1))" "${USERS[$i]}"
+# 3. Vòng lặp chính - Sẽ lặp lại cho đến khi chọn đúng hoặc chọn Thoát
+while true; do
+    echo -e "\n--- 📋 DANH SÁCH CÁC USER CÓ THỂ ĐĂNG NHẬP ---"
+    for i in "${!USERS[@]}"; do
+        printf "%2d) %s\n" "$((i+1))" "${USERS[$i]}"
+    done
+    echo " 0) Thoát"
+    echo "----------------------------------------------------"
+
+    read -p "👉 Nhập số thứ tự bạn chọn: " input
+
+    # Lấy duy nhất các chữ số từ input (để chống copy-paste lỗi)
+    choice=$(echo "$input" | tr -dc '0-9')
+
+    # TRƯỜNG HỢP 1: Người dùng nhấn Enter mà không nhập gì (chuỗi rỗng)
+    if [[ -z "$choice" ]]; then
+        echo "⚠️  Bạn chưa nhập gì cả! Vui lòng nhập một con số."
+        continue # Quay lại đầu vòng lặp
+    fi
+
+    # TRƯỜNG HỢP 2: Người dùng chọn Thoát (số 0)
+    if [ "$choice" -eq 0 ]; then
+        echo "👋 Đã thoát."
+        exit 0
+    fi
+
+    # TRƯỜNG HỢP 3: Số nhập vào nằm ngoài phạm vi danh sách
+    if [ "$choice" -gt "${#USERS[@]}" ]; then
+        echo "❌ Lựa chọn không hợp lệ (Số $choice vượt quá danh sách). Thử lại nhé!"
+        continue # Quay lại đầu vòng lặp
+    fi
+
+    # NẾU ĐÃ ĐẾN ĐÂY, NGHĨA LÀ LỰA CHỌN ĐÃ HỢP LỆ
+    index=$((choice - 1))
+    USER_NAME="${USERS[$index]}"
+    echo "✅ Bạn đã chọn: $USER_NAME"
+    break # Thoát khỏi vòng lặp while để đi tiếp xuống phần thực thi
 done
-echo " 0) Thoát"
-echo "----------------------------------------------------"
 
-# 4. Nhập lựa chọn - SỬ DỤNG LOGIC MỚI
-read -p "👉 Nhập số thứ tự bạn chọn: " input
-
-# CHIÊU CUỐI: Chỉ giữ lại các chữ số, loại bỏ mọi ký tự khác (khoảng trắng, dấu ngoặc, chữ...)
-# Ví dụ: "1) u_hichiro" -> "1" | "  2  " -> "2" | "abc" -> ""
-choice=$(echo "$input" | tr -dc '0-9')
-
-# Kiểm tra nếu không có số nào được nhập hoặc nhập số 0
-if [[ -z "$choice" || "$choice" -eq 0 ]]; then
-    echo "👋 Đã thoát hoặc lựa chọn không hợp lệ."
-    exit 0
-fi
-
-# Kiểm tra xem số có nằm trong phạm vi danh sách không
-if [ "$choice" -gt "${#USERS[@]}" ]; then
-    echo "❌ Lựa chọn không hợp lệ (Số $choice vượt quá danh sách)."
-    exit 1
-fi
-
-# Chuyển số thành index
-index=$((choice - 1))
-USER_NAME="${USERS[$index]}"
-
-echo "✅ Bạn đã chọn: $USER_NAME"
-
-# 5. Cơ chế tự bảo vệ (Safety Guard)
+# 4. Cơ chế tự bảo vệ (Safety Guard)
 if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     echo "🚨 CẢNH BÁO NGUY HIỂM: 🚨"
@@ -65,7 +71,7 @@ if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     fi
 fi
 
-# 6. Thực hiện siết quyền
+# 5. Thực hiện siết quyền
 echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
 
 # A. Xử lý google_sudoers
@@ -92,7 +98,7 @@ echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get i
 chmod 0440 "$NEW_CONFIG"
 echo "✅ Đã thiết lập quyền apt-get cho $USER_NAME."
 
-# 7. Kiểm tra kết quả
+# 6. Kiểm tra kết quả
 echo -e "\n--- 🏁 HOÀN TẤT! ---"
 echo "🔍 Kiểm tra quyền hiện tại của $USER_NAME:"
 sudo -l -U "$USER_NAME"
