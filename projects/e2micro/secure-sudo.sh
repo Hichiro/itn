@@ -6,18 +6,23 @@ CURRENT_USER=${SUDO_USER:-$USER}
 
 # 1. Kiểm tra quyền root
 if [[ $EUID -ne 0 ]]; then
-   echo "❌ LỖI: Script này cần chạy với quyền root (sudo)." 
-   exit 1
+    echo "❌ LỖI: Script này cần chạy với quyền root (sudo)."
+    exit 1
 fi
 
 echo "===================================================="
-echo "   🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (LOOPING)    "
+echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (LOOPING)     "
 echo "===================================================="
 
-# 2. Lấy danh sách user
-USERS=($(grep -E '/bin/bash|/bin/sh' /etc/passwd | grep -v 'root' | cut -d: -f1))
+# 2. Lấy danh sách user (Dùng mapfile an toàn hơn)
+mapfile -t USERS < <(grep -E '/bin/bash|/bin/sh' /etc/passwd | grep -v 'root' | cut -d: -f1)
 
-# 3. Vòng lặp chính - Sẽ lặp lại cho đến khi chọn đúng hoặc chọn Thoát
+if [ ${#USERS[@]} -eq 0 ]; then
+    echo "❌ LỖI: Không tìm thấy user nào hợp lệ trên hệ thống!"
+    exit 1
+fi
+
+# 3. Vòng lặp chính - Sẽ lặp lại cho đến khi chọn đúng
 while true; do
     echo -e "\n--- 📋 DANH SÁCH CÁC USER CÓ THỂ ĐĂNG NHẬP ---"
     for i in "${!USERS[@]}"; do
@@ -28,32 +33,45 @@ while true; do
 
     read -p "👉 Nhập số thứ tự bạn chọn: " input
 
-    # Lấy duy nhất các chữ số từ input (để chống copy-paste lỗi)
-    choice=$(echo "$input" | tr -dc '0-9')
-
-    # TRƯỜNG HỢP 1: Người dùng nhấn Enter mà không nhập gì (chuỗi rỗng)
-    if [[ -z "$choice" ]]; then
+    # TRƯỜNG HỢP 1: Chuỗi rỗng (Chỉ bấm Enter)
+    if [[ -z "$input" ]]; then
         echo "⚠️  Bạn chưa nhập gì cả! Vui lòng nhập một con số."
-        continue # Quay lại đầu vòng lặp
+        continue
     fi
 
-    # TRƯỜNG HỢP 2: Người dùng chọn Thoát (số 0)
+    # TRƯỜNG HỢP 2: Lọc đầu vào (Chỉ chấp nhận số nguyên dương hoặc số 0)
+    if ! [[ "$input" =~ ^[0-9]+$ ]]; then
+        echo "⚠️  Lựa chọn không hợp lệ! Vui lòng chỉ nhập số."
+        continue
+    fi
+
+    # Gán biến sau khi chắc chắn đầu vào là số
+    choice="$input"
+
+    # TRƯỜNG HỢP 3: Người dùng chọn Thoát
     if [ "$choice" -eq 0 ]; then
         echo "👋 Đã thoát."
         exit 0
     fi
 
-    # TRƯỜNG HỢP 3: Số nhập vào nằm ngoài phạm vi danh sách
+    # TRƯỜNG HỢP 4: Số vượt quá danh sách
     if [ "$choice" -gt "${#USERS[@]}" ]; then
         echo "❌ Lựa chọn không hợp lệ (Số $choice vượt quá danh sách). Thử lại nhé!"
-        continue # Quay lại đầu vòng lặp
+        continue
     fi
 
-    # NẾU ĐÃ ĐẾN ĐÂY, NGHĨA LÀ LỰA CHỌN ĐÃ HỢP LỆ
+    # TRƯỜNG HỢP 5: Xử lý lựa chọn hợp lệ
     index=$((choice - 1))
     USER_NAME="${USERS[$index]}"
+
+    # Chốt chặn cuối: Đảm bảo biến USER_NAME thực sự có dữ liệu
+    if [[ -z "$USER_NAME" ]]; then
+         echo "❌ Lỗi hệ thống: Không xác định được user. Vui lòng thử lại!"
+         continue
+    fi
+
     echo "✅ Bạn đã chọn: $USER_NAME"
-    break # Thoát khỏi vòng lặp while để đi tiếp xuống phần thực thi
+    break # Bẻ gãy vòng lặp để đi tiếp
 done
 
 # 4. Cơ chế tự bảo vệ (Safety Guard)
