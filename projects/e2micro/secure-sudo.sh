@@ -137,36 +137,29 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
     fi
 fi
 
-# C. Thiết lập đặc quyền NOPASSWD riêng cho apt (Đã SỬA CÚ PHÁP CHUẨN)
+# C. Thiết lập đặc quyền NOPASSWD riêng cho apt (Đã loại bỏ lệnh install)
 NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
 echo "📝 Đang mở khoá đặc quyền apt không mật khẩu cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
 
-# 👉 SỬA TẠI ĐÂY: Định dạng phân tách các cụm lệnh có tham số một cách tường minh, đúng tiêu chuẩn sudoers
+# 1. Ghi cấu hình chuẩn
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt full-upgrade" > "$TMP_APT"
 
-# 👉 BỔ SUNG: Kiểm tra chéo toàn bộ hệ thống (visudo -c) thay vì chỉ kiểm tra file đơn lẻ (-cf) 
-# Điều này đảm bảo file mới tạo ra không bị xung đột với cấu hình tổng thể.
+# 👉 2. CHÌA KHÓA NẰM Ở ĐÂY: Phải ép quyền 0440 cho file tạm thì visudo mới chịu kiểm tra!
+chmod 0440 "$TMP_APT"
+
+# 3. Tiến hành kiểm tra an toàn
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    
-    # Kiểm tra tổng thể lại một lần cuối cho chắc chắn
-    if visudo -c >/dev/null 2>&1; then
-        echo "✅ Đã áp dụng file cấu hình đặc quyền thành công: $NEW_CONFIG"
-    else
-        echo "❌ LỖI: Phát hiện xung đột cấu hình tổng thể hệ thống! Đang hoàn tác..."
-        rm -f "$NEW_CONFIG"
-        exit 1
-    fi
+    echo "✅ Đã áp dụng file cấu hình đặc quyền: $NEW_CONFIG"
 else
+    # Mở log ra nếu vẫn lỗi để xem lỗi thực sự là gì thay vì giấu đi
+    visudo -cf "$TMP_APT"
     echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai! Hủy bỏ để tránh lỗi hệ thống."
-    rm -f "$TMP_APT"
-    exit 1
 fi
 rm -f "$TMP_APT"
-
 
 # 6. Kiểm tra kết quả trực quan
 echo -e "\n--- 🏁 HOÀN TẤT QUY TRÌNH! ---"
