@@ -67,28 +67,62 @@ while true; do
     break
 done
 
-# 4. Cơ chế tự bảo vệ (Safety Guard)
+# --- 🆕 BƯỚC MỚI: TÙY CHỌN LOẠI BỎ QUYỀN ADMIN TOÀN DIỆN ---
+echo -e "\n🛡️  TÙY CHỌN PHÂN QUYỀN:"
+echo "👉 Bạn có muốn TƯỚC TOÀN BỘ quyền Admin khác của '$USER_NAME' không?"
+echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoài apt-get)"
+read -p "🤔 Lựa chọn của bạn (Y/n) [Mặc định: Y]: " opt_remove </dev/tty
+
+if [[ -z "$opt_remove" || "$opt_remove" =~ ^[Yy]$ ]]; then
+    STRIP_ADMIN=true
+    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc (Chỉ giữ lại apt-get)."
+else
+    STRIP_ADMIN=false
+    echo "🔹 Trạng thái chọn: GIỮ NGUYÊN quyền Admin gốc (Vẫn bắt nhập mật khẩu cho lệnh khác)."
+fi
+
+
+# 4. Cơ chế tự bảo vệ (Safety Guard nâng cấp)
 if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    echo "🚨 CẢNH BÁO NGUY HIỂM: 🚨"
+    echo "🚨 CẢNH BÁO NGUY HIỂM CHẾT NGƯỜI: 🚨"
     echo "Bạn đang chọn chính mình ($USER_NAME)!"
-    echo "Nếu bạn làm việc này, bạn sẽ bị mất quyền sudo"
-    echo "ngoại trừ lệnh apt-get. Bạn có chắc chắn không?"
+    if [ "$STRIP_ADMIN" = true ]; then
+        echo "⚠️  BẠN ĐANG TỰ TƯỚC QUYỀN ADMIN CỦA CHÍNH MÌNH!"
+        echo "Sau lệnh này, bạn sẽ bị KHOÁ CHẶT SUDO, không thể cấu hình hệ thống nữa!"
+    fi
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    read -p "Nhập 'YES' để xác nhận: " CONFIRM </dev/tty
+    read -p "Nhập đúng chữ 'YES' để xác nhận chịu rủi ro: " CONFIRM </dev/tty
     if [ "$CONFIRM" != "YES" ]; then
-        echo "❌ Đã hủy thao tác để bảo vệ bạn."
+        echo "❌ Đã hủy thao tác để bảo vệ quyền Root của bạn."
         exit 1
     fi
 fi
 
+
 # 5. Thực hiện siết quyền
 echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
 
-# A. Kiểm tra trạng thái google_sudoers (Giữ nguyên cấu hình gốc của bạn nếu đã chuẩn)
+# A. Tước quyền Admin khỏi nhóm google-sudoers (Nếu người dùng chọn Có)
+if [ "$STRIP_ADMIN" = true ]; then
+    if id -nG "$USER_NAME" | grep -q "google-sudoers"; then
+        echo "✂️  Đang tiến hành xóa '$USER_NAME' ra khỏi nhóm quyền lực 'google-sudoers'..."
+        if gpasswd -d "$USER_NAME" google-sudoers &>/dev/null; then
+            echo "✅ Đã tước quyền Admin gốc thành công."
+        else
+            echo "⚠️  Có lỗi xảy ra khi xóa user khỏi nhóm (hoặc cần gỡ thủ công)."
+        fi
+    else
+        echo "ℹ️  User '$USER_NAME' vốn đã không nằm trong nhóm google-sudoers. Bỏ qua."
+    fi
+else
+    echo "ℹ️  Giữ nguyên tư cách thành viên nhóm Admin cho '$USER_NAME' theo yêu cầu."
+fi
+
+# B. Kiểm tra và dọn dẹp file google_sudoers nếu chứa NOPASSWD nguy hiểm
 if [ -f "$GOOGLE_SUDOERS" ]; then
     if grep -q "NOPASSWD:ALL" "$GOOGLE_SUDOERS"; then
-        echo "📦 Phát hiện NOPASSWD:ALL cũ, đang tiến hành siết lại về mặc định..."
+        echo "📦 Phát hiện NOPASSWD:ALL cũ trong file gốc, đang siết lại về mặc định..."
         cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
         TMP_SUDOERS=$(mktemp)
         cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
@@ -97,36 +131,31 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
 
         if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
             cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
-            echo "✅ Đã cấu hình google-sudoers yêu cầu mật khẩu thành công."
-        else
-            echo "❌ LỖI: Cú pháp sửa đổi google_sudoers không hợp lệ. Giữ nguyên file cũ."
+            echo "✅ Đã cấu hình nhóm google-sudoers về trạng thái đòi mật khẩu."
         fi
         rm -f "$TMP_SUDOERS"
-    else
-        echo "ℹ️  Nhóm google-sudoers hiện tại đã yêu cầu mật khẩu mặc định. Giữ nguyên."
     fi
 fi
 
-# B. Thiết lập đặc quyền NOPASSWD riêng cho apt-get
-# Đổi tên file thành z_${USER_NAME}-apt để đảm bảo được load CUỐI CÙNG
+# C. Thiết lập đặc quyền NOPASSWD riêng cho apt-get (Luôn luôn xếp cuối bảng chữ cái)
 NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
-echo "📝 Đang cấu hình đặc quyền apt-get không mật khẩu cho: $USER_NAME"
+echo "📝 Đang mở khoá đặc quyền apt-get không mật khẩu cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
-# Cú pháp chuẩn chỉnh, chỉ bỏ qua mật khẩu cho đúng 3 lệnh apt-get
 echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$TMP_APT"
 
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    echo "✅ Đã tạo file cấu hình: $NEW_CONFIG"
+    echo "✅ Đã áp dụng file cấu hình đặc quyền: $NEW_CONFIG"
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền không hợp lệ! Không ghi đè hệ thống."
+    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai! Hủy bỏ để tránh lỗi hệ thống."
 fi
 rm -f "$TMP_APT"
 
+
 # 6. Kiểm tra kết quả trực quan
-echo -e "\n--- 🏁 HOÀN TẤT! ---"
-echo "🔍 Quyền hạn thực tế áp dụng cho $USER_NAME:"
+echo -e "\n--- 🏁 HOÀN TẤT QUY TRÌNH! ---"
+echo "🔍 Quyền hạn thực tế cuối cùng áp dụng cho $USER_NAME:"
 sudo -l -U "$USER_NAME"
 echo "===================================================="
