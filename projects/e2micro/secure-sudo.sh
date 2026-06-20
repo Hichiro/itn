@@ -78,3 +78,16 @@ echo "📝 Đang tạo file cấu hình: $NEW_CONFIG"
 
 # Kiểm tra nếu file đã tồn tại để tránh ghi đè nhầm
 if [ -f "$NEW_CONFIG" ]; then
+
+    echo "⚠️  File $NEW_CONFIG đã tồn tại. Đang ghi đè..."
+fi
+
+echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" > "$NEW_CONFIG"
+chmod 0440 "$NEW_CONFIG"
+echo "✅ Đã thiết lập quyền apt-get cho $USER_NAME."
+
+# 5. Kiểm tra kết quả
+echo -e "\n--- 🏁 HOÀN TẤT! ---"
+echo "🔍 Kiểm tra quyền hiện tại của $USER_NAME:"
+sudo -l -U "$USER_NAME"
+echo "===================================================="
