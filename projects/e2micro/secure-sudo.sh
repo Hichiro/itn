@@ -1,43 +1,35 @@
 #!/bin/bash
 
-# --- Cấu hình ---
-POLICY="/usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade"
-
-# --- Hàm hỗ trợ ---
-log() { echo -e "[$(date +'%Y-%m-%dT%H:%M:%S')] $1"; }
-error_exit() { log "❌ $1"; exit 1; }
-
-# --- Kiểm tra quyền Root ---
-if [ "$EUID" -ne 0 ]; then
-    error_exit "Script này cần chạy với sudo. Ví dụ: curl ... | sudo bash"
+# 1. Kiểm tra quyền root
+if [[ $EUID -ne 0 ]]; then
+   echo "Script này cần chạy với quyền root (sudo)." 
+   exit 1
 fi
 
-# --- Chọn User ---
-log "Danh sách người dùng hệ thống:"
-users=($(getent passwd | awk -F: '$3 >= 1000 && $3 != 65534 {print $1}'))
-for i in "${!users[@]}"; do echo "$((i+1))) ${users[$i]}"; done
+USER_NAME="u_hichiro"
 
-# Ép buộc đọc từ terminal (/dev/tty)
-read -p "Chọn user để giới hạn quyền: " choice < /dev/tty
-target_user=${users[$((choice-1))]}
+echo "--- Đang bắt đầu siết chặt bảo mật cho $USER_NAME ---"
 
-[ -z "$target_user" ] && error_exit "User không hợp lệ."
+# 2. Loại bỏ user khỏi group google-sudoers (Lựa chọn 1)
+if getent group google-sudoers > /dev/null; then
+    if groups $USER_NAME | grep -q "\bgoogle-sudoers\b"; then
+        echo "Đang loại bỏ $USER_NAME khỏi group google-sudoers..."
+        gpasswd -d $USER_NAME google-sudoers
+    else
+        echo "$USER_NAME không nằm trong group google-sudoers."
+    fi
+else
+    echo "Không tìm thấy group google-sudoers, bỏ qua bước này."
+fi
 
-# --- Thực hiện thay đổi ---
-log "Đang cấu hình cho user: $target_user"
+# 3. Thiết lập quyền giới hạn trong /etc/sudoers.d/pico-secure
+echo "Đang thiết lập quyền giới hạn cho apt-get..."
+CONFIG_FILE="/etc/sudoers.d/pico-secure"
+echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt-get update, /usr/bin/apt-get install, /usr/bin/apt-get upgrade" | tee $CONFIG_FILE
+chmod 0440 $CONFIG_FILE
 
-# 1. Vô hiệu hóa quyền root toàn phần cũ
-sed -i "/$target_user.*ALL=(ALL) ALL/s/^/# [SECURE-MOD] /" /etc/sudoers
+# 4. Kiểm tra lại kết quả
+echo "--- Hoàn tất! Kiểm tra quyền hiện tại: ---"
+sudo -l -U $USER_NAME
 
-# 2. Tạo dòng cấu hình mới
-config_line="$target_user ALL=(ALL) NOPASSWD: $POLICY"
-
-# 3. Kiểm tra cú pháp (Phải bao gồm cả user để visudo hiểu)
-echo "$config_line" > /tmp/sudoers_test
-visudo -cf /tmp/sudoers_test > /dev/null 2>&1 || error_exit "Cấu hình mới bị lỗi cú pháp!"
-
-# 4. Áp dụng
-echo "$config_line" >> /etc/sudoers
-rm /tmp/sudoers_test
-
-log "✅ Hoàn tất! User '$target_user' hiện chỉ có quyền apt-get."
+echo "Lưu ý: Nếu bạn vẫn thấy quyền cũ, hãy thử đăng xuất và đăng nhập lại (SSH session)."
