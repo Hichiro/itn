@@ -10,6 +10,14 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+# Tự động tìm đường dẫn visudo chuẩn xác
+VISUDO_CMD=$(command -v visudo 2>/dev/null)
+if [ -z "$VISUDO_CMD" ]; then
+    if [ -x /usr/sbin/visudo ]; then VISUDO_CMD="/usr/sbin/visudo"
+    elif [ -x /usr/bin/visudo ]; then VISUDO_CMD="/usr/bin/visudo"
+    else echo "❌ LỖI: Không tìm thấy lệnh visudo trên hệ thống."; exit 1; fi
+fi
+
 echo "===================================================="
 echo "    🛡️  HỆ THỐNG PHÂN QUYỀN PICOCLAW (NODEJS & APT)  "
 echo "===================================================="
@@ -51,7 +59,7 @@ while true; do
     fi
 
     if [ "$choice" -gt "${#USERS[@]}" ]; then
-        echo "❌ Lựa chọn không hợp lệ (Số $choice vượt quá danh sách). Thử lại nhé!"
+        echo "❌ Lựa chọn không hợp lệ. Thử lại nhé!"
         continue
     fi
 
@@ -59,7 +67,6 @@ while true; do
     USER_NAME="${USERS[$index]}"
 
     if [[ -z "$USER_NAME" ]]; then
-         echo "❌ Lỗi hệ thống: Không xác định được user. Vui lòng thử lại!"
          continue
     fi
 
@@ -81,89 +88,70 @@ else
     echo "🔹 Trạng thái chọn: GIỮ NGUYÊN quyền Admin gốc (Vẫn bắt nhập mật khẩu cho lệnh khác)."
 fi
 
-
-# 4. Cơ chế tự bảo vệ (Safety Guard nâng cấp)
+# 4. Cơ chế tự bảo vệ
 if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    echo "🚨 CẢNH BÁO NGUY HIỂM CHẾT NGƯỜI: 🚨"
-    echo "Bạn đang chọn chính mình ($USER_NAME)!"
-    if [ "$STRIP_ADMIN" = true ]; then
-        echo "⚠️  BẠN ĐANG TỰ TƯỚC QUYỀN ADMIN CỦA CHÍNH MÌNH!"
-        echo "Sau lệnh này, bạn sẽ bị KHOÁ CHẶT SUDO, không thể cấu hình hệ thống nữa!"
-    fi
+    echo "🚨 CẢNH BÁO NGUY HIỂM CHẾT NGƯỜI: Bạn đang chọn chính mình ($USER_NAME)!"
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
     read -p "Nhập đúng chữ 'YES' để xác nhận chịu rủi ro: " CONFIRM </dev/tty
     if [ "$CONFIRM" != "YES" ]; then
-        echo "❌ Đã hủy thao tác để bảo vệ quyền Root của bạn."
+        echo "❌ Đã hủy thao tác."
         exit 1
     fi
 fi
 
-
 # 5. Thực hiện siết quyền
 echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
 
-# A. Tước quyền Admin khỏi nhóm google-sudoers (Nếu người dùng chọn Có)
+# A. Tước quyền Admin khỏi nhóm google-sudoers
 if [ "$STRIP_ADMIN" = true ]; then
     if id -nG "$USER_NAME" | grep -q "google-sudoers"; then
-        echo "✂️  Đang tiến hành xóa '$USER_NAME' ra khỏi nhóm quyền lực 'google-sudoers'..."
-        if gpasswd -d "$USER_NAME" google-sudoers &>/dev/null; then
-            echo "✅ Đã tước quyền Admin gốc thành công."
-        else
-            echo "⚠️  Có lỗi xảy ra khi xóa user khỏi nhóm (hoặc cần gỡ thủ công)."
-        fi
-    else
-        echo "ℹ️  User '$USER_NAME' vốn đã không nằm trong nhóm google-sudoers. Bỏ qua."
+        echo "✂️  Đang xóa '$USER_NAME' khỏi nhóm 'google-sudoers'..."
+        gpasswd -d "$USER_NAME" google-sudoers &>/dev/null
     fi
 else
-    echo "ℹ️  Giữ nguyên tư cách thành viên nhóm Admin cho '$USER_NAME' theo yêu cầu."
+    echo "ℹ️  Giữ nguyên tư cách thành viên nhóm Admin cho '$USER_NAME'."
 fi
 
-# B. Kiểm tra và dọn dẹp file google_sudoers nếu chứa NOPASSWD nguy hiểm
+# B. Kiểm tra và dọn dẹp file google_sudoers
 if [ -f "$GOOGLE_SUDOERS" ]; then
     if grep -q "NOPASSWD:[[:space:]]*ALL" "$GOOGLE_SUDOERS"; then
-        echo "📦 Phát hiện NOPASSWD:ALL cũ trong file gốc, đang siết lại về mặc định..."
+        echo "📦 Đang siết lại NOPASSWD:ALL trong file cấu hình gốc..."
         cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
         TMP_SUDOERS=$(mktemp)
         cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
         sed -i 's/NOPASSWD:[[:space:]]*ALL/ALL/g' "$TMP_SUDOERS"
         sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
 
-        if /usr/sbin/visudo -cf "$TMP_SUDOERS" &>/dev/null; then
+        if "$VISUDO_CMD" -cf "$TMP_SUDOERS" &>/dev/null; then
             cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
-            echo "✅ Đã cấu hình nhóm google-sudoers về trạng thái đòi mật khẩu."
         fi
         rm -f "$TMP_SUDOERS"
     fi
 fi
 
-# C. THAY ĐỔI CỐT LÕI: Viết trực tiếp chuỗi lệnh để chống lỗi biên dịch
+# C. Cấu hình giới hạn
 NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-picoclaw-restricted"
-echo "📝 Đang cấu hình giới hạn quyền cập nhật và cài đặt môi trường cho: $USER_NAME"
+echo "📝 Đang cấu hình giới hạn quyền cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
 
-# Ghi thẳng các lệnh được phép vào file tạm (chuẩn 100% cú pháp Sudoers)
 cat <<EOF > "$TMP_APT"
 $USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt install nodejs, /usr/bin/apt install -y nodejs, /usr/bin/apt install npm, /usr/bin/apt install -y npm, /usr/bin/apt install build-essential, /usr/bin/apt install -y build-essential
 EOF
 
-# Kiểm tra cú pháp với đường dẫn tuyệt đối
-if /usr/sbin/visudo -cf "$TMP_APT"; then
+if "$VISUDO_CMD" -cf "$TMP_APT"; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    echo "✅ Đã khóa quyền! User chỉ có thể update hệ thống và cài đích danh nodejs, npm, build-essential."
+    echo "✅ Đã khóa quyền! Cấu hình hoàn tất."
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai!"
-    echo "--- NỘI DUNG FILE LỖI ĐỂ KIỂM TRA ---"
+    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp sai!"
     cat "$TMP_APT"
-    echo "-------------------------------------"
     echo "Hủy bỏ để tránh lỗi hệ thống."
 fi
 rm -f "$TMP_APT"
 
-
-# 6. Kiểm tra kết quả trực quan
+# 6. Kiểm tra kết quả
 echo -e "\n--- 🏁 HOÀN TẤT QUY TRÌNH! ---"
 echo "🔍 Quyền hạn thực tế cuối cùng áp dụng cho $USER_NAME:"
 sudo -l -U "$USER_NAME"
