@@ -11,7 +11,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "===================================================="
-echo "    🛡️  HỆ THỐNG SIẾT CHẶT QUYỀN SUDO (APT-ONLY)     "
+echo "    🛡️  HỆ THỐNG PHÂN QUYỀN PICOCLAW (NODEJS & APT)  "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -67,15 +67,15 @@ while true; do
     break
 done
 
-# --- 🆕 BƯỚC MỚI: TÙY CHỌN LOẠI BỎ QUYỀN ADMIN TOÀN DIỆN ---
+# --- TÙY CHỌN LOẠI BỎ QUYỀN ADMIN TOÀN DIỆN ---
 echo -e "\n🛡️  TÙY CHỌN PHÂN QUYỀN:"
 echo "👉 Bạn có muốn TƯỚC TOÀN BỘ quyền Admin khác của '$USER_NAME' không?"
-echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoài apt)"
+echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoại trừ các lệnh được chỉ định bên dưới)"
 read -p "🤔 Lựa chọn của bạn (Y/n) [Mặc định: Y]: " opt_remove </dev/tty
 
 if [[ -z "$opt_remove" || "$opt_remove" =~ ^[Yy]$ ]]; then
     STRIP_ADMIN=true
-    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc (Chỉ giữ lại apt)."
+    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc."
 else
     STRIP_ADMIN=false
     echo "🔹 Trạng thái chọn: GIỮ NGUYÊN quyền Admin gốc (Vẫn bắt nhập mật khẩu cho lệnh khác)."
@@ -137,18 +137,35 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
     fi
 fi
 
-# C. Thiết lập đặc quyền NOPASSWD riêng cho apt (Đã loại bỏ lệnh install)
-NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-apt"
-echo "📝 Đang mở khoá đặc quyền apt không mật khẩu cho: $USER_NAME"
+# C. THAY ĐỔI CỐT LÕI: Thiết lập đặc quyền NOPASSWD giới hạn nghiêm ngặt
+NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-picoclaw-restricted"
+echo "📝 Đang cấu hình giới hạn quyền cập nhật và cài đặt môi trường cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
-# Bổ sung cờ -y vào các lệnh apt để người dùng có thể dùng mà không bị chặn
-echo "$USER_NAME ALL=(ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt full-upgrade, /usr/bin/apt full-upgrade -y" > "$TMP_APT"
+
+# Định nghĩa danh sách lệnh chính xác tuyệt đối (Tuyệt đối không sử dụng ký tự đại diện * để tránh lỗ hổng)
+ALLOWED_CMDS=(
+    "/usr/bin/apt update"
+    "/usr/bin/apt upgrade"
+    "/usr/bin/apt upgrade -y"
+    "/usr/bin/apt install nodejs"
+    "/usr/bin/apt install -y nodejs"
+    "/usr/bin/apt install npm"
+    "/usr/bin/apt install -y npm"
+    "/usr/bin/apt install build-essential"
+    "/usr/bin/apt install -y build-essential"
+)
+
+# Chuyển mảng lệnh thành chuỗi cách nhau bằng dấu phẩy
+CMDS_STR=$(printf ", %s" "${ALLOWED_CMDS[@]}")
+CMDS_STR=${CMDS_STR:2}
+
+echo "$USER_NAME ALL=(ALL) NOPASSWD: $CMDS_STR" > "$TMP_APT"
 
 if visudo -cf "$TMP_APT" &>/dev/null; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    echo "✅ Đã áp dụng file cấu hình đặc quyền: $NEW_CONFIG"
+    echo "✅ Đã khóa quyền! User chỉ có thể update hệ thống và cài đích danh nodejs, npm, build-essential."
 else
     echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai! Hủy bỏ để tránh lỗi hệ thống."
 fi
