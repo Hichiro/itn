@@ -129,7 +129,7 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
         sed -i 's/NOPASSWD:[[:space:]]*ALL/ALL/g' "$TMP_SUDOERS"
         sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
 
-        if visudo -cf "$TMP_SUDOERS" &>/dev/null; then
+        if /usr/sbin/visudo -cf "$TMP_SUDOERS" &>/dev/null; then
             cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
             echo "✅ Đã cấu hình nhóm google-sudoers về trạng thái đòi mật khẩu."
         fi
@@ -148,8 +148,8 @@ cat <<EOF > "$TMP_APT"
 $USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt install nodejs, /usr/bin/apt install -y nodejs, /usr/bin/apt install npm, /usr/bin/apt install -y npm, /usr/bin/apt install build-essential, /usr/bin/apt install -y build-essential
 EOF
 
-# Kiểm tra cú pháp và KHÔNG ẩn lỗi để debug
-if visudo -cf "$TMP_APT"; then
+# Kiểm tra cú pháp với đường dẫn tuyệt đối
+if /usr/sbin/visudo -cf "$TMP_APT"; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
     echo "✅ Đã khóa quyền! User chỉ có thể update hệ thống và cài đích danh nodejs, npm, build-essential."
