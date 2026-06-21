@@ -19,7 +19,7 @@ if [ -z "$VISUDO_CMD" ]; then
 fi
 
 echo "===================================================="
-echo "    🛡️  HỆ THỐNG PHÂN QUYỀN PICOCLAW (NODEJS & APT)  "
+echo "         🛡️  HỆ THỐNG PHÂN QUYỀN PICOCLAW           "
 echo "===================================================="
 
 # 2. Lấy danh sách user có shell đăng nhập hợp lệ
@@ -137,7 +137,7 @@ echo "📝 Đang cấu hình giới hạn quyền cho: $USER_NAME"
 TMP_APT=$(mktemp)
 
 cat <<EOF > "$TMP_APT"
-$USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt install nodejs, /usr/bin/apt install -y nodejs, /usr/bin/apt install npm, /usr/bin/apt install -y npm, /usr/bin/apt install build-essential, /usr/bin/apt install -y build-essential
+$USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade
 EOF
 
 if "$VISUDO_CMD" -cf "$TMP_APT"; then
