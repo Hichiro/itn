@@ -137,37 +137,28 @@ if [ -f "$GOOGLE_SUDOERS" ]; then
     fi
 fi
 
-# C. THAY ĐỔI CỐT LÕI: Thiết lập đặc quyền NOPASSWD giới hạn nghiêm ngặt
+# C. THAY ĐỔI CỐT LÕI: Viết trực tiếp chuỗi lệnh để chống lỗi biên dịch
 NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-picoclaw-restricted"
 echo "📝 Đang cấu hình giới hạn quyền cập nhật và cài đặt môi trường cho: $USER_NAME"
 
 TMP_APT=$(mktemp)
 
-# Định nghĩa danh sách lệnh chính xác tuyệt đối (Tuyệt đối không sử dụng ký tự đại diện * để tránh lỗ hổng)
-ALLOWED_CMDS=(
-    "/usr/bin/apt update"
-    "/usr/bin/apt upgrade"
-    "/usr/bin/apt upgrade -y"
-    "/usr/bin/apt install nodejs"
-    "/usr/bin/apt install -y nodejs"
-    "/usr/bin/apt install npm"
-    "/usr/bin/apt install -y npm"
-    "/usr/bin/apt install build-essential"
-    "/usr/bin/apt install -y build-essential"
-)
+# Ghi thẳng các lệnh được phép vào file tạm (chuẩn 100% cú pháp Sudoers)
+cat <<EOF > "$TMP_APT"
+$USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade, /usr/bin/apt upgrade -y, /usr/bin/apt install nodejs, /usr/bin/apt install -y nodejs, /usr/bin/apt install npm, /usr/bin/apt install -y npm, /usr/bin/apt install build-essential, /usr/bin/apt install -y build-essential
+EOF
 
-# Chuyển mảng lệnh thành chuỗi cách nhau bằng dấu phẩy
-CMDS_STR=$(printf ", %s" "${ALLOWED_CMDS[@]}")
-CMDS_STR=${CMDS_STR:2}
-
-echo "$USER_NAME ALL=(ALL) NOPASSWD: $CMDS_STR" > "$TMP_APT"
-
-if visudo -cf "$TMP_APT" &>/dev/null; then
+# Kiểm tra cú pháp và KHÔNG ẩn lỗi để debug
+if visudo -cf "$TMP_APT"; then
     cat "$TMP_APT" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
     echo "✅ Đã khóa quyền! User chỉ có thể update hệ thống và cài đích danh nodejs, npm, build-essential."
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai! Hủy bỏ để tránh lỗi hệ thống."
+    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp cấp quyền apt sai!"
+    echo "--- NỘI DUNG FILE LỖI ĐỂ KIỂM TRA ---"
+    cat "$TMP_APT"
+    echo "-------------------------------------"
+    echo "Hủy bỏ để tránh lỗi hệ thống."
 fi
 rm -f "$TMP_APT"
 
