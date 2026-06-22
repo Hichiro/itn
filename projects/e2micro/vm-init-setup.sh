@@ -2,7 +2,7 @@
 
 # ==============================================================================
 # Tên Script: vm-init-setup.sh
-# Mô tả: Cấu hình SWAP, zRAM (Debian/Ubuntu) và tối ưu log. Tự động nhận diện OS.
+# Mô tả: Cấu hình SWAP (tự động theo RAM), zRAM (Debian/Ubuntu) và tối ưu log.
 # CHẠY TRÊN: Chạy ngầm TỰ ĐỘNG bên trong VM thông qua quyền hệ thống khi khởi động.
 # ==============================================================================
 
@@ -12,7 +12,19 @@ fi
 
 echo "=== ĐANG CẤU HÌNH HỆ THỐNG TỰ ĐỘNG ==="
 
-# 1. TỰ ĐỘNG KHỞI TẠO VÀ BẬT SWAP 2GB THEO HỆ ĐIỀU HÀNH
+# 1. TỰ ĐỘNG TÍNH DUNG LƯỢNG VÀ BẬT SWAP THEO RAM THỰC
+RAM_MB=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+if [ "$RAM_MB" -lt 2048 ]; then
+    SWAP_SIZE=$((RAM_MB * 2)) # RAM < 2GB -> SWAP = 2x RAM
+else
+    SWAP_SIZE=$RAM_MB         # RAM >= 2GB -> SWAP = 1x RAM
+fi
+
+# Giới hạn dung lượng SWAP tối đa 4GB (4096MB) để tránh lãng phí ổ đĩa
+if [ "$SWAP_SIZE" -gt 4096 ]; then
+    SWAP_SIZE=4096
+fi
+
 if [ -d '/var' ] && [ ! -w '/' ]; then
     IS_COS=true
     SWAP_PATH='/var/swapfile' # Thư mục ghi được duy nhất trên COS
@@ -22,7 +34,8 @@ else
 fi
 
 if [ ! -f "$SWAP_PATH" ]; then
-    dd if=/dev/zero of="$SWAP_PATH" bs=1M count=2048
+    echo "--> Đang tạo SWAP với dung lượng: ${SWAP_SIZE}MB..."
+    dd if=/dev/zero of="$SWAP_PATH" bs=1M count="$SWAP_SIZE"
     chmod 600 "$SWAP_PATH"
     mkswap "$SWAP_PATH"
 fi
