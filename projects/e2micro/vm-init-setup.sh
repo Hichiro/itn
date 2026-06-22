@@ -2,7 +2,7 @@
 
 # ==============================================================================
 # Tên Script: vm-init-setup.sh
-# Mô tả: Cấu hình SWAP, zRAM (Debian) và tối ưu log hệ thống. Tự động nhận diện OS.
+# Mô tả: Cấu hình SWAP, zRAM (Debian/Ubuntu) và tối ưu log. Tự động nhận diện OS.
 # CHẠY TRÊN: Chạy ngầm TỰ ĐỘNG bên trong VM thông qua quyền hệ thống khi khởi động.
 # ==============================================================================
 
@@ -39,14 +39,20 @@ if [ -w '/etc/fstab' ]; then
     fi
 fi
 
-# 1b. TỰ ĐỘNG CÀI ĐẶT VÀ BẬT zRAM (CHỈ ÁP DỤNG TRÊN DEBIAN/UBUNTU)
+# 1b. TỰ ĐỘNG CÀI ĐẶT VÀ BẬT zRAM (HỖ TRỢ CẢ DEBIAN VÀ UBUNTU)
 if [ "$IS_COS" = false ] && command -v apt-get >/dev/null 2>&1; then
-    if ! systemctl is-active --quiet zram-config 2>/dev/null; then
+    if ! systemctl is-active --quiet zram-config 2>/dev/null && ! systemctl is-active --quiet zramswap 2>/dev/null; then
         echo "--> Đang cài đặt zRAM..."
         export DEBIAN_FRONTEND=noninteractive
-        apt-get update -y && apt-get install zram-config -y
-        systemctl enable zram-config 2>/dev/null
-        systemctl start zram-config 2>/dev/null
+        apt-get update -y
+        
+        # Thử cài zram-config (Ubuntu), nếu không tìm thấy thì cài zram-tools (Debian)
+        if apt-get install zram-config -y 2>/dev/null; then
+            systemctl enable zram-config --now 2>/dev/null
+        else
+            apt-get install zram-tools -y
+            systemctl enable zramswap --now 2>/dev/null
+        fi
     fi
 fi
 
