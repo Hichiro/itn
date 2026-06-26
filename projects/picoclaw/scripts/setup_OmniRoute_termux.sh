@@ -1,6 +1,13 @@
 #!/bin/bash
 
-# --- 🛠️ SCRIPT CÀI ĐẶT OMNIROUTE TRÊN TERMUX ---
+# ==============================================================================
+# SCRIPT: install_omniroute_termux.sh
+# THÔNG TIN: Tự động hóa quy trình thiết lập OmniRoute trên môi trường Android
+# TÁC DỤNG: Cập nhật hệ thống, cấu hình Node.js, Python, Build Tools và cài đặt OmniRoute
+# CÁCH CHẠY NHANH (CURL GITHUB):
+# curl -sSL https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/picoclaw/scripts/setup_OmniRoute_termux.sh | bash
+# ==============================================================================
+
 echo "🚀 Bắt đầu quy trình cấu hình và cài đặt OmniRoute..."
 echo "----------------------------------------------------"
 
