@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # --- 🛠️ CẤU HÌNH ---
-GOOGLE_SUDOERS="/etc/sudoers.d/google_sudoers"
 CURRENT_USER=${SUDO_USER:-$USER}
 
 # 1. Kiểm tra quyền root
@@ -74,85 +73,53 @@ while true; do
     break
 done
 
-# --- TÙY CHỌN LOẠI BỎ QUYỀN ADMIN TOÀN DIỆN ---
-echo -e "\n🛡️  TÙY CHỌN PHÂN QUYỀN:"
-echo "👉 Bạn có muốn TƯỚC TOÀN BỘ quyền Admin khác của '$USER_NAME' không?"
-echo "   (Nếu CHỌN: User này SẼ KHÔNG THỂ chạy bất kỳ lệnh sudo nào khác ngoại trừ các lệnh được chỉ định bên dưới)"
-read -p "🤔 Lựa chọn của bạn (Y/n) [Mặc định: Y]: " opt_remove </dev/tty
-
-if [[ -z "$opt_remove" || "$opt_remove" =~ ^[Yy]$ ]]; then
-    STRIP_ADMIN=true
-    echo "🔹 Trạng thái chọn: ĐỒNG Ý tước quyền Admin gốc."
-else
-    STRIP_ADMIN=false
-    echo "🔹 Trạng thái chọn: GIỮ NGUYÊN quyền Admin gốc (Vẫn bắt nhập mật khẩu cho lệnh khác)."
-fi
-
 # 4. Cơ chế tự bảo vệ
 if [ "$USER_NAME" == "$CURRENT_USER" ]; then
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    echo "🚨 CẢNH BÁO NGUY HIỂM CHẾT NGƯỜI: Bạn đang chọn chính mình ($USER_NAME)!"
+    echo "🚨 CẢNH BÁO: Bạn đang chọn chính mình ($USER_NAME)!"
     echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    read -p "Nhập đúng chữ 'YES' để xác nhận chịu rủi ro: " CONFIRM </dev/tty
+    read -p "Nhập đúng chữ 'YES' để xác nhận tiếp tục: " CONFIRM </dev/tty
     if [ "$CONFIRM" != "YES" ]; then
         echo "❌ Đã hủy thao tác."
         exit 1
     fi
 fi
 
-# 5. Thực hiện siết quyền
-echo -e "\n--- 🛡️  ĐANG THỰC THI QUY TRÌNH ---"
+# 5. Thực hiện cấu hình quyền
+echo -e "\n--- 🛡️  ĐANG THỰC THI CẤU HÌNH ---"
 
-# A. Tước quyền Admin khỏi nhóm google-sudoers
-if [ "$STRIP_ADMIN" = true ]; then
-    if id -nG "$USER_NAME" | grep -q "google-sudoers"; then
-        echo "✂️  Đang xóa '$USER_NAME' khỏi nhóm 'google-sudoers'..."
-        gpasswd -d "$USER_NAME" google-sudoers &>/dev/null
-    fi
-else
-    echo "ℹ️  Giữ nguyên tư cách thành viên nhóm Admin cho '$USER_NAME'."
-fi
+# Tạo file cấu hình riêng cho user trong /etc/sudoers.d/
+NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-picoclaw-custom"
+echo "📝 Đang thiết lập quyền cho: $USER_NAME"
 
-# B. Kiểm tra và dọn dẹp file google_sudoers
-if [ -f "$GOOGLE_SUDOERS" ]; then
-    if grep -q "NOPASSWD:[[:space:]]*ALL" "$GOOGLE_SUDOERS"; then
-        echo "📦 Đang siết lại NOPASSWD:ALL trong file cấu hình gốc..."
-        cp "$GOOGLE_SUDOERS" "${GOOGLE_SUDOERS}.bak"
-        TMP_SUDOERS=$(mktemp)
-        cp "$GOOGLE_SUDOERS" "$TMP_SUDOERS"
-        sed -i 's/NOPASSWD:[[:space:]]*ALL/ALL/g' "$TMP_SUDOERS"
-        sed -i "s/^%google-sudoers.*/%google-sudoers ALL=(ALL:ALL) ALL/" "$TMP_SUDOERS"
+TMP_SUDO=$(mktemp)
 
-        if "$VISUDO_CMD" -cf "$TMP_SUDOERS" &>/dev/null; then
-            cat "$TMP_SUDOERS" > "$GOOGLE_SUDOERS"
-        fi
-        rm -f "$TMP_SUDOERS"
-    fi
-fi
+# QUY TẮC:
+# 1. Cho phép làm mọi thứ nhưng PHẢI nhập mật khẩu (ALL=(ALL:ALL) ALL)
+# 2. Riêng apt update/upgrade thì KHÔNG cần mật khẩu (NOPASSWD)
+cat <<EOF > "$TMP_SUDO"
+# Cấp quyền sudo toàn diện nhưng yêu cầu mật khẩu cho mọi lệnh
+$USER_NAME ALL=(ALL:ALL) ALL
 
-# C. Cấu hình giới hạn
-NEW_CONFIG="/etc/sudoers.d/z_${USER_NAME}-picoclaw-restricted"
-echo "📝 Đang cấu hình giới hạn quyền cho: $USER_NAME"
-
-TMP_APT=$(mktemp)
-
-cat <<EOF > "$TMP_APT"
+# Ngoại lệ: Không yêu cầu mật khẩu cho 2 lệnh apt cụ thể
 $USER_NAME ALL=(ALL:ALL) NOPASSWD: /usr/bin/apt update, /usr/bin/apt upgrade
 EOF
 
-if "$VISUDO_CMD" -cf "$TMP_APT"; then
-    cat "$TMP_APT" > "$NEW_CONFIG"
+# Kiểm tra cú pháp bằng visudo trước khi áp dụng để tránh treo hệ thống
+if "$VISUDO_CMD" -cf "$TMP_SUDO"; then
+    cat "$TMP_SUDO" > "$NEW_CONFIG"
     chmod 0440 "$NEW_CONFIG"
-    echo "✅ Đã khóa quyền! Cấu hình hoàn tất."
+    echo "✅ Cấu hình thành công!"
+    echo "👉 Kết quả: 'apt update/upgrade' không mật khẩu, các lệnh khác yêu cầu mật khẩu."
 else
-    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp sai!"
-    cat "$TMP_APT"
-    echo "Hủy bỏ để tránh lỗi hệ thống."
+    echo "❌ LỖI NGHIÊM TRỌNG: Cú pháp sudoers sai!"
+    cat "$TMP_SUDO"
+    echo "Hủy bỏ để bảo vệ hệ thống."
 fi
-rm -f "$TMP_APT"
+rm -f "$TMP_SUDO"
 
 # 6. Kiểm tra kết quả
 echo -e "\n--- 🏁 HOÀN TẤT QUY TRÌNH! ---"
-echo "🔍 Quyền hạn thực tế cuối cùng áp dụng cho $USER_NAME:"
+echo "🔍 Quyền hạn hiện tại của $USER_NAME:"
 sudo -l -U "$USER_NAME"
 echo "===================================================="
