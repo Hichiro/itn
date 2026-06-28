@@ -1,8 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# SCRIPT CÀI ĐẶT KLIPPER QUA KIAUH TRÊN TERMUX (YÊU CẦU MÁY ĐÃ ROOT)
-# Quy định: Chạy toàn bộ script để cấu hình môi trường
+# SCRIPT CÀI ĐẶT KLIPPER QUA KIAUH TRÊN TERMUX (ĐÃ SỬA LỖI CONFIG FILE CHỜ STDIN)
 # ==============================================================================
 
 set -e # Dừng script nếu có lỗi xảy ra
@@ -11,13 +10,18 @@ echo "===================================================="
 echo " BẮT ĐẦU CẤU HÌNH KLIPPER TRÊN TERMUX (ROOTED)      "
 echo "===================================================="
 
-# 1. Cập nhật hệ thống Termux
+# Sửa lỗi bị kẹt gói cũ trước đó (nếu có)
+echo "Đang xử lý dọn dẹp các gói bị kẹt cấu hình..."
+dpkg --configure -a || true
+apt install -f -y || true
+
+# 1. Cập nhật hệ thống Termux (Đã thêm lệnh ép buộc giữ cấu hình cũ để tránh lỗi)
 echo "[1/5] Đang cập nhật package hệ thống..."
-pkg update -y && pkg upgrade -y
+pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confold"
 
 # 2. Cài đặt các công cụ cần thiết
 echo "[2/5] Cài đặt git, tsu (để chạy root trong termux)..."
-pkg install git tsu -y
+pkg install git tsu -y -o Dpkg::Options::="--force-confold"
 
 # 3. Cấp quyền truy cập bộ nhớ cho Termux
 echo "[3/5] Yêu cầu quyền truy cập bộ nhớ (Vui lòng bấm 'Cho phép' trên màn hình)..."
