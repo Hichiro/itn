@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# SCRIPT TỔNG HỢP: KHỞI TẠO KLIPPER TRÊN MÔI TRƯỜNG DEBIAN PROOT
+# SCRIPT TỔNG HỢP: KHỞI CHẠY KLIPPER/DEBIAN DƯỚI QUYỀN ROOT HỆ THỐNG
 # Quy định: Gửi toàn bộ script khi phản hồi
 # ==============================================================================
 
@@ -32,10 +32,8 @@ fi
 echo "[3/5] Đang nạp các package cần thiết, Python mới và KIAUH vào Debian..."
 proot-distro login debian -- bash -c "
   apt-get update && apt-get upgrade -y
-  # Cài thêm sudo vì Debian gốc không đi kèm sudo, cần thiết cho KIAUH chạy lệnh
   apt-get install python3 python3-pip python3-venv git curl sudo sed -y
   
-  # Tạo thư mục và clone KIAUH bên trong Debian
   cd /root
   if [ -d 'kiauh' ]; then
       cd kiauh && git pull
@@ -49,33 +47,43 @@ proot-distro login debian -- bash -c "
   find kiauh/scripts/ -type f -exec sed -i 's/status=\$?/status=0/g' {} + || true
 "
 
-# 5. Tạo script nạp quyền truy cập cổng USB từ Android gốc vào Debian (Yêu cầu Root)
-echo "[4/5] Tạo script cấu hình cổng USB chuyển tiếp thiết bị..."
+# 5. Tạo script nạp quyền truy cập cổng USB từ Android gốc vào Debian (Yêu cầu Root Magisk/KernelSU)
+echo "[4/5] Tạo script cấu hình cổng USB bằng quyền siêu người dùng (Root)..."
 cat << 'EOF' > $HOME/fix_usb_root.sh
 #!/data/data/com.termux/files/usr/bin/bash
-echo "Đang yêu cầu quyền Root để giải phóng cổng USB..."
+echo "Đang yêu cầu hệ thống Android cấp quyền Superuser (Root)..."
 tsu -c "
-  if [ -e /dev/ttyUSB* ]; then chmod 666 /dev/ttyUSB*; echo 'Đã mở quyền cổng ttyUSB!'; fi
-  if [ -e /dev/ttyACM* ]; then chmod 666 /dev/ttyACM*; echo 'Đã mở quyền cổng ttyACM!'; fi
+  echo 'Đang giải phóng và gán quyền đọc/ghi cho cổng kết nối OTG...'
+  if [ -e /dev/ttyUSB* ]; then 
+    chmod 666 /dev/ttyUSB*
+    echo '-> Đã mở quyền thành công cho cổng ttyUSB!'
+  fi
+  if [ -e /dev/ttyACM* ]; then 
+    chmod 666 /dev/ttyACM*
+    echo '-> Đã mở quyền thành công cho cổng ttyACM!'
+  fi
 "
 EOF
 chmod +x $HOME/fix_usb_root.sh
 
-# 6. Tạo cổng khởi động nhanh cho các dịch vụ nền Klipper/Moonraker thủ công
-echo "[5/5] Cấu hình script khởi tạo dịch vụ Klipper..."
+# 6. Tạo cổng khởi động nhanh cho các dịch vụ nền Klipper/Moonraker chạy trực tiếp với quyền root
+echo "[5/5] Cấu hình script chạy dịch vụ Klipper bằng quyền Root liên kết..."
 cat << 'EOF' > $HOME/start_klipper_services.sh
 #!/data/data/com.termux/files/usr/bin/bash
-echo "Kích hoạt cụm dịch vụ Klipper thông qua môi trường ảo hóa Debian..."
+echo "Đang kích hoạt Klipper và Moonraker chạy ngầm dưới quyền Root..."
 
-# Lệnh khởi chạy ngầm Klipper và Moonraker bên trong không gian Debian proot
-proot-distro login debian -- bash -c "
-  echo 'Đang khởi động Klipper daemon...'
-  /root/klipper-env/bin/python /root/klipper/klippy/klippy.py /root/printer_data/config/printer.cfg -l /root/printer_data/logs/klipper.log -a /tmp/klippy_uds" &
+# Chạy ngầm toàn bộ container Debian dưới định dạng root để đồng bộ cổng /dev/
+tsu -c "proot-distro login debian -- bash -c \"
+  echo 'Khởi động Klipper daemon...'
+  /root/klipper-env/bin/python /root/klipper/klippy/klippy.py /root/printer_data/config/printer.cfg -l /root/printer_data/logs/klipper.log -a /tmp/klippy_uds &
   sleep 2
-  echo 'Đang khởi động Moonraker daemon...'
+  echo 'Khởi động Moonraker daemon...'
   /root/moonraker-env/bin/python /root/moonraker/moonraker/moonraker.py -c /root/printer_data/config/moonraker.conf -l /root/printer_data/logs/moonraker.log &
-"
-echo "Các tiến trình đã được nạp vào nền Debian thành công!"
+\"" &
+
+echo "===================================================="
+echo "Các tiến trình Klipper đã được nạp thẳng vào Root hệ thống!"
+echo "===================================================="
 EOF
 chmod +x $HOME/start_klipper_services.sh
 
@@ -89,12 +97,13 @@ chmod +x $HOME/run_kiauh.sh
 echo "===================================================="
 echo "        CẤU HÌNH MÔI TRƯỜNG DEBIAN HOÀN TẤT!         "
 echo "===================================================="
-echo "Bước 1: Chạy script kích hoạt KIAUH trên Debian:"
+echo "Bước 1: Chạy script để cài đặt các thành phần qua KIAUH:"
 echo "        ./run_kiauh.sh"
 echo ""
-echo "Bước 2: Cắm cáp OTG nối máy in và chạy lệnh nạp quyền USB:"
+echo "Bước 2: Cắm cáp máy in vào điện thoại rồi chạy lệnh cấp quyền USB:"
 echo "        ./fix_usb_root.sh"
+echo "        (Chấp nhận cửa sổ Pop-up xin quyền Root của Magisk nếu có)"
 echo ""
-echo "Bước 3: Chạy cụm dịch vụ máy in 3D ngầm:"
+echo "Bước 3: Khởi động hệ thống Klipper bằng quyền Root:"
 echo "        ./start_klipper_services.sh"
 echo "===================================================="
