@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# SCRIPT TỔNG HỢP: KHỞI TẠO DEBIAN PROOT & ÉP BUỘC VÔ HIỆU HÓA HOÀN TOÀN CHECK ROOT
+# SCRIPT TỔNG HỢP: KHỞI TẠO DEBIAN PROOT, CHECK OS ĐÃ CÀI & BYPASS CHECK ROOT KIAUH
 # Quy định: Gửi toàn bộ script khi phản hồi
 # ==============================================================================
 
@@ -20,11 +20,12 @@ echo "[1/5] Đang thiết lập Termux gốc..."
 pkg update -y && pkg upgrade -y -o Dpkg::Options::="--force-confold"
 pkg install proot-distro tsu git coreutils -y -o Dpkg::Options::="--force-confold"
 
-# 3. Tạo và cài đặt môi trường Linux Debian
-echo "[2/5] Đang khởi tạo container Debian sạch để chạy Klipper..."
+# 3. KIỂM TRA TỰ ĐỘNG: Bỏ qua nếu OS Debian đã được cài đặt
+echo "[2/5] Đang kiểm tra trạng thái cài đặt hệ điều hành..."
 if proot-distro list | grep -q "installed.*debian"; then
-    echo "-> Debian container đã được cài đặt sẵn."
+    echo "-> [TỰ ĐỘNG BỎ QUA] Hệ điều hành Debian đã được cài đặt sẵn từ trước. Tiến hành cấu hình phần mềm..."
 else
+    echo "-> Chưa phát hiện Debian. Tiến hành tải và cài đặt Debian container sạch..."
     proot-distro install debian
 fi
 
@@ -47,8 +48,10 @@ proot-distro login debian -- bash -c "
   find kiauh/scripts/ -type f -exec sed -i 's/status=\$?/status=0/g' {} + || true
 
   # BẢN VÁ TỐI CAO: Định nghĩa lại hàm id() ở đầu file kiauh.sh để luôn trả về UID bằng 1000 (Không phải root)
-  # Cách này giúp vượt qua mọi bộ lọc check root của script mà không cần xóa code
-  sed -i '2i id() { echo 1000; }' kiauh/kiauh.sh
+  # Nhằm vượt qua hoàn toàn bộ lọc chặn root của KIAUH
+  if ! grep -q 'id() {' kiauh/kiauh.sh; then
+      sed -i '2i id() { echo 1000; }' kiauh/kiauh.sh
+  fi
 "
 
 # 5. Tạo script nạp quyền truy cập cổng USB từ Android gốc vào Debian (Yêu cầu Root Magisk/KernelSU)
@@ -100,7 +103,7 @@ chmod +x $HOME/run_kiauh.sh
 echo "===================================================="
 echo "        CẤU HÌNH MÔI TRƯỜNG DEBIAN HOÀN TẤT!         "
 echo "===================================================="
-echo "Bước 1: Chạy lại lệnh mở KIAUH (Hàm check root đã bị đánh lừa triệt để):"
+echo "Bước 1: Chạy lệnh mở trình cài đặt KIAUH (Không còn lỗi chặn root):"
 echo "        ./run_kiauh.sh"
 echo ""
 echo "Bước 2: Cắm cáp máy in vào điện thoại rồi chạy lệnh cấp quyền USB:"
