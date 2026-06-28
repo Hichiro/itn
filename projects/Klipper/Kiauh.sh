@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# SCRIPT TỔNG HỢP: KHỞI CHẠY KLIPPER/DEBIAN DƯỚI QUYỀN ROOT HỆ THỐNG
+# SCRIPT TỔNG HỢP: KHỞI TẠO VÀ VÁ LỖI CHẶN ROOT CỦA KIAUH TRÊN DEBIAN PROOT
 # Quy định: Gửi toàn bộ script khi phản hồi
 # ==============================================================================
 
 set -e
 
 echo "===================================================="
-echo " BẮT ĐẦU CÀI ĐẶT CƠ CHẾ LINUX ỔN ĐỊNH VỚI DEBIAN     "
+echo " BẮT ĐẦU CÀI ĐẶT CƠ CHẾ LINUX VÀ VÁ LỖI ROOT KIAUH   "
 echo "===================================================="
 
 # 1. Gỡ lỗi package lock nền nếu có
@@ -28,8 +28,8 @@ else
     proot-distro install debian
 fi
 
-# 4. Truy cập vào Debian để cài đặt Python, KIAUH và toàn bộ công cụ nền
-echo "[3/5] Đang nạp các package cần thiết, Python mới và KIAUH vào Debian..."
+# 4. Truy cập vào Debian để cài đặt Python, KIAUH và vá lỗi chặn Root
+echo "[3/5] Đang nạp các package, vá lỗi systemd và lỗi chặn Root của KIAUH..."
 proot-distro login debian -- bash -c "
   apt-get update && apt-get upgrade -y
   apt-get install python3 python3-pip python3-venv git curl sudo sed -y
@@ -42,9 +42,12 @@ proot-distro login debian -- bash -c "
   fi
   chmod +x kiauh/kiauh.sh
 
-  # Vá lỗi systemd của KIAUH ngay bên trong Debian
+  # Vá lỗi check systemd của KIAUH ngay bên trong Debian
   find kiauh/scripts/ -type f -exec sed -i 's/systemctl/echo/g' {} + || true
   find kiauh/scripts/ -type f -exec sed -i 's/status=\$?/status=0/g' {} + || true
+
+  # VÁ LỖI: Loại bỏ đoạn code chặn đứng không cho chạy với quyền root trong kiauh.sh
+  sed -i '/if \[ \$(id -u) -eq 0 \]; then/,/fi/d' kiauh/kiauh.sh
 "
 
 # 5. Tạo script nạp quyền truy cập cổng USB từ Android gốc vào Debian (Yêu cầu Root Magisk/KernelSU)
@@ -60,7 +63,7 @@ tsu -c "
   fi
   if [ -e /dev/ttyACM* ]; then 
     chmod 666 /dev/ttyACM*
-    echo '-> Đã mở quyền thành công cho cổng ttyACM!'
+    echo '-> Đã mở quyền cổng ttyACM!'
   fi
 "
 EOF
@@ -72,7 +75,6 @@ cat << 'EOF' > $HOME/start_klipper_services.sh
 #!/data/data/com.termux/files/usr/bin/bash
 echo "Đang kích hoạt Klipper và Moonraker chạy ngầm dưới quyền Root..."
 
-# Chạy ngầm toàn bộ container Debian dưới định dạng root để đồng bộ cổng /dev/
 tsu -c "proot-distro login debian -- bash -c \"
   echo 'Khởi động Klipper daemon...'
   /root/klipper-env/bin/python /root/klipper/klippy/klippy.py /root/printer_data/config/printer.cfg -l /root/printer_data/logs/klipper.log -a /tmp/klippy_uds &
@@ -97,12 +99,11 @@ chmod +x $HOME/run_kiauh.sh
 echo "===================================================="
 echo "        CẤU HÌNH MÔI TRƯỜNG DEBIAN HOÀN TẤT!         "
 echo "===================================================="
-echo "Bước 1: Chạy script để cài đặt các thành phần qua KIAUH:"
+echo "Bước 1: Chạy lại lệnh mở KIAUH (Lỗi chặn root đã được xóa bỏ):"
 echo "        ./run_kiauh.sh"
 echo ""
 echo "Bước 2: Cắm cáp máy in vào điện thoại rồi chạy lệnh cấp quyền USB:"
 echo "        ./fix_usb_root.sh"
-echo "        (Chấp nhận cửa sổ Pop-up xin quyền Root của Magisk nếu có)"
 echo ""
 echo "Bước 3: Khởi động hệ thống Klipper bằng quyền Root:"
 echo "        ./start_klipper_services.sh"
