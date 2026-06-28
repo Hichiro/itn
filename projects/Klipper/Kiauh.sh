@@ -1,14 +1,14 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 # ==============================================================================
-# SCRIPT TỔNG HỢP: KHỞI TẠO VÀ VÁ LỖI CHẶN ROOT CỦA KIAUH TRÊN DEBIAN PROOT
+# SCRIPT TỔNG HỢP: KHỞI TẠO DEBIAN PROOT & ÉP BUỘC VÔ HIỆU HÓA HOÀN TOÀN CHECK ROOT
 # Quy định: Gửi toàn bộ script khi phản hồi
 # ==============================================================================
 
 set -e
 
 echo "===================================================="
-echo " BẮT ĐẦU CÀI ĐẶT CƠ CHẾ LINUX VÀ VÁ LỖI ROOT KIAUH   "
+echo " BẮT ĐẦU CÀI ĐẶT CƠ CHẾ LINUX VÀ SỬA TRIỆT ĐỂ LỖI ROOT"
 echo "===================================================="
 
 # 1. Gỡ lỗi package lock nền nếu có
@@ -28,8 +28,8 @@ else
     proot-distro install debian
 fi
 
-# 4. Truy cập vào Debian để cài đặt Python, KIAUH và vá lỗi chặn Root
-echo "[3/5] Đang nạp các package, vá lỗi systemd và lỗi chặn Root của KIAUH..."
+# 4. Truy cập vào Debian để cài đặt Python, KIAUH và áp dụng bản vá Root tối cao
+echo "[3/5] Đang cấu hình và vô hiệu hóa cơ chế chặn Root của KIAUH..."
 proot-distro login debian -- bash -c "
   apt-get update && apt-get upgrade -y
   apt-get install python3 python3-pip python3-venv git curl sudo sed -y
@@ -42,12 +42,13 @@ proot-distro login debian -- bash -c "
   fi
   chmod +x kiauh/kiauh.sh
 
-  # Vá lỗi check systemd của KIAUH ngay bên trong Debian
+  # Vá lỗi check systemd của KIAUH
   find kiauh/scripts/ -type f -exec sed -i 's/systemctl/echo/g' {} + || true
   find kiauh/scripts/ -type f -exec sed -i 's/status=\$?/status=0/g' {} + || true
 
-  # VÁ LỖI: Loại bỏ đoạn code chặn đứng không cho chạy với quyền root trong kiauh.sh
-  sed -i '/if \[ \$(id -u) -eq 0 \]; then/,/fi/d' kiauh/kiauh.sh
+  # BẢN VÁ TỐI CAO: Định nghĩa lại hàm id() ở đầu file kiauh.sh để luôn trả về UID bằng 1000 (Không phải root)
+  # Cách này giúp vượt qua mọi bộ lọc check root của script mà không cần xóa code
+  sed -i '2i id() { echo 1000; }' kiauh/kiauh.sh
 "
 
 # 5. Tạo script nạp quyền truy cập cổng USB từ Android gốc vào Debian (Yêu cầu Root Magisk/KernelSU)
@@ -63,7 +64,7 @@ tsu -c "
   fi
   if [ -e /dev/ttyACM* ]; then 
     chmod 666 /dev/ttyACM*
-    echo '-> Đã mở quyền cổng ttyACM!'
+    echo '-> Đã mở quyền thành công cho cổng ttyACM!'
   fi
 "
 EOF
@@ -89,17 +90,17 @@ echo "===================================================="
 EOF
 chmod +x $HOME/start_klipper_services.sh
 
-# Tạo lối tắt để vào thẳng giao diện KIAUH của Debian khi cài đặt
+# Tạo lối tắt để vào thẳng giao diện KIAUH của Debian khi cài đặt (kèm giả lập biến USER)
 cat << 'EOF' > $HOME/run_kiauh.sh
 #!/data/data/com.termux/files/usr/bin/bash
-proot-distro login debian -- bash -c "cd /root/kiauh && ./kiauh.sh"
+proot-distro login debian -- bash -c "export USER=klipper; cd /root/kiauh && ./kiauh.sh"
 EOF
 chmod +x $HOME/run_kiauh.sh
 
 echo "===================================================="
 echo "        CẤU HÌNH MÔI TRƯỜNG DEBIAN HOÀN TẤT!         "
 echo "===================================================="
-echo "Bước 1: Chạy lại lệnh mở KIAUH (Lỗi chặn root đã được xóa bỏ):"
+echo "Bước 1: Chạy lại lệnh mở KIAUH (Hàm check root đã bị đánh lừa triệt để):"
 echo "        ./run_kiauh.sh"
 echo ""
 echo "Bước 2: Cắm cáp máy in vào điện thoại rồi chạy lệnh cấp quyền USB:"
