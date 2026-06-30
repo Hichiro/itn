@@ -1,23 +1,5 @@
 services:
-  # 1. Ứng dụng OmniRoute
-  omniroute:
-    image: diegosouzapw/omniroute:latest
-    container_name: omniroute
-    restart: unless-stopped
-    stop_grace_period: 40s
-    ports:
-      - "20128:20128"
-    environment:
-      - OMNIROUTE_PUBLIC_BASE_URL=http://10.0.6.10:20128
-    volumes:
-      - omniroute-data:/app/data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # 2. WireGuard Client (Kết nối về nhà)
+  # 1. WireGuard Client (Đóng vai trò là cổng mạng chính)
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
@@ -28,13 +10,40 @@ services:
       - PGID=1000
       - TZ=Asia/Ho_Chi_Minh
     volumes:
-      # Gắn thư mục chứa file wg0.conf từ máy ảo vào container
       - ./wg-client:/config
+    ports:
+      # 🌟 MỞ CỔNG CỦA OMNIROUTE NGAY TẠI ĐÂY
+      - "20128:20128"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
-  # 3. Công cụ quản lý Lazydocker
+  # 2. Ứng dụng OmniRoute
+  omniroute:
+    image: diegosouzapw/omniroute:latest
+    container_name: omniroute
+    restart: unless-stopped
+    stop_grace_period: 40s
+    # 🌟 ÉP OMNIROUTE CHẠY CHUNG MẠNG VỚI WIREGUARD
+    network_mode: "service:wireguard"
+    # (Bỏ phần ports: "20128:20128" ở đây vì đã chuyển sang dịch vụ wireguard ở trên)
+    environment:
+      # Thay bằng IP WireGuard mà Router ở nhà cấp cho máy ảo GCP
+      - OMNIROUTE_PUBLIC_BASE_URL=http://10.0.6.10:20128
+    volumes:
+      - omniroute-data:/app/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # 3. Lazydocker
   lazydocker:
     image: lazyteam/lazydocker:latest
     container_name: lazydocker
