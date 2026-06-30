@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================
-# OmniRoute Docker Installer - Manual URL Version
+# OmniRoute Docker Installer - v2.4 (Fixed Permissions & Prompt)
 # ================================================
 
 GREEN='\033[0;32m'
@@ -13,7 +13,7 @@ APP_DIR="$HOME/omniroute"
 DATA_DIR="$HOME/omniroute-data"
 
 echo -e "${GREEN}=========================================${NC}"
-echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (v2.3)       ${NC}"
+echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (v2.4)       ${NC}"
 echo -e "${GREEN}=========================================${NC}"
 
 # 1. Kiểm tra công cụ hệ thống
@@ -40,14 +40,23 @@ check_dependencies
 # 2. Tạo thư mục và phân quyền
 mkdir -p "$APP_DIR"
 mkdir -p "$DATA_DIR"
-chmod -R 777 "$DATA_DIR"
+
+echo "--> Đang phân quyền thư mục data (Có thể yêu cầu mật khẩu sudo)..."
+# Sử dụng sudo để tránh lỗi "Operation not permitted" do file thuộc quyền root
+sudo chmod -R 777 "$DATA_DIR"
 cd "$APP_DIR"
 
-# 3. Xóa container cũ nếu có
+# 3. HỎI TRƯỚC KHI DỌN DẸP
 if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo "🗑️ Đang dọn dẹp container cũ..."
-    $COMPOSE_CMD down 2>/dev/null || true
-    docker rm -f omniroute 2>/dev/null || true
+    echo -e "\n${YELLOW}⚠️ Phát hiện container 'omniroute' cũ đang tồn tại.${NC}"
+    read -p "Bạn có muốn xóa container cũ để cài mới không? (Y/n): " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]] || [[ -z "$confirm" ]]; then
+        echo "🗑️ Đang dọn dẹp container cũ..."
+        $COMPOSE_CMD down 2>/dev/null || true
+        docker rm -f omniroute 2>/dev/null || true
+    else
+        echo -e "${GREEN}⏩ Bỏ qua bước dọn dẹp. Sẽ cập nhật cấu hình lên container hiện tại.${NC}"
+    fi
 fi
 
 # 4. Tạo file docker-compose.yml
@@ -91,20 +100,15 @@ echo -e "\n${YELLOW}--- Cấu hình Truy cập Dashboard ---${NC}"
 read -p "Nhập Domain hoặc IP (Ví dụ: abc.com hoặc 1.2.3.4): " USER_HOST
 read -p "Sử dụng HTTPS? (y/n): " USE_HTTPS
 
-# Xử lý giao thức
 if [[ "$USE_HTTPS" =~ ^[Yy]$ ]]; then
     PROTOCOL="https://"
 else
     PROTOCOL="http://"
 fi
 
-# Loại bỏ http:// hoặc https:// nếu người dùng lỡ nhập vào để tránh bị lặp (ví dụ http://http://abc.com)
 CLEAN_HOST=$(echo "$USER_HOST" | sed -E 's|^https?://||')
-
-# Ghép lại thành URL hoàn chỉnh
 FINAL_URL="${PROTOCOL}${CLEAN_HOST}"
 
-# Ghi vào .env
 grep -q "^OMNIROUTE_PUBLIC_BASE_URL=" .env && sed -i "s|^OMNIROUTE_PUBLIC_BASE_URL=.*|OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL|" .env || echo "OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL" >> .env
 
 echo -e "${GREEN}✅ Đã thiết lập URL truy cập: $FINAL_URL${NC}\n"
