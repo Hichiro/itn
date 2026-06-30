@@ -39,7 +39,7 @@ docker run -d \
   -v "$DATA_DIR:/app/data" \
   --memory=512m \
   --memory-swap=512m \
-  yourusername/omniroute:base     # ← Thay yourusername bằng username Docker Hub của bạn
+  hichiro/omniroute:base     # ← Thay yourusername bằng username Docker Hub của bạn
 
 echo ""
 echo "✅ Cài đặt hoàn tất!"
