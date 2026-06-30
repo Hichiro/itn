@@ -86,12 +86,51 @@ services:
       - .env
 EOF
 
-# 4. Xử lý file .env và Mật khẩu
+# 4. Xử lý file .env
+# 4.1. Kiểm tra xem file .env có tồn tại không
 if [ ! -f .env ]; then
-    echo "--> Tải file .env mẫu..."
-    if ! curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
-        echo -e "${YELLOW}⚠️ Không tải được .env mẫu${NC}"
+    echo "--> File .env chưa tồn tại. Đang tải về từ GitHub..."
+    if curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
+        echo "✅ Đã tải file .env thành công."
+    else
+        echo "❌ Không thể tải file .env từ internet. Đang tạo file trống..."
+        touch .env
     fi
+else
+    echo "--> File .env đã tồn tại. Bỏ qua bước tải về."
+fi
+
+# 4.2. Kiểm tra từng Secret Key (nếu chưa có hoặc bị để trống thì mới tạo)
+
+# Kiểm tra JWT_SECRET
+if ! grep -q "^JWT_SECRET=.\+" .env; then
+    echo "--> JWT_SECRET chưa được thiết lập. Đang tạo mã mới..."
+    JWT_S=$(openssl rand -base64 48 2>/dev/null || echo "jwt-$(date +%s%N)")
+    
+    # Nếu trong file đã có dòng JWT_SECRET= (nhưng trống), thì thay thế. Nếu chưa có dòng đó, thì thêm mới vào cuối file.
+    if grep -q "^JWT_SECRET=" .env; then
+        sed -i "s|^JWT_SECRET=.*|JWT_SECRET=$JWT_S|" .env
+    else
+        echo "JWT_SECRET=$JWT_S" >> .env
+    fi
+    echo "✅ Đã tạo JWT_SECRET."
+else
+    echo "--> JWT_SECRET đã tồn tại. Giữ nguyên."
+fi
+
+# Kiểm tra API_KEY_SECRET
+if ! grep -q "^API_KEY_SECRET=.\+" .env; then
+    echo "--> API_KEY_SECRET chưa được thiết lập. Đang tạo mã mới..."
+    API_S=$(openssl rand -hex 32 2>/dev/null || echo "api-$(date +%s%N)")
+    
+    if grep -q "^API_KEY_SECRET=" .env; then
+        sed -i "s|^API_KEY_SECRET=.*|API_KEY_SECRET=$API_S|" .env
+    else
+        echo "API_KEY_SECRET=$API_S" >> .env
+    fi
+    echo "✅ Đã tạo API_KEY_SECRET."
+else
+    echo "--> API_KEY_SECRET đã tồn tại. Giữ nguyên."
 fi
 
 # 5. Khởi chạy
