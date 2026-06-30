@@ -2,15 +2,8 @@ name: Auto Build OmniRoute Base
 
 on:
   schedule:
-    - cron: '0 20 * * 5'     # 03:00 sáng Thứ Bảy (Giờ VN)
-  workflow_dispatch:         # Chạy thủ công
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
-permissions:
-  contents: write
-  packages: write
+    - cron: '0 20 * * 5'
+  workflow_dispatch:
 
 jobs:
   build-base:
@@ -21,7 +14,6 @@ jobs:
         with:
           repository: diegosouzapw/OmniRoute
           ref: main
-          fetch-depth: 0
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -31,24 +23,19 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # Thêm debug
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build & Push Base Image
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
-          target: runner-base          # Build profile base
+          target: runner-base
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/omniroute:base
             ${{ secrets.DOCKERHUB_USERNAME }}/omniroute:base-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            NODE_ENV=production
-
-      - name: Notify Success
-        if: success()
-        run: |
-          echo "✅ Build OmniRoute:base thành công!"
-          echo "Image: ${{ secrets.DOCKERHUB_USERNAME }}/omniroute:base"
