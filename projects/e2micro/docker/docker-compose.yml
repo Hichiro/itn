@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Ứng dụng chính chạy 24/7
   omniroute:
