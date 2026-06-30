@@ -18,7 +18,6 @@ cd "$APP_DIR"
 dcompose() {
     docker run --rm \
       -v /var/run/docker.sock:/var/run/docker.sock \
-      -v /var/lib/docker:/var/lib/docker:ro \
       -v "$PWD:$PWD" \
       -w "$PWD" \
       docker:latest docker compose "$@"
