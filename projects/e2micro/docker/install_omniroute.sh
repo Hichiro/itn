@@ -58,20 +58,34 @@ else
     fi
 fi
 
-# Tính Node Heap
-if [[ "$RAM_LIMIT" =~ ^[0-9]+(\.[0-9]+)?[gm]?$ ]]; then
-    NUM=$(echo "$RAM_LIMIT" | sed 's/[gm]//i')
-    if [[ "$RAM_LIMIT" == *g* ]] || [[ "$RAM_LIMIT" == *G* ]]; then
-        NODE_HEAP_MB=$(awk "BEGIN {printf \"%.0f\", $NUM * 1024 * 0.55}")
-    else
-        NODE_HEAP_MB=$(awk "BEGIN {printf \"%.0f\", $NUM * 0.55}")
-    fi
-    [ "$NODE_HEAP_MB" -lt 384 ] && NODE_HEAP_MB=384
+# ==================== TÍNH NODE HEAP ====================
+echo ""
+echo "Đang tính Node.js Heap..."
+
+# Chuẩn hóa RAM_LIMIT
+if [[ "$RAM_LIMIT" =~ ^[0-9]*\.?[0-9]+$ ]]; then
+    # Người dùng chỉ nhập số (ví dụ: 0.3, 512, 1.5) → mặc định hiểu là GB
+    RAM_LIMIT="${RAM_LIMIT}g"
+    echo "→ Tự động hiểu ${RAM_LIMIT} (GB)"
+fi
+
+if [[ "$RAM_LIMIT" =~ ^[0-9]+(\.[0-9]+)?[gG]?$ ]]; then
+    # Là GB
+    NUM=$(echo "$RAM_LIMIT" | sed 's/[gG]//i')
+    NODE_HEAP_MB=$(awk "BEGIN {printf \"%.0f\", $NUM * 1024 * 0.55}")
+elif [[ "$RAM_LIMIT" =~ ^[0-9]+[mM]?$ ]]; then
+    # Là MB
+    NUM=$(echo "$RAM_LIMIT" | sed 's/[mM]//i')
+    NODE_HEAP_MB=$(awk "BEGIN {printf \"%.0f\", $NUM * 0.55}")
 else
     NODE_HEAP_MB=512
 fi
 
-echo ""
+# Giới hạn tối thiểu
+if [ "$NODE_HEAP_MB" -lt 384 ]; then 
+    NODE_HEAP_MB=384
+fi
+
 echo "🛡️ Cấu hình cuối cùng:"
 echo "   Docker RAM Limit : $RAM_LIMIT"
 echo "   Node.js Heap     : ${NODE_HEAP_MB}MB"
