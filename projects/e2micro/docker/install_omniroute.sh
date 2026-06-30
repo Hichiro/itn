@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================
-# OmniRoute Docker Installer - v2.4 (Fixed Permissions & Prompt)
+# OmniRoute Docker Installer - Fully Automated (Curl-Ready)
 # ================================================
 
 GREEN='\033[0;32m'
@@ -13,7 +13,7 @@ APP_DIR="$HOME/omniroute"
 DATA_DIR="$HOME/omniroute-data"
 
 echo -e "${GREEN}=========================================${NC}"
-echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (v2.4)       ${NC}"
+echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (Auto)       ${NC}"
 echo -e "${GREEN}=========================================${NC}"
 
 # 1. Kiểm tra công cụ hệ thống
@@ -37,26 +37,17 @@ check_dependencies() {
 
 check_dependencies
 
-# 2. Tạo thư mục và phân quyền
+# 2. Tạo thư mục và phân quyền (Sử dụng sudo để tránh lỗi Permission denied)
 mkdir -p "$APP_DIR"
 mkdir -p "$DATA_DIR"
-
-echo "--> Đang phân quyền thư mục data (Có thể yêu cầu mật khẩu sudo)..."
-# Sử dụng sudo để tránh lỗi "Operation not permitted" do file thuộc quyền root
 sudo chmod -R 777 "$DATA_DIR"
 cd "$APP_DIR"
 
-# 3. HỎI TRƯỚC KHI DỌN DẸP
+# 3. Tự động dọn dẹp container cũ (Vì chạy auto nên sẽ tự dọn dẹp để cập nhật bản mới nhất)
 if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo -e "\n${YELLOW}⚠️ Phát hiện container 'omniroute' cũ đang tồn tại.${NC}"
-    read -p "Bạn có muốn xóa container cũ để cài mới không? (Y/n): " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]] || [[ -z "$confirm" ]]; then
-        echo "🗑️ Đang dọn dẹp container cũ..."
-        $COMPOSE_CMD down 2>/dev/null || true
-        docker rm -f omniroute 2>/dev/null || true
-    else
-        echo -e "${GREEN}⏩ Bỏ qua bước dọn dẹp. Sẽ cập nhật cấu hình lên container hiện tại.${NC}"
-    fi
+    echo "🗑️ Đang dọn dẹp container cũ..."
+    $COMPOSE_CMD down 2>/dev/null || true
+    docker rm -f omniroute 2>/dev/null || true
 fi
 
 # 4. Tạo file docker-compose.yml
@@ -90,15 +81,20 @@ if ! grep -q "^JWT_SECRET=.\+" .env || ! grep -q "^API_KEY_SECRET=.\+" .env; the
     echo "--> Tạo ngẫu nhiên Secret Keys..."
     JWT_S=$(openssl rand -base64 48 2>/dev/null || echo "jwt-$(date +%s%N)")
     API_S=$(openssl rand -hex 32 2>/dev/null || echo "api-$(date +%s%N)")
-    
     grep -q "^JWT_SECRET=" .env && sed -i "s|^JWT_SECRET=.*|JWT_SECRET=$JWT_S|" .env || echo "JWT_SECRET=$JWT_S" >> .env
     grep -q "^API_KEY_SECRET=" .env && sed -i "s|^API_KEY_SECRET=.*|API_KEY_SECRET=$API_S|" .env || echo "API_KEY_SECRET=$API_S" >> .env
 fi
 
-# B. Nhập Public URL thủ công (Sửa lỗi Invalid Request Origin)
-echo -e "\n${YELLOW}--- Cấu hình Truy cập Dashboard ---${NC}"
-read -p "Nhập Domain hoặc IP (Ví dụ: abc.com hoặc 1.2.3.4): " USER_HOST
-read -p "Sử dụng HTTPS? (y/n): " USE_HTTPS
+# B. Xử lý Public URL (Ưu tiên Biến Môi Trường -> IP Công Cộng)
+# Nếu USER_HOST trống, tự lấy IP server
+if [ -z "$USER_HOST" ]; then
+    USER_HOST=$(curl -s ifconfig.me || echo "localhost")
+fi
+
+# Nếu USE_HTTPS trống, mặc định là 'n'
+if [ -z "$USE_HTTPS" ]; then
+    USE_HTTPS="n"
+fi
 
 if [[ "$USE_HTTPS" =~ ^[Yy]$ ]]; then
     PROTOCOL="https://"
@@ -106,12 +102,13 @@ else
     PROTOCOL="http://"
 fi
 
+# Xóa http/https nếu người dùng lỡ nhập vào
 CLEAN_HOST=$(echo "$USER_HOST" | sed -E 's|^https?://||')
 FINAL_URL="${PROTOCOL}${CLEAN_HOST}"
 
 grep -q "^OMNIROUTE_PUBLIC_BASE_URL=" .env && sed -i "s|^OMNIROUTE_PUBLIC_BASE_URL=.*|OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL|" .env || echo "OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL" >> .env
 
-echo -e "${GREEN}✅ Đã thiết lập URL truy cập: $FINAL_URL${NC}\n"
+echo -e "${GREEN}✅ Cấu hình URL truy cập: $FINAL_URL${NC}"
 
 # 6. Khởi chạy Docker
 echo "--> Đang khởi chạy OmniRoute..."
