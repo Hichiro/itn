@@ -1,4 +1,7 @@
+version: '3.8'
+
 services:
+  # Ứng dụng chính chạy 24/7
   omniroute:
     image: diegosouzapw/omniroute:latest
     container_name: omniroute
@@ -7,21 +10,24 @@ services:
     ports:
       - "20128:20128"
     volumes:
-      - ./omniroute-data:/app/data
-    env_file:
-      - .env
+      - omniroute-data:/app/data
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        
+
+  # Công cụ quản lý (Chỉ bật khi bạn gọi)
   lazydocker:
     image: lazyteam/lazydocker:latest
     container_name: lazydocker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./lazydocker-config:/.config/jesseduffield/lazydocker
-    # Định danh "tools" để nó không tự động chạy ngầm vô nghĩa khi up -d
+      - lazydocker-config:/.config/jesseduffield/lazydocker
     profiles:
       - tools
+
+# Khai báo tất cả Named Volumes ở cuối file
+volumes:
+  omniroute-data:
+  lazydocker-config:
