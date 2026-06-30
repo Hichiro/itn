@@ -25,18 +25,24 @@ if [ ! -f .env ]; then
     read -p "Nhấn Enter sau khi chỉnh xong..."
 fi
 
-# Khởi chạy
-echo "🚀 Khởi chạy OmniRoute..."
+# Tạo thư mục và volume
+mkdir -p "$DATA_DIR"
+docker volume create omniroute-data 2>/dev/null || true
+
+echo "🚀 Khởi chạy lại với volume..."
 docker run -d \
   --name omniroute \
   --restart unless-stopped \
-  --stop-timeout 40 \
   --env-file .env \
   -p 20128:20128 \
   -v "$DATA_DIR:/app/data" \
   --memory=512m \
   --memory-swap=512m \
   diegosouzapw/omniroute:latest
+
+echo "✅ Đã chạy lại!"
+echo "Data lưu tại: $DATA_DIR"
+echo "Xem log: docker logs -f omniroute"
 
 echo ""
 echo "✅ Cài đặt hoàn tất!"
