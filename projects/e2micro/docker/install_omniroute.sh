@@ -90,18 +90,9 @@ EOF
 if [ ! -f .env ]; then
     echo "--> Tải file .env mẫu..."
     if ! curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
-        echo -e "${YELLOW}⚠️ Không tải được .env mẫu, đang tạo file cơ bản...${NC}"
-        echo -e "JWT_SECRET=default_secret\nAPI_KEY_SECRET=default_api_key\nINITIAL_PASSWORD=admin123" > .env
+        echo -e "${YELLOW}⚠️ Không tải được .env mẫu${NC}"
     fi
 fi
-
-# Hỏi người dùng đặt mật khẩu
-echo -e "${YELLOW}⚙️ Cấu hình mật khẩu truy cập:${NC}"
-safe_read "Nhập mật khẩu bạn muốn đặt cho OmniRoute" "admin123" USER_PWD
-
-# Ghi mật khẩu vào file .env
-sed -i "s|^INITIAL_PASSWORD=.*|INITIAL_PASSWORD=$USER_PWD|" .env
-echo -e "${GREEN}✅ Đã cài đặt mật khẩu: $USER_PWD${NC}"
 
 # 5. Khởi chạy
 echo "--> Đang khởi chạy OmniRoute..."
