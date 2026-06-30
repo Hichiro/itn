@@ -1,7 +1,7 @@
 #!/bin/bash
 # ================================================
 # OmniRoute Docker Hub Installer
-# Tự động theo RAM + Xử lý container cũ
+# Tự động theo RAM + Fix curl | bash + Xác nhận xóa container
 # ================================================
 set -e
 
@@ -76,14 +76,21 @@ echo "🛡️ Cấu hình cuối cùng:"
 echo "   Docker RAM Limit : $RAM_LIMIT"
 echo "   Node.js Heap     : ${NODE_HEAP_MB}MB"
 
-# ==================== XỬ LÝ CONTAINER CŨ ====================
+# ==================== XỬ LÝ CONTAINER CŨ (CÓ XÁC NHẬN) ====================
 echo ""
-echo "🔄 Kiểm tra container cũ..."
 if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo "🗑️  Tìm thấy container cũ, đang xóa..."
-    docker stop omniroute 2>/dev/null || true
-    docker rm -f omniroute 2>/dev/null || true
-    echo "✅ Đã xóa container cũ thành công."
+    echo "⚠️  Phát hiện container cũ tên 'omniroute'."
+    safe_read -p "Bạn có muốn xóa container cũ để cài mới không? (Y/n): " del_choice
+    
+    if [[ "$del_choice" =~ ^[Yy]$ ]] || [[ -z "$del_choice" ]]; then
+        echo "🗑️  Đang xóa container cũ..."
+        docker stop omniroute 2>/dev/null || true
+        docker rm -f omniroute 2>/dev/null || true
+        echo "✅ Đã xóa container cũ."
+    else
+        echo "⛔ Hủy cài đặt. Container cũ vẫn giữ nguyên."
+        exit 0
+    fi
 else
     echo "ℹ️  Không tìm thấy container cũ."
 fi
