@@ -1,7 +1,6 @@
 #!/bin/bash
 # ================================================
-# OmniRoute Installer - Data lưu thư mục user
-# Theo Docker Guide chính thức
+# OmniRoute Installer - Fix confirm khi curl | bash
 # ================================================
 
 set -e
@@ -10,7 +9,7 @@ DATA_DIR=~/omniroute-data
 
 echo "🚀 OmniRoute Installer (Data lưu tại ~/omniroute-data)"
 
-# Hàm đọc input an toàn khi chạy qua pipe
+# Hàm đọc input an toàn (bắt buộc dùng /dev/tty)
 safe_read() {
     if [ -t 0 ]; then
         read "$@"
