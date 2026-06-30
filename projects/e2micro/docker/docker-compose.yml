@@ -40,7 +40,6 @@ services:
     container_name: lazydocker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /var/lib/docker:/var/lib/docker:ro
       - lazydocker-config:/.config/jesseduffield/lazydocker
     profiles:
       - tools
