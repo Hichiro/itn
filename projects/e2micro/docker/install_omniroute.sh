@@ -1,48 +1,21 @@
 #!/bin/bash
-# ================================================
-# OmniRoute Docker Installer - Kiểm tra key trong .env
-# ================================================
 
 set -e
-
-APP_DIR="$HOME/omniroute"
-DATA_DIR="$HOME/omniroute-data"
 
 echo "========================================="
 echo " CÀI ĐẶT OMNIROUTE DOCKER"
 echo "========================================="
 
-# Hàm đọc input an toàn
-safe_read() {
-    if [ -t 0 ]; then
-        read "$@"
-    else
-        read "$@" </dev/tty
-    fi
-}
-
-# 1. Tạo thư mục
+# 1. Tạo thư mục làm việc
+APP_DIR="$HOME/omniroute"
 mkdir -p "$APP_DIR"
-mkdir -p "$DATA_DIR"
 cd "$APP_DIR"
 
-# 2. Hỏi xóa container cũ
-if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo "⚠️ Phát hiện container cũ."
-    safe_read -p "Bạn có muốn xóa container cũ không? (Y/n): " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]] || [[ -z "$confirm" ]]; then
-        echo "🗑️ Đang xóa container cũ..."
-        docker compose down 2>/dev/null || true
-        docker rm -f omniroute 2>/dev/null || true
-    else
-        echo "⛔ Hủy cài đặt."
-        exit 0
-    fi
-fi
-
-# 3. Tạo docker-compose.yml
-echo "--> Tạo file docker-compose.yml..."
+# 2. Tạo file docker-compose.yml
+echo "--> Tạo cấu hình docker-compose.yml..."
 cat > docker-compose.yml <<EOF
+version: '3.8'
+
 services:
   omniroute:
     image: diegosouzapw/omniroute:latest
@@ -52,46 +25,23 @@ services:
     ports:
       - "20128:20128"
     volumes:
-      - $DATA_DIR:/app/data
-    env_file:
-      - .env
+      - omniroute-data:/app/data
+
+volumes:
+  omniroute-data:
+    name: omniroute-data
 EOF
 
-# 4. Kiểm tra và tạo .env + secret
-if [ ! -f .env ]; then
-    echo "--> Tạo file .env mới..."
-    curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env
-    CREATE_NEW=1
+# 3. Kiểm tra trạng thái và khởi chạy
+if [ "$(docker ps -q -f name=omniroute)" ]; then
+    echo "--> [Bỏ qua] Container omniroute đang hoạt động."
 else
-    echo "--> File .env đã tồn tại, kiểm tra secret..."
-    CREATE_NEW=0
+    echo "--> Khởi chạy OmniRoute..."
+    docker compose up -d
 fi
-
-# Kiểm tra và tạo secret nếu chưa có
-if [ "$CREATE_NEW" = "1" ] || ! grep -q "^JWT_SECRET=.\+" .env || ! grep -q "^API_KEY_SECRET=.\+" .env; then
-    echo "--> Tự động tạo JWT_SECRET và API_KEY_SECRET..."
-    
-    JWT_SECRET=$(openssl rand -base64 48 2>/dev/null || echo "super-secret-jwt-$(date +%s)")
-    API_KEY_SECRET=$(openssl rand -hex 32 2>/dev/null || echo "super-secret-api-key-$(date +%s)")
-    
-    sed -i "s|JWT_SECRET=.*|JWT_SECRET=$JWT_SECRET|" .env
-    sed -i "s|API_KEY_SECRET=.*|API_KEY_SECRET=$API_KEY_SECRET|" .env
-    echo "✅ Đã tạo/hoàn thiện secret keys"
-fi
-
-echo "⚠️ Vui lòng kiểm tra INITIAL_PASSWORD"
-echo "   nano .env"
-safe_read -p "Nhấn Enter sau khi kiểm tra xong..."
-
-# 5. Khởi chạy
-echo "--> Khởi chạy OmniRoute..."
-docker compose up -d
 
 echo "========================================="
 echo " HOÀN TẤT!"
 echo "========================================="
-echo "Thư mục cài đặt : $APP_DIR"
-echo "Data lưu tại    : $DATA_DIR"
-echo "Truy cập        : http://localhost:20128"
-echo ""
-echo "Kiểm tra log    : cd $APP_DIR && docker compose logs -f"
+echo "Thư mục cài đặt: $APP_DIR"
+echo "Kiểm tra log: cd $APP_DIR && docker compose logs -f"
