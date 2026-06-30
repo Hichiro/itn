@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================
-# OmniRoute Docker Installer - Fixed Compose Check
+# OmniRoute Docker Installer - Custom Password Version
 # ================================================
 
 GREEN='\033[0;32m'
@@ -13,29 +13,24 @@ APP_DIR="$HOME/omniroute"
 DATA_DIR="$HOME/omniroute-data"
 
 echo -e "${GREEN}=========================================${NC}"
-echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (v2.1)        ${NC}"
+echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (v2.2)        ${NC}"
 echo -e "${GREEN}=========================================${NC}"
 
-# 1. Hàm kiểm tra công cụ hệ thống (ĐÃ SỬA)
+# 1. Kiểm tra công cụ hệ thống
 check_dependencies() {
-    # Kiểm tra curl và openssl
-    for cmd in curl openssl docker; do
+    for cmd in curl docker; do
         if ! command -v $cmd &> /dev/null; then
             echo -e "${RED}❌ Lỗi: Máy bạn chưa cài $cmd. Vui lòng cài đặt trước khi chạy script.${NC}"
             exit 1
         fi
     done
 
-    # Kiểm tra Docker Compose (V1 hoặc V2)
     if docker compose version &> /dev/null; then
         COMPOSE_CMD="docker compose"
-        echo -e "${GREEN}✅ Đã tìm thấy Docker Compose V2${NC}"
     elif command -v docker-compose &> /dev/null; then
         COMPOSE_CMD="docker-compose"
-        echo -e "${GREEN}✅ Đã tìm thấy Docker Compose V1${NC}"
     else
         echo -e "${RED}❌ Lỗi: Máy bạn chưa cài Docker Compose.${NC}"
-        echo -e "Vui lòng cài đặt bằng lệnh: sudo apt-get install docker-compose-plugin"
         exit 1
     fi
 }
@@ -54,11 +49,13 @@ safe_read() {
 
 check_dependencies
 
+# Tạo thư mục và phân quyền
 mkdir -p "$APP_DIR"
 mkdir -p "$DATA_DIR"
 chmod -R 777 "$DATA_DIR"
 cd "$APP_DIR"
 
+# 2. Xử lý container cũ
 if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
     echo -e "${YELLOW}⚠️ Phát hiện container omniroute cũ.${NC}"
     safe_read "Bạn có muốn xóa container cũ để cài mới không?" "Y" confirm
@@ -72,6 +69,7 @@ if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
     fi
 fi
 
+# 3. Tạo file docker-compose.yml
 echo "--> Tạo file docker-compose.yml..."
 cat > docker-compose.yml <<EOF
 services:
@@ -88,35 +86,31 @@ services:
       - .env
 EOF
 
+# 4. Xử lý file .env và Mật khẩu
 if [ ! -f .env ]; then
-    echo "--> Tải file .env..."
-    if curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
-        echo -e "${GREEN}✅ Thành công.${NC}"
-    else
-        echo -e "${YELLOW}⚠️ Tạo .env tạm thời...${NC}"
-        echo -e "JWT_SECRET=\nAPI_KEY_SECRET=\nINITIAL_PASSWORD=admin123" > .env
+    echo "--> Tải file .env mẫu..."
+    if ! curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
+        echo -e "${YELLOW}⚠️ Không tải được .env mẫu, đang tạo file cơ bản...${NC}"
+        echo -e "JWT_SECRET=default_secret\nAPI_KEY_SECRET=default_api_key\nINITIAL_PASSWORD=admin123" > .env
     fi
 fi
 
-if ! grep -q "^JWT_SECRET=.\+" .env || ! grep -q "^API_KEY_SECRET=.\+" .env; then
-    echo "--> Tạo Secret keys..."
-    JWT_S=$(openssl rand -base64 48 2>/dev/null || echo "jwt-$(date +%s%N)")
-    API_S=$(openssl rand -hex 32 2>/dev/null || echo "api-$(date +%s%N)")
-    sed -i "s|^JWT_SECRET=.*|JWT_SECRET=$JWT_S|" .env
-    sed -i "s|^API_KEY_SECRET=.*|API_KEY_SECRET=$API_S|" .env
-fi
+# Hỏi người dùng đặt mật khẩu
+echo -e "${YELLOW}⚙️ Cấu hình mật khẩu truy cập:${NC}"
+safe_read "Nhập mật khẩu bạn muốn đặt cho OmniRoute" "admin123" USER_PWD
 
-echo -e "${YELLOW}⚠️ Kiểm tra mật khẩu tại: $APP_DIR/.env${NC}"
-if [ -t 0 ]; then
-    safe_read "Nhấn Enter để khởi chạy..." "" dummy
-fi
+# Ghi mật khẩu vào file .env
+sed -i "s|^INITIAL_PASSWORD=.*|INITIAL_PASSWORD=$USER_PWD|" .env
+echo -e "${GREEN}✅ Đã cài đặt mật khẩu: $USER_PWD${NC}"
 
+# 5. Khởi chạy
 echo "--> Đang khởi chạy OmniRoute..."
 if $COMPOSE_CMD up -d; then
     echo -e "${GREEN}=========================================${NC}"
     echo -e "${GREEN}         CÀI ĐẶT THÀNH CÔNG!             ${NC}"
     echo -e "${GREEN}=========================================${NC}"
     echo -e "🌐 Truy cập: http://$(curl -s ifconfig.me || echo "localhost"):20128"
+    echo -e "🔑 Mật khẩu: $USER_PWD"
     echo -e "📜 Log: cd $APP_DIR && $COMPOSE_CMD logs -f"
 else
     echo -e "${RED}❌ Lỗi khi khởi chạy Docker.${NC}"
