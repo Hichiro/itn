@@ -1,56 +1,36 @@
 #!/bin/bash
 # ================================================
-# OmniRoute Installer - Fix confirm khi curl | bash
+# OmniRoute Installer - Data lưu thư mục user
 # ================================================
-
-set -e
 
 DATA_DIR=~/omniroute-data
 
-echo "🚀 OmniRoute Installer (Data lưu tại ~/omniroute-data)"
+echo "🚀 OmniRoute Installer (Data lưu tại $DATA_DIR)"
 
-# Hàm đọc input an toàn (bắt buộc dùng /dev/tty)
-safe_read() {
-    if [ -t 0 ]; then
-        read "$@"
-    else
-        read "$@" </dev/tty
-    fi
-}
+# Dọn dẹp container cũ
+echo "🧹 Dọn dẹp container cũ..."
+docker stop omniroute 2>/dev/null || true
+docker rm -f omniroute 2>/dev/null || true
 
-# ==================== KIỂM TRA CONTAINER CŨ ====================
-if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo "⚠️  Phát hiện container cũ."
-    safe_read -p "Bạn có muốn xóa container cũ để cài mới không? (Y/n): " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]] || [[ -z "$confirm" ]]; then
-        echo "🗑️ Đang xóa container cũ..."
-        docker stop omniroute 2>/dev/null || true
-        docker rm -f omniroute 2>/dev/null || true
-        echo "✅ Đã xóa xong."
-    else
-        echo "⛔ Hủy cài đặt."
-        exit 0
-    fi
-fi
-
-# ==================== TẠO THƯ MỤC ====================
+# Tạo thư mục data
 mkdir -p "$DATA_DIR"
-echo "📁 Data sẽ lưu tại: $DATA_DIR"
 
-# ==================== .ENV ====================
+# Tạo .env nếu chưa có
 if [ ! -f .env ]; then
-    echo "📥 Tải file .env..."
+    echo "📥 Tải file cấu hình..."
     curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env
+    echo ""
     echo "⚠️ Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD)"
     echo "   nano .env"
-    safe_read -p "Nhấn Enter sau khi chỉnh xong..."
+    read -p "Nhấn Enter sau khi chỉnh xong..."
 fi
 
-# ==================== KHỞI CHẠY ====================
+# Khởi chạy
 echo "🚀 Khởi chạy OmniRoute..."
 docker run -d \
   --name omniroute \
   --restart unless-stopped \
+  --stop-timeout 40 \
   --env-file .env \
   -p 20128:20128 \
   -v "$DATA_DIR:/app/data" \
@@ -62,7 +42,7 @@ echo ""
 echo "✅ Cài đặt hoàn tất!"
 echo "🌐 Truy cập: http://localhost:20128"
 echo ""
-echo "📁 Data: $DATA_DIR"
+echo "📁 Data được lưu tại: $DATA_DIR"
 echo ""
 echo "🔧 Lệnh hữu ích:"
 echo "   docker logs -f omniroute"
