@@ -8,6 +8,8 @@ services:
       - "20128:20128"
     volumes:
       - ./omniroute-data:/app/data
+    env_file:
+      - .env
     logging:
       driver: "json-file"
       options:
