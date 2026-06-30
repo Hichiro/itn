@@ -1,5 +1,5 @@
 services:
-  # Ứng dụng chính chạy 24/7
+  # 1. Ứng dụng OmniRoute
   omniroute:
     image: diegosouzapw/omniroute:latest
     container_name: omniroute
@@ -7,6 +7,8 @@ services:
     stop_grace_period: 40s
     ports:
       - "20128:20128"
+    environment:
+      - OMNIROUTE_PUBLIC_BASE_URL=http://10.0.6.10:20128
     volumes:
       - omniroute-data:/app/data
     logging:
@@ -15,7 +17,24 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # Công cụ quản lý (Chỉ bật khi bạn gọi)
+  # 2. WireGuard Client (Kết nối về nhà)
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PID=1000
+      - PGID=1000
+      - TZ=Asia/Ho_Chi_Minh
+    volumes:
+      # Gắn thư mục chứa file wg0.conf từ máy ảo vào container
+      - ./wg-client:/config
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
+  # 3. Công cụ quản lý Lazydocker
   lazydocker:
     image: lazyteam/lazydocker:latest
     container_name: lazydocker
@@ -25,7 +44,6 @@ services:
     profiles:
       - tools
 
-# Khai báo tất cả Named Volumes ở cuối file
 volumes:
   omniroute-data:
   lazydocker-config:
