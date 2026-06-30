@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ================================================
-# OmniRoute Docker Installer - Ultra Lean (Auto)
+# OmniRoute Docker Installer - Interactive Curl Version
 # ================================================
 
 GREEN='\033[0;32m'
@@ -13,10 +13,10 @@ APP_DIR="$HOME/omniroute"
 DATA_DIR="$HOME/omniroute-data"
 
 echo -e "${GREEN}=========================================${NC}"
-echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (Lean)       ${NC}"
+echo -e "${GREEN}   CÀI ĐẶT OMNIROUTE DOCKER (Interactive)  ${NC}"
 echo -e "${GREEN}=========================================${NC}"
 
-# 1. Kiểm tra công cụ cơ bản
+# 1. Kiểm tra công cụ
 for cmd in curl docker; do
     if ! command -v $cmd &> /dev/null; then
         echo -e "${RED}❌ Lỗi: Máy bạn chưa cài $cmd.${NC}"
@@ -33,17 +33,23 @@ else
     exit 1
 fi
 
-# 2. Tạo thư mục và Fix quyền ghi (Sử dụng sudo để triệt tiêu lỗi Permission)
+# 2. Tạo thư mục và Fix quyền ghi (Sử dụng sudo)
 mkdir -p "$APP_DIR"
 mkdir -p "$DATA_DIR"
 sudo chmod -R 777 "$DATA_DIR"
 cd "$APP_DIR"
 
-# 3. Dọn dẹp container cũ để cập nhật
+# 3. Hỏi xác nhận dọn dẹp container cũ (Sử dụng </dev/tty)
 if docker ps -a --format '{{.Names}}' | grep -q "^omniroute$"; then
-    echo "🗑️ Đang dọn dẹp container cũ..."
-    $COMPOSE_CMD down 2>/dev/null || true
-    docker rm -f omniroute 2>/dev/null || true
+    echo -e "\n${YELLOW}⚠️ Phát hiện container 'omniroute' cũ đang tồn tại.${NC}"
+    read -p "👉 Bạn có muốn xóa container cũ để cài mới không? (Y/n): " confirm </dev/tty
+    if [[ "$confirm" =~ ^[Yy]$ ]] || [[ -z "$confirm" ]]; then
+        echo "🗑️ Đang dọn dẹp container cũ..."
+        $COMPOSE_CMD down 2>/dev/null || true
+        docker rm -f omniroute 2>/dev/null || true
+    else
+        echo -e "${GREEN}⏩ Bỏ qua bước dọn dẹp.${NC}"
+    fi
 fi
 
 # 4. Tạo file docker-compose.yml
@@ -62,30 +68,36 @@ services:
       - .env
 EOF
 
-# 5. Xử lý file .env (Chỉ tải mẫu và set Public URL)
+# 5. Xử lý file .env
 if [ ! -f .env ]; then
     curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env || touch .env
 fi
 
-# Xử lý Public URL để tránh lỗi "Invalid request origin"
-# Ưu tiên: Biến môi trường USER_HOST -> IP công cộng -> localhost
-HOST=${USER_HOST:-$(curl -s ifconfig.me || echo "localhost")}
-PROTOCOL=${USE_HTTPS:+https://} # Nếu USE_HTTPS=y thì dùng https://
-[ -z "$PROTOCOL" ] && PROTOCOL="http://"
+# 6. NHẬP CẤU HÌNH URL (Sử dụng </dev/tty để chạy được với curl)
+echo -e "\n${YELLOW}--- 🌐 Cấu hình Truy cập Dashboard ---${NC}"
+read -p "👉 Nhập Domain hoặc IP (Ví dụ: abc.com): " USER_HOST </dev/tty
+read -p "👉 Sử dụng HTTPS? (y/n): " USE_HTTPS </dev/tty
 
-# Loại bỏ http/https nếu người dùng lỡ nhập vào USER_HOST
-CLEAN_HOST=$(echo "$HOST" | sed -E 's|^https?://||')
+# Xử lý logic URL
+if [[ "$USE_HTTPS" =~ ^[Yy]$ ]]; then
+    PROTOCOL="https://"
+else
+    PROTOCOL="http://"
+fi
+
+# Loại bỏ http/https nếu lỡ nhập
+CLEAN_HOST=$(echo "$USER_HOST" | sed -E 's|^https?://||')
 FINAL_URL="${PROTOCOL}${CLEAN_HOST}"
 
-# Ghi/Ghi đè OMNIROUTE_PUBLIC_BASE_URL vào .env
+# Ghi vào .env
 grep -q "^OMNIROUTE_PUBLIC_BASE_URL=" .env && \
     sed -i "s|^OMNIROUTE_PUBLIC_BASE_URL=.*|OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL|" .env || \
     echo "OMNIROUTE_PUBLIC_BASE_URL=$FINAL_URL" >> .env
 
-echo -e "${GREEN}✅ Cấu hình URL truy cập: $FINAL_URL${NC}"
+echo -e "${GREEN}✅ Đã thiết lập URL: $FINAL_URL${NC}"
 
-# 6. Khởi chạy
-echo "--> Đang khởi chạy OmniRoute..."
+# 7. Khởi chạy
+echo -e "\n--> Đang khởi chạy OmniRoute..."
 if $COMPOSE_CMD up -d; then
     echo -e "${GREEN}=========================================${NC}"
     echo -e "${GREEN}         CÀI ĐẶT THÀNH CÔNG!             ${NC}"
