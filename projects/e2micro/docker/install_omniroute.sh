@@ -1,9 +1,8 @@
 #!/bin/bash
 # ================================================
-# OmniRoute Docker Hub Installer
+# OmniRoute Docker Hub Installer (Đã fix curl treo)
 # Tự động tính theo % RAM khả dụng + Xác nhận
 # ================================================
-
 set -e
 
 PROJECT_DIR=~/omniroute
@@ -14,13 +13,12 @@ echo "🚀 OmniRoute Docker Hub Installer (Tối ưu theo RAM khả dụng)"
 
 # ==================== KIỂM TRA RAM ====================
 echo "🔍 Đang kiểm tra RAM hệ thống..."
-
 TOTAL_RAM_MB=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
 AVAILABLE_RAM_MB=$(grep MemAvailable /proc/meminfo | awk '{print int($2/1024)}')
 
 echo "📊 RAM hiện tại:"
-echo "   Tổng RAM          : ${TOTAL_RAM_MB} MB"
-echo "   RAM khả dụng      : ${AVAILABLE_RAM_MB} MB"
+echo " Tổng RAM     : ${TOTAL_RAM_MB} MB"
+echo " RAM khả dụng : ${AVAILABLE_RAM_MB} MB"
 
 # Tính đề xuất theo % RAM khả dụng
 RECOMMEND_PERCENT=65
@@ -34,7 +32,6 @@ elif [ "$RECOMMEND_MB" -gt 4096 ]; then
 fi
 
 RECOMMEND_GB=$(awk "BEGIN {printf \"%.1f\", $RECOMMEND_MB/1024}")
-
 echo ""
 echo "💡 Đề xuất: Giới hạn container = ${RECOMMEND_GB}GB (${RECOMMEND_PERCENT}% RAM khả dụng)"
 
@@ -54,7 +51,7 @@ else
     fi
 fi
 
-# Tính Node Heap (khoảng 50-60% RAM container)
+# Tính Node Heap
 if [[ "$RAM_LIMIT" =~ ^[0-9]+(\.[0-9]+)?[gm]?$ ]]; then
     NUM=$(echo "$RAM_LIMIT" | sed 's/[gm]//i')
     if [[ "$RAM_LIMIT" == *g* ]] || [[ "$RAM_LIMIT" == *G* ]]; then
@@ -67,33 +64,44 @@ else
     NODE_HEAP_MB=512
 fi
 
-echo "🛡️  Cấu hình cuối cùng:"
-echo "   Docker RAM Limit   : $RAM_LIMIT"
-echo "   Node.js Heap       : ${NODE_HEAP_MB}MB"
+echo "🛡️ Cấu hình cuối cùng:"
+echo " Docker RAM Limit : $RAM_LIMIT"
+echo " Node.js Heap     : ${NODE_HEAP_MB}MB"
 
-# ==================== TIẾP TỤC CÀI ĐẶT ====================
-
-# Tải .env
+# ==================== TẢI .ENV (ĐÃ FIX CURL TREO) ====================
 if [ ! -f .env ]; then
     echo "📥 Tải file .env..."
-    curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env || \
-    wget -q https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -O .env
     
+    # Thử curl với timeout + retry
+    if ! curl -fsSL --max-time 30 --connect-timeout 10 --retry 3 \
+         https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
+        
+        echo "⚠️ curl thất bại, thử wget..."
+        if ! wget -q --timeout=30 --tries=3 \
+             https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -O .env; then
+            
+            echo "❌ Không thể tải .env. Vui lòng kiểm tra kết nối mạng."
+            echo "Bạn có thể tải thủ công bằng lệnh:"
+            echo "curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env"
+            exit 1
+        fi
+    fi
+
     echo "🔑 Tạo secret ngẫu nhiên..."
     sed -i "s|JWT_SECRET=.*|JWT_SECRET=$(openssl rand -base64 48 2>/dev/null || echo 'super-secret-jwt-change-me')|" .env
     sed -i "s|API_KEY_SECRET=.*|API_KEY_SECRET=$(openssl rand -hex 32 2>/dev/null || echo 'super-secret-api-key-change-me')|" .env
 fi
 
-echo "⚠️  Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD):"
+echo "⚠️ Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD):"
 echo "   nano .env"
 read -p "Nhấn Enter sau khi chỉnh xong..."
 
-# Chọn Profile
+# ==================== CHỌN PROFILE ====================
 echo ""
 echo "🔧 Chọn Profile:"
-echo "1) base   - Nhẹ nhất (khuyến nghị cho RAM thấp)"
-echo "2) cli    - Đầy đủ tính năng"
-echo "3) host   - Dùng CLI từ host"
+echo "1) base - Nhẹ nhất (khuyến nghị cho RAM thấp)"
+echo "2) cli - Đầy đủ tính năng"
+echo "3) host - Dùng CLI từ host"
 read -p "Nhập lựa chọn [1-3] (mặc định=1): " pchoice
 
 case $pchoice in
@@ -106,7 +114,6 @@ esac
 docker volume create omniroute-data 2>/dev/null || true
 
 echo "🚀 Khởi chạy OmniRoute latest..."
-
 docker run -d \
   --name omniroute \
   --restart unless-stopped \
@@ -124,6 +131,6 @@ echo "✅ Cài đặt hoàn tất!"
 echo "🌐 Truy cập: http://localhost:20128"
 echo ""
 echo "🔧 Lệnh hữu ích:"
-echo "   docker logs -f omniroute"
-echo "   docker stats omniroute"
-echo "   docker restart omniroute"
+echo " docker logs -f omniroute"
+echo " docker stats omniroute"
+echo " docker restart omniroute"
