@@ -71,21 +71,12 @@ EOF
 if [ ! -f .env ]; then
     echo "--> Tải file .env mẫu..."
     if ! curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env; then
-        echo -e "${YELLOW}⚠️ Tạo file .env cơ bản...${NC}"
+        echo -e "${YELLOW}⚠️ Không tải được. ${NC}"
         touch .env
     fi
 fi
 
-# A. Tự động tạo Secret Keys nếu chưa có
-if ! grep -q "^JWT_SECRET=.\+" .env || ! grep -q "^API_KEY_SECRET=.\+" .env; then
-    echo "--> Tạo ngẫu nhiên Secret Keys..."
-    JWT_S=$(openssl rand -base64 48 2>/dev/null || echo "jwt-$(date +%s%N)")
-    API_S=$(openssl rand -hex 32 2>/dev/null || echo "api-$(date +%s%N)")
-    grep -q "^JWT_SECRET=" .env && sed -i "s|^JWT_SECRET=.*|JWT_SECRET=$JWT_S|" .env || echo "JWT_SECRET=$JWT_S" >> .env
-    grep -q "^API_KEY_SECRET=" .env && sed -i "s|^API_KEY_SECRET=.*|API_KEY_SECRET=$API_S|" .env || echo "API_KEY_SECRET=$API_S" >> .env
-fi
-
-# B. Xử lý Public URL (Ưu tiên Biến Môi Trường -> IP Công Cộng)
+# Xử lý Public URL (Ưu tiên Biến Môi Trường -> IP Công Cộng)
 # Nếu USER_HOST trống, tự lấy IP server
 if [ -z "$USER_HOST" ]; then
     USER_HOST=$(curl -s ifconfig.me || echo "localhost")
