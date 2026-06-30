@@ -34,7 +34,7 @@ services:
     # (Bỏ phần ports: "20128:20128" ở đây vì đã chuyển sang dịch vụ wireguard ở trên)
     environment:
       # Thay bằng IP WireGuard mà Router ở nhà cấp cho máy ảo GCP
-      - OMNIROUTE_PUBLIC_BASE_URL=http://10.6.0.10:20128
+      - OMNIROUTE_PUBLIC_BASE_URL=http://10.0.0.182:20128
     volumes:
       - omniroute-data:/app/data
     logging:
