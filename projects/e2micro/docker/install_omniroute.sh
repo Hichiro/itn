@@ -1,6 +1,6 @@
 #!/bin/bash
 # ================================================
-# OmniRoute Docker Compose Installer
+# OmniRoute Docker Compose Installer (Theo repo chính thức)
 # ================================================
 
 PROJECT_DIR=~/OmniRoute
@@ -8,7 +8,25 @@ cd ~
 
 echo "🚀 OmniRoute Docker Compose Installer"
 
-# Clone hoặc update repo
+# ==================== KIỂM TRA CONTAINER CŨ ====================
+echo "🔍 Đang kiểm tra container cũ..."
+if docker ps -a --format '{{.Names}}' | grep -q "omniroute"; then
+    echo "⚠️  Phát hiện container OmniRoute cũ đang tồn tại."
+    read -p "Bạn có muốn dọn dẹp (xóa) container cũ không? (Y/n): " cleanup
+    if [[ "$cleanup" =~ ^[Yy]$ ]] || [[ -z "$cleanup" ]]; then
+        echo "🗑️  Đang dọn dẹp container cũ..."
+        docker compose down --remove-orphans 2>/dev/null || true
+        docker rm -f omniroute 2>/dev/null || true
+        echo "✅ Đã dọn dẹp xong."
+    else
+        echo "⛔ Hủy cài đặt mới."
+        exit 0
+    fi
+else
+    echo "ℹ️  Không tìm thấy container cũ."
+fi
+
+# ==================== CLONE / UPDATE REPO ====================
 if [ -d "$PROJECT_DIR" ]; then
     echo "📂 Repo đã tồn tại, đang cập nhật..."
     cd "$PROJECT_DIR"
@@ -19,7 +37,7 @@ else
     cd "$PROJECT_DIR"
 fi
 
-# Tạo .env nếu chưa có
+# ==================== .ENV ====================
 if [ ! -f .env ]; then
     cp .env.example .env
     echo "⚠️ Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD)"
@@ -27,13 +45,13 @@ if [ ! -f .env ]; then
     read -p "Nhấn Enter sau khi chỉnh xong..."
 fi
 
-# Chọn Profile
+# ==================== CHỌN PROFILE ====================
 echo ""
 echo "🔧 Chọn Profile:"
 echo "1) base - Nhẹ nhất (khuyến nghị cho RAM thấp)"
-echo "2) cli  - Đầy đủ CLI tools bên trong container"
-echo "3) host - Sử dụng CLI từ host machine (Linux)"
-echo "4) web  - Hỗ trợ web-cookie providers (Gemini, Claude...)"
+echo "2) cli  - Đầy đủ CLI tools"
+echo "3) host - Sử dụng CLI từ host"
+echo "4) web  - Hỗ trợ web-cookie providers"
 read -p "Nhập lựa chọn [1-4] (mặc định=1): " pchoice
 
 case $pchoice in
@@ -43,15 +61,10 @@ case $pchoice in
     *) PROFILE="base" ;;
 esac
 
-# Dừng container cũ
-docker compose down --remove-orphans 2>/dev/null || true
-
-# Build image (bắt buộc)
-echo "🔨 Đang build image cho profile '$PROFILE'..."
-echo "⚠️ Lần đầu có thể mất 8-20 phút tùy máy..."
+# ==================== BUILD & RUN ====================
+echo "🔨 Đang build image cho profile '$PROFILE' (lần đầu có thể lâu)..."
 docker compose --profile $PROFILE build
 
-# Khởi chạy
 echo "🚀 Khởi chạy với profile: $PROFILE"
 docker compose --profile $PROFILE up -d
 
