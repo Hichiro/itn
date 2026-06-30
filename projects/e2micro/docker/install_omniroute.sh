@@ -22,7 +22,7 @@ fi
 # Tạo .env nếu chưa có
 if [ ! -f .env ]; then
     cp .env.example .env
-    echo "⚠️  Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD)"
+    echo "⚠️ Vui lòng chỉnh sửa file .env (đặc biệt INITIAL_PASSWORD)"
     echo "   nano .env"
     read -p "Nhấn Enter sau khi chỉnh xong..."
 fi
@@ -30,10 +30,10 @@ fi
 # Chọn Profile
 echo ""
 echo "🔧 Chọn Profile:"
-echo "1) base  - Nhẹ nhất (khuyến nghị cho RAM thấp)"
-echo "2) cli   - Đầy đủ CLI tools bên trong container"
-echo "3) host  - Sử dụng CLI từ host machine (Linux)"
-echo "4) web   - Hỗ trợ web-cookie providers (Gemini, Claude...)"
+echo "1) base - Nhẹ nhất (khuyến nghị cho RAM thấp)"
+echo "2) cli  - Đầy đủ CLI tools bên trong container"
+echo "3) host - Sử dụng CLI từ host machine (Linux)"
+echo "4) web  - Hỗ trợ web-cookie providers (Gemini, Claude...)"
 read -p "Nhập lựa chọn [1-4] (mặc định=1): " pchoice
 
 case $pchoice in
@@ -46,7 +46,12 @@ esac
 # Dừng container cũ
 docker compose down --remove-orphans 2>/dev/null || true
 
-# Chạy với profile đã chọn
+# Build image (bắt buộc)
+echo "🔨 Đang build image cho profile '$PROFILE'..."
+echo "⚠️ Lần đầu có thể mất 8-20 phút tùy máy..."
+docker compose --profile $PROFILE build
+
+# Khởi chạy
 echo "🚀 Khởi chạy với profile: $PROFILE"
 docker compose --profile $PROFILE up -d
 
