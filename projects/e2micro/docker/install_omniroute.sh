@@ -1,6 +1,6 @@
 #!/bin/bash
 # ================================================
-# OmniRoute Docker Installer - Tự tạo Secret + Data user
+# OmniRoute Docker Installer - Kiểm tra key trong .env
 # ================================================
 
 set -e
@@ -57,23 +57,31 @@ services:
       - .env
 EOF
 
-# 4. Tạo .env + Tự động sinh secret
+# 4. Kiểm tra và tạo .env + secret
 if [ ! -f .env ]; then
-    echo "--> Tạo file .env và sinh secret..."
+    echo "--> Tạo file .env mới..."
     curl -fsSL https://raw.githubusercontent.com/diegosouzapw/OmniRoute/main/.env.example -o .env
+    CREATE_NEW=1
+else
+    echo "--> File .env đã tồn tại, kiểm tra secret..."
+    CREATE_NEW=0
+fi
+
+# Kiểm tra và tạo secret nếu chưa có
+if [ "$CREATE_NEW" = "1" ] || ! grep -q "^JWT_SECRET=.\+" .env || ! grep -q "^API_KEY_SECRET=.\+" .env; then
+    echo "--> Tự động tạo JWT_SECRET và API_KEY_SECRET..."
     
-    # Tự động sinh JWT_SECRET và API_KEY_SECRET
     JWT_SECRET=$(openssl rand -base64 48 2>/dev/null || echo "super-secret-jwt-$(date +%s)")
     API_KEY_SECRET=$(openssl rand -hex 32 2>/dev/null || echo "super-secret-api-key-$(date +%s)")
     
     sed -i "s|JWT_SECRET=.*|JWT_SECRET=$JWT_SECRET|" .env
     sed -i "s|API_KEY_SECRET=.*|API_KEY_SECRET=$API_KEY_SECRET|" .env
-    
-    echo "✅ Đã tự động tạo JWT_SECRET và API_KEY_SECRET"
-    echo "⚠️ Vui lòng chỉnh INITIAL_PASSWORD"
-    echo "   nano .env"
-    safe_read -p "Nhấn Enter sau khi chỉnh xong..."
+    echo "✅ Đã tạo/hoàn thiện secret keys"
 fi
+
+echo "⚠️ Vui lòng kiểm tra INITIAL_PASSWORD"
+echo "   nano .env"
+safe_read -p "Nhấn Enter sau khi kiểm tra xong..."
 
 # 5. Khởi chạy
 echo "--> Khởi chạy OmniRoute..."
