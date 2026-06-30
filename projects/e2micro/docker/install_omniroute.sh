@@ -43,7 +43,6 @@ fi
 # 3. Tạo docker-compose.yml
 echo "--> Tạo file docker-compose.yml..."
 cat > docker-compose.yml <<EOF
-version: '3.8'
 services:
   omniroute:
     image: diegosouzapw/omniroute:latest
@@ -53,7 +52,7 @@ services:
     ports:
       - "20128:20128"
     volumes:
-      - $DATA_DIR:/app/data
+      - ~/omniroute-data:/app/data
     env_file:
       - .env
 EOF
