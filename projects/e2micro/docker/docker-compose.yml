@@ -16,7 +16,6 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: always
-    privileged: true
     logging:
       driver: "json-file"
       options:
