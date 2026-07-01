@@ -5,7 +5,8 @@ services:
     container_name: wireguard
     cap_add:
       - NET_ADMIN
-      #- SYS_MODULE
+    devices:
+      - /dev/net/tun:/dev/net/tun
     environment:
       - PID=1000
       - PGID=1000
