@@ -15,18 +15,12 @@ services:
       - "20128:20128"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
-    restart: always
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-    healthcheck:
-      test: ["CMD", "wg", "show"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
 
   # 2. Ứng dụng OmniRoute
   omniroute:
