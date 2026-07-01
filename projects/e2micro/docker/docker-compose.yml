@@ -5,7 +5,7 @@ services:
     container_name: wireguard
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
+      #- SYS_MODULE
     environment:
       - PID=1000
       - PGID=1000
@@ -13,7 +13,6 @@ services:
     volumes:
       - ./wg-client:/config
     ports:
-      # 🌟 MỞ CỔNG CỦA OMNIROUTE NGAY TẠI ĐÂY
       - "20128:20128"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
@@ -36,7 +35,6 @@ services:
     container_name: omniroute
     restart: unless-stopped
     stop_grace_period: 40s
-    # 🌟 ÉP OMNIROUTE CHẠY CHUNG MẠNG VỚI WIREGUARD
     network_mode: "service:wireguard"
     # (Bỏ phần ports: "20128:20128" ở đây vì đã chuyển sang dịch vụ wireguard ở trên)
     environment:
