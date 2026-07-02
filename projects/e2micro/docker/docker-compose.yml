@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    entrypoint: ["sh", "-c", "echo \"$$MY_DOMAIN {\n  reverse_proxy omniroute:20128\n}\" > /Caddyfile && caddy run --config /Caddyfile"]
+    entrypoint: ["sh", "-c", "echo \"e2m.my.to {\n  reverse_proxy omniroute:20128\n}\" > /Caddyfile && caddy run --config /Caddyfile"]
     ports:
       - "80:80"
       - "443:443"
