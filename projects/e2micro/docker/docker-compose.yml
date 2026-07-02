@@ -68,6 +68,8 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    networks:
+      - home-network
 
   lazydocker:
     image: lazyteam/lazydocker:latest
@@ -78,6 +80,10 @@ services:
       - lazydocker-config:/.config/jesseduffield/lazydocker
     profiles:
       - tools
+
+networks:
+  home-network:
+    driver: bridge
 
 volumes:
   omniroute-data:
