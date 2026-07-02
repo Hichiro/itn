@@ -26,6 +26,8 @@ services:
     restart: unless-stopped
     stop_grace_period: 40s
     environment:
+      - HOST=0.0.0.0
+      - PORT=20128
       - OMNIROUTE_PUBLIC_BASE_URL=https://${MY_DOMAIN}
     volumes:
       - omniroute-data:/app/data
