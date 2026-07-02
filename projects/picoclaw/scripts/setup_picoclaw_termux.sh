@@ -48,7 +48,7 @@ download_binary() {
         chmod +x "$dest"
         return 0
     else
-        echo "❌ Lỗi: Tải $dest thất bại. Vui lòng kiểm tra kết nối mạng hoặc link GitHub."
+        echo "❌ Lỗi: Tải $dest thất bại. Vui lòng kiểm tra kết nối mạng."
         return 1
     fi
 }
@@ -85,10 +85,13 @@ if pgrep -x "sshd" > /dev/null; then
     # Hỏi đổi mật khẩu (mặc định là Không)
     read -p "Bạn có muốn đổi mật khẩu SSH không? [y/N]: " change_pwd </dev/tty
     if [[ "$change_pwd" =~ ^[Yy]$ ]]; then
-        until passwd; do
-            echo "❌ Mật khẩu không khớp, vui lòng nhập lại."
-        done
-        echo "✓ Đã đổi mật khẩu thành công."
+        echo "Vui lòng nhập mật khẩu mới (lệnh passwd sẽ yêu cầu nhập 2 lần):"
+        passwd # Sử dụng lệnh gốc, nó tự xử lý lỗi khớp mật khẩu
+        if [ $? -eq 0 ]; then
+            echo "✓ Đã đổi mật khẩu thành công."
+        else
+            echo "❌ Đổi mật khẩu thất bại."
+        fi
     fi
     enable_ssh_autostart
 else
@@ -96,10 +99,8 @@ else
     if [[ $(ask_confirm "Bạn có muốn kích hoạt SSH không?") =~ ^[Yy]$ ]]; then
         pkg install openssh -y
         chsh -s bash
-        # Vòng lặp đảm bảo mật khẩu được thiết lập đúng
-        until passwd; do
-            echo "❌ Mật khẩu không khớp, vui lòng nhập lại."
-        done
+        echo "Thiết lập mật khẩu cho lần đầu (nhập 2 lần):"
+        passwd 
         sshd
         enable_ssh_autostart
     fi
@@ -126,7 +127,6 @@ else
 fi
 
 # ====================== 3. PICOCLAW LAUNCHER ======================
-# Chỉ chạy bước này nếu Core đã tồn tại/cài đặt thành công
 if [ "$core_exists" = true ]; then
     echo "=== 3. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW LAUNCHER (WebUI) ==="
     if pgrep -f "picoclaw-launcher" > /dev/null || [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
@@ -167,11 +167,21 @@ else
     echo "Không có dịch vụ nào để khởi động."
 fi
 
+# ====================== LẤY ĐỊA CHỈ IP ======================
+# Thử lấy IP từ wlan0 (wifi), nếu không có thử hostname -I
+LOCAL_IP=$(ifconfig wlan0 2>/dev/null | grep 'inet ' | awk '{print $2}' | sed 's/addr://')
+if [ -z "$LOCAL_IP" ]; then
+    LOCAL_IP=$(hostname -I | awk '{print $1}')
+fi
+[ -z "$LOCAL_IP" ] && LOCAL_IP="Không xác định (Hãy kiểm tra trong cài đặt Wifi)"
+
 echo ""
 echo "================================================="
 echo "          HOÀN TẤT CÀI ĐẶT!"
 echo "================================================="
-echo "• Web UI: http://localhost:18800   (hoặc IP máy)"
+echo "• IP Máy của bạn: $LOCAL_IP"
+echo "• Web UI: http://$LOCAL_IP:18800"
+echo "• Local: http://localhost:18800"
 echo "• Mode: Public + No Browser"
 echo "================================================="
 source ~/.bashrc 2>/dev/null
