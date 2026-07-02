@@ -43,14 +43,9 @@ check_for_update() {
     local repo_path=$1
     local hash_file="$HOME/.picoclaw/$2"
     local remote_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
-    
-    if [ -z "$remote_sha" ] || [ "$remote_sha" == "null" ]; then
-        return 0
-    fi
-
+    if [ -z "$remote_sha" ] || [ "$remote_sha" == "null" ]; then return 0; fi
     local local_sha=""
     [ -f "$hash_file" ] && local_sha=$(cat "$hash_file")
-
     if [ "$remote_sha" != "$local_sha" ]; then
         echo "$remote_sha"
         return 1
@@ -67,8 +62,10 @@ download_direct() {
     
     echo "Đang tải..."
     if curl -fsSL "$url" -o "$tmp_path"; then
-        chmod +x "$tmp_path"
+        # QUAN TRỌNG: Ép quyền thực thi ngay lập tức
+        chmod 755 "$tmp_path"
         mv -f "$tmp_path" "$final_path"
+        
         local filename=$(basename "$final_path")
         local repo_path="projects/picoclaw/$filename"
         local new_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
@@ -87,11 +84,7 @@ ask_confirm() {
     local def_char="n"
     [ "$default" == "Y" ] && def_char="Y"
     read -p "$prompt [$def_char/${def_char#?}]: " choice </dev/tty
-    if [[ -z "$choice" ]]; then
-        echo "$default"
-    else
-        echo "$choice"
-    fi
+    if [[ -z "$choice" ]]; then echo "$default"; else echo "$choice"; fi
 }
 
 # ========================================================
@@ -99,11 +92,11 @@ ask_confirm() {
 # ========================================================
 
 echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
+# Đảm bảo thư mục tồn tại
 mkdir -p $HOME/go/bin $HOME/.picoclaw
 touch ~/.bashrc
 
 if ! command -v jq >/dev/null 2>&1; then
-    echo "Đang cài đặt công cụ hỗ trợ kiểm tra phiên bản (jq)..."
     pkg install jq -y
 fi
 
@@ -121,13 +114,7 @@ if pgrep -x "sshd" > /dev/null; then
         for i in {1..3}; do
             echo "Lần thử $i/3: Nhập mật khẩu mới (2 lần):"
             passwd </dev/tty
-            if [ $? -eq 0 ]; then
-                echo "✓ Thành công."
-                success=true
-                break
-            else
-                echo "❌ Mật khẩu không khớp!"
-            fi
+            if [ $? -eq 0 ]; then success=true; break; fi
         done
         [ "$success" = false ] && echo "⚠️ Thất bại 3 lần. Bỏ qua."
     fi
@@ -141,15 +128,8 @@ else
         for i in {1..3}; do
             echo "Lần thử $i/3: Thiết lập mật khẩu (2 lần):"
             passwd </dev/tty
-            if [ $? -eq 0 ]; then
-                echo "✓ Thành công."
-                success=true
-                break
-            else
-                echo "❌ Mật khẩu không khớp!"
-            fi
+            if [ $? -eq 0 ]; then success=true; break; fi
         done
-        [ "$success" = false ] && echo "⚠️ Không thể thiết lập mật khẩu."
         sshd
         enable_ssh_autostart
     fi
@@ -160,20 +140,15 @@ echo "=== 2. KIỂM TRA PICOCLAW CORE ==="
 core_exists=false
 if [ -f "$HOME/go/bin/picoclaw" ]; then
     if ! check_for_update "projects/picoclaw/picoclaw" ".core_sha" > /dev/null; then
-        if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Core. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
-            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
-                echo "✓ Đã cập nhật PicoClaw Core."
-            fi
+        if [[ $(ask_confirm "Có bản cập nhật cho Core. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
+            download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"
         fi
-    else
-        echo "✓ PicoClaw Core đã ở phiên bản mới nhất."
     fi
     core_exists=true
     enable_picoclaw_core_autostart
 else
     if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Core không?" "N") =~ ^[Yy]$ ]]; then
         if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
-            echo "✓ Đã cài đặt PicoClaw Core."
             core_exists=true
             enable_picoclaw_core_autostart
         fi
@@ -185,60 +160,70 @@ if [ "$core_exists" = true ]; then
     echo "=== 3. KIỂM TRA PICOCLAW LAUNCHER ==="
     if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
         if ! check_for_update "projects/picoclaw/picoclaw-launcher" ".launcher_sha" > /dev/null; then
-            if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Launcher. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
-                if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
-                    echo "✓ Đã cập nhật PicoClaw Launcher."
-                fi
+            if [[ $(ask_confirm "Có bản cập nhật cho Launcher. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
+                download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"
             fi
-        else
-            echo "✓ PicoClaw Launcher đã ở phiên bản mới nhất."
         fi
         enable_picoclaw_launcher_autostart
     else
-        if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Launcher (WebUI) không?" "N") =~ ^[Yy]$ ]]; then
+        if [[ $(ask_confirm "Bạn có muốn cài đặt Launcher (WebUI) không?" "N") =~ ^[Yy]$ ]]; then
             if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
-                echo "✓ Đã cài đặt PicoClaw Launcher."
                 enable_picoclaw_launcher_autostart
             fi
         fi
     fi
-else
-    echo "⏭️ Bỏ qua Launcher vì Core chưa được cài đặt."
 fi
 
-# Cập nhật PATH
+# Cập nhật PATH và áp dụng ngay cho session hiện tại
+export PATH="$HOME/go/bin:$PATH"
 if ! grep -q 'go/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
 fi
-export PATH="$HOME/go/bin:$PATH"
 
 # ====================== KHỞI ĐỘNG VÀ KIỂM TRA ======================
-echo "=== 4. KHỞI ĐỘNG DỊCH VỤ ==="
+echo "=== 4. KHỞI ĐỘNG DỊC VỤ ==="
 pkill -f "picoclaw" 2>/dev/null
 sleep 1
 
-SERVICE_NAME=""
+# Xác định file sẽ chạy
+RUN_BIN=""
 if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
-    SERVICE_NAME="picoclaw-launcher"
-    echo "Khởi động PicoClaw Launcher (WebUI)..."
-    TZ="Asia/Ho_Chi_Minh" nohup "$HOME/go/bin/picoclaw-launcher" --public --port 18800 -no-browser > /dev/null 2>&1 &
+    RUN_BIN="$HOME/go/bin/picoclaw-launcher"
+    CMD="--public --port 18800 -no-browser"
+    NAME="PicoClaw Launcher"
 elif [ -f "$HOME/go/bin/picoclaw" ]; then
-    SERVICE_NAME="picoclaw"
-    echo "Khởi động PicoClaw Core..."
-    TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw" onboard --port 18800 > /dev/null 2>&1 &
+    RUN_BIN="$HOME/go/bin/picoclaw"
+    CMD="onboard --port 18800"
+    NAME="PicoClaw Core"
 fi
 
-if [ -n "$SERVICE_NAME" ]; then
-    echo -n "Đang xác thực dịch vụ... "
-    sleep 2
-    if pgrep -f "$SERVICE_NAME" > /dev/null; then
-        echo "✓ THÀNH CÔNG!"
-    else
-        echo "❌ THẤT BẠI! (Tiến trình bị sập)"
+if [ -n "$RUN_BIN" ]; then
+    # KIỂM TRA CUỐI CÙNG: File có tồn tại và có quyền chạy không?
+    if [ ! -x "$RUN_BIN" ]; then
+        echo "⚠️ Đang sửa lỗi quyền thực thi cho $RUN_BIN..."
+        chmod +x "$RUN_BIN"
     fi
+
+    echo "Đang khởi động $NAME..."
+    # Sử dụng đường dẫn tuyệt đối để tránh lỗi "Command not found"
+    if [ "$NAME" == "PicoClaw Launcher" ]; then
+        TZ="Asia/Ho_Chi_Minh" nohup "$RUN_BIN" $CMD > /dev/null 2>&1 &
+    else
+        TZ="$USER_TZ" nohup "$RUN_BIN" $CMD > /dev/null 2>&1 &
+    fi
+
+    sleep 2
+    if pgrep -f $(basename "$RUN_BIN") > /dev/null; then
+        echo "✓ $NAME khởi động THÀNH CÔNG!"
+    else
+        echo "❌ $NAME khởi động THẤT BẠI!"
+        echo "Nguyên nhân có thể là: File binary không tương thích với CPU của máy hoặc Port 18800 bị chiếm."
+    fi
+else
+    echo "Không có dịch vụ nào để khởi động."
 fi
 
-# ====================== LẤY ĐỊA CHỈ IP ======================
+# ====================== LẤY IP & KẾT THÚC ======================
 LOCAL_IP=$(ifconfig wlan0 2>/dev/null | grep 'inet ' | awk '{print $2}' | sed 's/addr://')
 [ -z "$LOCAL_IP" ] && LOCAL_IP=$(hostname -I | awk '{print $1}')
 [ -z "$LOCAL_IP" ] && LOCAL_IP="Không xác định"
@@ -249,10 +234,7 @@ echo "          HOÀN TẤT CÀI ĐẶT!"
 echo "================================================="
 echo "• IP Máy của bạn: $LOCAL_IP"
 echo "• Web UI: http://$LOCAL_IP:18800"
-echo "• Local: http://localhost:18800"
 echo "================================================="
 echo "👉 Vui lòng chạy lệnh sau để áp dụng thay đổi:"
 echo "   source ~/.bashrc"
 echo "================================================="
-
-source ~/.bashrc 2>/dev/null
