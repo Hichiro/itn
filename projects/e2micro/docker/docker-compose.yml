@@ -53,8 +53,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "20128:20128"
-      - "18800:18800"
+      - "20128"
+      - "18800"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
