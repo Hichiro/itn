@@ -39,21 +39,55 @@ LAUNCHER_BOOT
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher."
 }
 
-# Hàm tải trực tiếp vào bin một cách an toàn
+# Hàm kiểm tra phiên bản qua GitHub API
+# $1: đường dẫn file trên repo (ví dụ: projects/picoclaw/picoclaw)
+# $2: tên file lưu hash cục bộ (ví dụ: .core_sha)
+check_for_update() {
+    local repo_path=$1
+    local hash_file="$HOME/.picoclaw/$2"
+    
+    # Lấy mã SHA từ GitHub API
+    local remote_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/contents/$repo_path" | jq -r '.sha')
+    
+    if [ -z "$remote_sha" ] || [ "$remote_sha" == "null" ]; then
+        return 0 # Không lấy được hash, coi như không có update để tránh lỗi
+    fi
+
+    # Đọc hash đã lưu trong máy
+    local local_sha=""
+    [ -f "$hash_file" ] && local_sha=$(cat "$hash_file")
+
+    if [ "$remote_sha" != "$local_sha" ]; then
+        echo "$remote_sha" # Trả về mã SHA mới nếu có update
+        return 1 # Cần cập nhật
+    else
+        return 0 # Đã mới nhất
+    fi
+}
+
 download_direct() {
     local url=$1
     local final_path=$2
+    local hash_file=$3
     local tmp_path="${final_path}.tmp"
     
-    echo "Đang tải $final_path..."
-    # Tải về file tạm .tmp trước để tránh ghi đè file đang chạy nếu tải lỗi
+    echo "Đang tải..."
     if curl -fsSL "$url" -o "$tmp_path"; then
         chmod +x "$tmp_path"
-        mv -f "$tmp_path" "$final_path" # Tải xong mới ghi đè file chính
+        mv -f "$tmp_path" "$final_path"
+        
+        # Lưu mã SHA mới vào file hash để lần sau đối chiếu
+        # Lấy lại SHA từ API để lưu
+        local filename=$(basename "$final_path")
+        # Tìm đường dẫn tương đối trong repo để gọi API (ví dụ projects/picoclaw/picoclaw)
+        local repo_path="projects/picoclaw/$filename"
+        local new_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/contents/$repo_path" | jq -r '.sha')
+        echo "$new_sha" > "$hash_file"
+        
         return 0
     else
-        echo "❌ Lỗi: Tải thất bại. Vui lòng kiểm tra mạng."
-        [ -f "$tmp_path" ] && rm -f "$tmp_path" # Xóa file rác nếu tải lỗi
+        echo "❌ Lỗi: Tải thất bại."
+        [ -f "$tmp_path" ] && rm -f "$tmp_path"
         return 1
     fi
 }
@@ -79,6 +113,12 @@ ask_confirm() {
 echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
 mkdir -p $HOME/go/bin $HOME/.picoclaw
 touch ~/.bashrc
+
+# Cài đặt jq nếu chưa có (bắt buộc để kiểm tra hash)
+if ! command -v jq >/dev/null 2>&1; then
+    echo "Đang cài đặt công cụ hỗ trợ kiểm tra phiên bản (jq)..."
+    pkg install jq -y
+fi
 
 USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
 [ -z "$USER_TZ" ] && [ -L /etc/localtime ] && USER_TZ=$(readlink /etc/localtime | sed 's#.*/zoneinfo/##')
@@ -132,16 +172,21 @@ fi
 echo "=== 2. KIỂM TRA PICOCLAW CORE ==="
 core_exists=false
 if [ -f "$HOME/go/bin/picoclaw" ]; then
-    if [[ $(ask_confirm "Đã có PicoClaw Core. Cập nhật bản mới nhất?" "Y") =~ ^[Yy]$ ]]; then
-        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw"; then
-            echo "✓ Đã cập nhật PicoClaw Core."
+    # Kiểm tra xem có bản mới không
+    if ! check_for_update "projects/picoclaw/picoclaw" ".core_sha" > /dev/null; then
+        if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Core. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
+            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
+                echo "✓ Đã cập nhật PicoClaw Core."
+            fi
         fi
+    else
+        echo "✓ PicoClaw Core đã ở phiên bản mới nhất."
     fi
     core_exists=true
     enable_picoclaw_core_autostart
 else
     if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Core không?" "N") =~ ^[Yy]$ ]]; then
-        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw"; then
+        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
             echo "✓ Đã cài đặt PicoClaw Core."
             core_exists=true
             enable_picoclaw_core_autostart
@@ -153,15 +198,20 @@ fi
 if [ "$core_exists" = true ]; then
     echo "=== 3. KIỂM TRA PICOCLAW LAUNCHER ==="
     if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
-        if [[ $(ask_confirm "Đã có PicoClaw Launcher. Cập nhật bản mới nhất?" "Y") =~ ^[Yy]$ ]]; then
-            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher"; then
-                echo "✓ Đã cập nhật PicoClaw Launcher."
+        # Kiểm tra xem có bản mới không
+        if ! check_for_update "projects/picoclaw/picoclaw-launcher" ".launcher_sha" > /dev/null; then
+            if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Launcher. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
+                if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
+                    echo "✓ Đã cập nhật PicoClaw Launcher."
+                fi
             fi
+        else
+            echo "✓ PicoClaw Launcher đã ở phiên bản mới nhất."
         fi
         enable_picoclaw_launcher_autostart
     else
         if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Launcher (WebUI) không?" "N") =~ ^[Yy]$ ]]; then
-            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher"; then
+            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
                 echo "✓ Đã cài đặt PicoClaw Launcher."
                 enable_picoclaw_launcher_autostart
             fi
