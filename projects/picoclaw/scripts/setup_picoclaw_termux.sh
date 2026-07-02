@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # ========================================================
+# BIẾN TOÀN CỤC
+# ========================================================
+BASHRC_CHANGED=false
+
+# ========================================================
 # HÀM TIỆN ÍCH: TỰ ĐỘNG KHỞI ĐỘNG
 # ========================================================
 
@@ -12,6 +17,7 @@ if command -v sshd >/dev/null 2>&1 && ! pgrep -x "sshd" > /dev/null; then
     sshd
 fi
 SSH_BOOT
+    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động SSH."
 }
 
@@ -24,6 +30,7 @@ if [ -f "$HOME/go/bin/picoclaw" ] && ! pgrep -f "picoclaw" > /dev/null; then
     echo "[PicoClaw Core] Khởi động"
 fi
 CORE_BOOT
+    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Core."
 }
 
@@ -36,32 +43,27 @@ if [ -f "$HOME/go/bin/picoclaw-launcher" ] && ! pgrep -f "picoclaw-launcher" > /
     echo "[PicoClaw Launcher] Khởi động WebUI (port 18800, public mode)"
 fi
 LAUNCHER_BOOT
+    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher."
 }
 
-# Hàm kiểm tra phiên bản qua GitHub API
-# $1: đường dẫn file trên repo (ví dụ: projects/picoclaw/picoclaw)
-# $2: tên file lưu hash cục bộ (ví dụ: .core_sha)
 check_for_update() {
     local repo_path=$1
     local hash_file="$HOME/.picoclaw/$2"
-    
-    # Lấy mã SHA từ GitHub API
-    local remote_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/contents/$repo_path" | jq -r '.sha')
+    local remote_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
     
     if [ -z "$remote_sha" ] || [ "$remote_sha" == "null" ]; then
-        return 0 # Không lấy được hash, coi như không có update để tránh lỗi
+        return 0
     fi
 
-    # Đọc hash đã lưu trong máy
     local local_sha=""
     [ -f "$hash_file" ] && local_sha=$(cat "$hash_file")
 
     if [ "$remote_sha" != "$local_sha" ]; then
-        echo "$remote_sha" # Trả về mã SHA mới nếu có update
-        return 1 # Cần cập nhật
+        echo "$remote_sha"
+        return 1
     else
-        return 0 # Đã mới nhất
+        return 0
     fi
 }
 
@@ -75,15 +77,10 @@ download_direct() {
     if curl -fsSL "$url" -o "$tmp_path"; then
         chmod +x "$tmp_path"
         mv -f "$tmp_path" "$final_path"
-        
-        # Lưu mã SHA mới vào file hash để lần sau đối chiếu
-        # Lấy lại SHA từ API để lưu
         local filename=$(basename "$final_path")
-        # Tìm đường dẫn tương đối trong repo để gọi API (ví dụ projects/picoclaw/picoclaw)
         local repo_path="projects/picoclaw/$filename"
-        local new_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/contents/$repo_path" | jq -r '.sha')
+        local new_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
         echo "$new_sha" > "$hash_file"
-        
         return 0
     else
         echo "❌ Lỗi: Tải thất bại."
@@ -97,7 +94,6 @@ ask_confirm() {
     local default=$2
     local def_char="n"
     [ "$default" == "Y" ] && def_char="Y"
-    
     read -p "$prompt [$def_char/${def_char#?}]: " choice </dev/tty
     if [[ -z "$choice" ]]; then
         echo "$default"
@@ -114,7 +110,6 @@ echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
 mkdir -p $HOME/go/bin $HOME/.picoclaw
 touch ~/.bashrc
 
-# Cài đặt jq nếu chưa có (bắt buộc để kiểm tra hash)
 if ! command -v jq >/dev/null 2>&1; then
     echo "Đang cài đặt công cụ hỗ trợ kiểm tra phiên bản (jq)..."
     pkg install jq -y
@@ -172,9 +167,8 @@ fi
 echo "=== 2. KIỂM TRA PICOCLAW CORE ==="
 core_exists=false
 if [ -f "$HOME/go/bin/picoclaw" ]; then
-    # Kiểm tra xem có bản mới không
     if ! check_for_update "projects/picoclaw/picoclaw" ".core_sha" > /dev/null; then
-        if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Core. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
+        if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Core. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
             if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
                 echo "✓ Đã cập nhật PicoClaw Core."
             fi
@@ -198,9 +192,8 @@ fi
 if [ "$core_exists" = true ]; then
     echo "=== 3. KIỂM TRA PICOCLAW LAUNCHER ==="
     if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
-        # Kiểm tra xem có bản mới không
         if ! check_for_update "projects/picoclaw/picoclaw-launcher" ".launcher_sha" > /dev/null; then
-            if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Launcher. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
+            if [[ $(ask_confirm "Có bản cập nhật mới cho PicoClaw Launcher. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
                 if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
                     echo "✓ Đã cập nhật PicoClaw Launcher."
                 fi
@@ -224,20 +217,36 @@ fi
 # Cập nhật PATH
 if ! grep -q 'go/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
+    BASHRC_CHANGED=true
 fi
 export PATH="$HOME/go/bin:$PATH"
 
-# ====================== KHỞI ĐỘNG NGAY ======================
+# ====================== KHỞI ĐỘNG VÀ KIỂM TRA ======================
 echo "=== 4. KHỞI ĐỘNG DỊCH VỤ ==="
 pkill -f "picoclaw" 2>/dev/null
 sleep 1
 
+SERVICE_NAME=""
 if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+    SERVICE_NAME="picoclaw-launcher"
     echo "Khởi động PicoClaw Launcher (WebUI)..."
     TZ="Asia/Ho_Chi_Minh" nohup "$HOME/go/bin/picoclaw-launcher" --public --port 18800 -no-browser > /dev/null 2>&1 &
 elif [ -f "$HOME/go/bin/picoclaw" ]; then
+    SERVICE_NAME="picoclaw"
     echo "Khởi động PicoClaw Core..."
     TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw" onboard --port 18800 > /dev/null 2>&1 &
+fi
+
+# --- PHẦN KIỂM TRA CHẠY THÀNH CÔNG CHƯA ---
+if [ -n "$SERVICE_NAME" ]; then
+    echo -n "Đang xác thực dịch vụ... "
+    sleep 2 # Đợi dịch vụ khởi tạo
+    if pgrep -f "$SERVICE_NAME" > /dev/null; then
+        echo "✓ THÀNH CÔNG!"
+    else
+        echo "❌ THẤT BẠI! (Tiến trình đã bị sập ngay sau khi khởi động)"
+        echo "Vui lòng kiểm tra lại log hoặc kết nối mạng."
+    fi
 fi
 
 # ====================== LẤY ĐỊA CHỈ IP ======================
@@ -253,4 +262,14 @@ echo "• IP Máy của bạn: $LOCAL_IP"
 echo "• Web UI: http://$LOCAL_IP:18800"
 echo "• Local: http://localhost:18800"
 echo "================================================="
+
+# --- THÔNG BÁO RELOAD BASHRC ---
+if [ "$BASHRC_CHANGED" = true ]; then
+    echo ""
+    echo "⚠️ CẢNH BÁO: Có thay đổi trong file .bashrc"
+    echo "👉 Hãy chạy lệnh: source ~/.bashrc"
+    echo "   (hoặc khởi động lại Termux để áp dụng thay đổi)"
+    echo "================================================="
+fi
+
 source ~/.bashrc 2>/dev/null
