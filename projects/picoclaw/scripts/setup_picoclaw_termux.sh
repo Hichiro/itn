@@ -79,7 +79,7 @@ else
     if [[ "$core_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Core..."
         cd /tmp || mkdir -p /tmp && cd /tmp
-        curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o picoclaw
+        curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" -o picoclaw
         cp -f picoclaw $HOME/go/bin/picoclaw
         chmod +x $HOME/go/bin/picoclaw
         echo "✓ Đã cài PicoClaw Core"
@@ -97,7 +97,7 @@ else
     if [[ "$launcher_choice" == [Yy] ]]; then
         echo "Đang tải PicoClaw Launcher..."
         cd /tmp || mkdir -p /tmp && cd /tmp
-        curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw-launcher" -o picoclaw-launcher
+        curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" -o picoclaw-launcher
         cp -f picoclaw-launcher $HOME/go/bin/picoclaw-launcher
         chmod +x $HOME/go/bin/picoclaw-launcher
         echo "✓ Đã cài PicoClaw Launcher (WebUI)"
