@@ -36,19 +36,21 @@ services:
       - TRUST_PROXY=true
     volumes:
       - omniroute-data:/app/data
-    ports:
-      - "20128"
     deploy:
       resources:
         limits:
           memory: 256M
+    networks:
+      - home-network
+    ports:
+      - "20128"
+    dns:
+      - 8.8.8.8
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - home-network
 
   caddy:
     image: caddy:latest
