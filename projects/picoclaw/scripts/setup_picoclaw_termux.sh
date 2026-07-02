@@ -39,21 +39,25 @@ LAUNCHER_BOOT
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher."
 }
 
-download_binary() {
+# Hàm tải trực tiếp vào bin một cách an toàn
+download_direct() {
     local url=$1
-    local dest=$2
-    echo "Đang tải $dest..."
-    if curl -fsSL "$url" -o "$dest"; then
-        chmod +x "$dest"
+    local final_path=$2
+    local tmp_path="${final_path}.tmp"
+    
+    echo "Đang tải $final_path..."
+    # Tải về file tạm .tmp trước để tránh ghi đè file đang chạy nếu tải lỗi
+    if curl -fsSL "$url" -o "$tmp_path"; then
+        chmod +x "$tmp_path"
+        mv -f "$tmp_path" "$final_path" # Tải xong mới ghi đè file chính
         return 0
     else
         echo "❌ Lỗi: Tải thất bại. Vui lòng kiểm tra mạng."
+        [ -f "$tmp_path" ] && rm -f "$tmp_path" # Xóa file rác nếu tải lỗi
         return 1
     fi
 }
 
-# Hàm hỏi xác nhận linh hoạt
-# $1: Câu hỏi, $2: Giá trị mặc định (Y hoặc N)
 ask_confirm() {
     local prompt=$1
     local default=$2
@@ -73,7 +77,7 @@ ask_confirm() {
 # ========================================================
 
 echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
-mkdir -p $HOME/go/bin $HOME/.picoclaw $HOME/tmp
+mkdir -p $HOME/go/bin $HOME/.picoclaw
 touch ~/.bashrc
 
 USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
@@ -88,17 +92,17 @@ if pgrep -x "sshd" > /dev/null; then
     if [[ "$change_pwd" =~ ^[Yy]$ ]]; then
         success=false
         for i in {1..3}; do
-            echo "Lần thử $i/3: Vui lòng nhập mật khẩu mới (2 lần):"
+            echo "Lần thử $i/3: Nhập mật khẩu mới (2 lần):"
             passwd </dev/tty
             if [ $? -eq 0 ]; then
-                echo "✓ Đã đổi mật khẩu thành công."
+                echo "✓ Thành công."
                 success=true
                 break
             else
                 echo "❌ Mật khẩu không khớp!"
             fi
         done
-        [ "$success" = false ] && echo "⚠️ Đã thử 3 lần thất bại. Bỏ qua bước đổi mật khẩu."
+        [ "$success" = false ] && echo "⚠️ Thất bại 3 lần. Bỏ qua."
     fi
     enable_ssh_autostart
 else
@@ -111,14 +115,14 @@ else
             echo "Lần thử $i/3: Thiết lập mật khẩu (2 lần):"
             passwd </dev/tty
             if [ $? -eq 0 ]; then
-                echo "✓ Thiết lập mật khẩu thành công."
+                echo "✓ Thành công."
                 success=true
                 break
             else
                 echo "❌ Mật khẩu không khớp!"
             fi
         done
-        [ "$success" = false ] && echo "⚠️ Không thể thiết lập mật khẩu. SSH có thể không hoạt động."
+        [ "$success" = false ] && echo "⚠️ Không thể thiết lập mật khẩu."
         sshd
         enable_ssh_autostart
     fi
@@ -128,22 +132,16 @@ fi
 echo "=== 2. KIỂM TRA PICOCLAW CORE ==="
 core_exists=false
 if [ -f "$HOME/go/bin/picoclaw" ]; then
-    # Đã có -> Mặc định CẬP NHẬT (Y)
-    if [[ $(ask_confirm "Đã tìm thấy PicoClaw Core. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
-        cd $HOME/tmp || exit
-        if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/tmp/picoclaw"; then
-            cp -f "$HOME/tmp/picoclaw" $HOME/go/bin/picoclaw
+    if [[ $(ask_confirm "Đã có PicoClaw Core. Cập nhật bản mới nhất?" "Y") =~ ^[Yy]$ ]]; then
+        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw"; then
             echo "✓ Đã cập nhật PicoClaw Core."
         fi
     fi
     core_exists=true
     enable_picoclaw_core_autostart
 else
-    # Chưa có -> Mặc định KHÔNG cài (N)
     if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Core không?" "N") =~ ^[Yy]$ ]]; then
-        cd $HOME/tmp || exit
-        if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/tmp/picoclaw"; then
-            cp -f "$HOME/tmp/picoclaw" $HOME/go/bin/picoclaw
+        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw"; then
             echo "✓ Đã cài đặt PicoClaw Core."
             core_exists=true
             enable_picoclaw_core_autostart
@@ -155,21 +153,15 @@ fi
 if [ "$core_exists" = true ]; then
     echo "=== 3. KIỂM TRA PICOCLAW LAUNCHER ==="
     if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
-        # Đã có -> Mặc định CẬP NHẬT (Y)
-        if [[ $(ask_confirm "Đã tìm thấy PicoClaw Launcher. Bạn có muốn cập nhật không?" "Y") =~ ^[Yy]$ ]]; then
-            cd $HOME/tmp || exit
-            if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/tmp/picoclaw-launcher"; then
-                cp -f "$HOME/tmp/picoclaw-launcher" $HOME/go/bin/picoclaw-launcher
+        if [[ $(ask_confirm "Đã có PicoClaw Launcher. Cập nhật bản mới nhất?" "Y") =~ ^[Yy]$ ]]; then
+            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher"; then
                 echo "✓ Đã cập nhật PicoClaw Launcher."
             fi
         fi
         enable_picoclaw_launcher_autostart
     else
-        # Chưa có -> Mặc định KHÔNG cài (N)
         if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Launcher (WebUI) không?" "N") =~ ^[Yy]$ ]]; then
-            cd $HOME/tmp || exit
-            if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/tmp/picoclaw-launcher"; then
-                cp -f "$HOME/tmp/picoclaw-launcher" $HOME/go/bin/picoclaw-launcher
+            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher"; then
                 echo "✓ Đã cài đặt PicoClaw Launcher."
                 enable_picoclaw_launcher_autostart
             fi
