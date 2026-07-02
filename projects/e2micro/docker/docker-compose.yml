@@ -1,5 +1,4 @@
 services:
-
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
@@ -27,11 +26,15 @@ services:
     restart: unless-stopped
     stop_grace_period: 40s
     environment:
-      - OMNIROUTE_PUBLIC_BASE_URL=e2m.my.to
+      - OMNIROUTE_PUBLIC_BASE_URL=https://${MY_DOMAIN}
     volumes:
       - omniroute-data:/app/data
     ports:
       - "20128:20128"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     logging:
       driver: "json-file"
       options:
@@ -44,12 +47,11 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    command: caddy reverse-proxy --from e2m.my.to --to omniroute:20128
+    command: caddy reverse-proxy --from ${MY_DOMAIN} --to omniroute:20128
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
 
