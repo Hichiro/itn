@@ -1,11 +1,6 @@
 #!/bin/bash
 
 # ========================================================
-# BIẾN TOÀN CỤC
-# ========================================================
-BASHRC_CHANGED=false
-
-# ========================================================
 # HÀM TIỆN ÍCH: TỰ ĐỘNG KHỞI ĐỘNG
 # ========================================================
 
@@ -17,7 +12,6 @@ if command -v sshd >/dev/null 2>&1 && ! pgrep -x "sshd" > /dev/null; then
     sshd
 fi
 SSH_BOOT
-    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động SSH."
 }
 
@@ -30,7 +24,6 @@ if [ -f "$HOME/go/bin/picoclaw" ] && ! pgrep -f "picoclaw" > /dev/null; then
     echo "[PicoClaw Core] Khởi động"
 fi
 CORE_BOOT
-    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Core."
 }
 
@@ -43,7 +36,6 @@ if [ -f "$HOME/go/bin/picoclaw-launcher" ] && ! pgrep -f "picoclaw-launcher" > /
     echo "[PicoClaw Launcher] Khởi động WebUI (port 18800, public mode)"
 fi
 LAUNCHER_BOOT
-    BASHRC_CHANGED=true
     echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher."
 }
 
@@ -217,7 +209,6 @@ fi
 # Cập nhật PATH
 if ! grep -q 'go/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
-    BASHRC_CHANGED=true
 fi
 export PATH="$HOME/go/bin:$PATH"
 
@@ -237,15 +228,13 @@ elif [ -f "$HOME/go/bin/picoclaw" ]; then
     TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw" onboard --port 18800 > /dev/null 2>&1 &
 fi
 
-# --- PHẦN KIỂM TRA CHẠY THÀNH CÔNG CHƯA ---
 if [ -n "$SERVICE_NAME" ]; then
     echo -n "Đang xác thực dịch vụ... "
-    sleep 2 # Đợi dịch vụ khởi tạo
+    sleep 2
     if pgrep -f "$SERVICE_NAME" > /dev/null; then
         echo "✓ THÀNH CÔNG!"
     else
-        echo "❌ THẤT BẠI! (Tiến trình đã bị sập ngay sau khi khởi động)"
-        echo "Vui lòng kiểm tra lại log hoặc kết nối mạng."
+        echo "❌ THẤT BẠI! (Tiến trình bị sập)"
     fi
 fi
 
@@ -262,14 +251,8 @@ echo "• IP Máy của bạn: $LOCAL_IP"
 echo "• Web UI: http://$LOCAL_IP:18800"
 echo "• Local: http://localhost:18800"
 echo "================================================="
-
-# --- THÔNG BÁO RELOAD BASHRC ---
-if [ "$BASHRC_CHANGED" = true ]; then
-    echo ""
-    echo "⚠️ CẢNH BÁO: Có thay đổi trong file .bashrc"
-    echo "👉 Hãy chạy lệnh: source ~/.bashrc"
-    echo "   (hoặc khởi động lại Termux để áp dụng thay đổi)"
-    echo "================================================="
-fi
+echo "👉 Vui lòng chạy lệnh sau để áp dụng thay đổi:"
+echo "   source ~/.bashrc"
+echo "================================================="
 
 source ~/.bashrc 2>/dev/null
