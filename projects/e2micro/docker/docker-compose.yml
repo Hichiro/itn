@@ -21,6 +21,8 @@ services:
         max-file: "3"
     networks:
       - home-network
+    ports:
+      - "51820:51820/udp"
 
   omniroute:
     image: diegosouzapw/omniroute:latest
