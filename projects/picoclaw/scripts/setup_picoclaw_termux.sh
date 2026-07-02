@@ -14,6 +14,21 @@ SSH_BOOT
     echo "✓ Đã thiết lập tự động khởi động SSH cùng Termux."
 }
 
+enable_9router_autostart() {
+    sed -i '/# Tự động khởi động 9Router/,/fi/d' ~/.bashrc
+    cat << 'ROUTER_BOOT' >> ~/.bashrc
+# Tự động khởi động 9Router bằng pm2 nếu chưa chạy
+if command -v pm2 >/dev/null 2>&1; then
+    if ! pm2 jlist | grep -q '"name":"9router"'; then
+        pm2 start 9router --name "9router" > /dev/null 2>&1
+    fi
+elif command -v 9router >/dev/null 2>&1 && ! pgrep -f "9router" > /dev/null; then
+    nohup 9router > /dev/null 2>&1 &
+fi
+ROUTER_BOOT
+    echo "✓ Đã thiết lập tự động khởi động 9Router cùng Termux."
+}
+
 enable_picoclaw_core_autostart() {
     sed -i '/# Tự động khởi động PicoClaw Core/,/fi/d' ~/.bashrc
     cat << 'CORE_BOOT' >> ~/.bashrc
@@ -69,7 +84,22 @@ else
     fi
 fi
 
-# ====================== 2. PICOCLAW CORE ======================
+# ====================== 2. 9ROUTER ======================
+echo "=== 2. KIỂM TRA VÀ CẤU HÌNH 9ROUTER ==="
+if pgrep -f "9router" > /dev/null; then
+    echo "✓ 9Router đang chạy."
+    enable_9router_autostart
+else
+    read -p "Bạn có muốn cài/kích hoạt 9Router không? (y/n): " router_choice </dev/tty
+    if [[ "$router_choice" == [Yy] ]]; then
+        pkg install nodejs -y
+        npm install -g 9router pm2
+        pm2 start 9router --name "9router" > /dev/null 2>&1 || nohup 9router > /dev/null 2>&1 &
+        enable_9router_autostart
+    fi
+fi
+
+# ====================== 3. PICOCLAW CORE ======================
 echo "=== 3. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW CORE ==="
 if pgrep -f "picoclaw" > /dev/null; then
     echo "✓ PicoClaw Core đang chạy."
@@ -87,7 +117,7 @@ else
     fi
 fi
 
-# ====================== 3. PICOCLAW LAUNCHER ======================
+# ====================== 4. PICOCLAW LAUNCHER ======================
 echo "=== 4. KIỂM TRA VÀ CÀI ĐẶT PICOCLAW LAUNCHER (WebUI) ==="
 if pgrep -f "picoclaw-launcher" > /dev/null; then
     echo "✓ PicoClaw Launcher đang chạy."
