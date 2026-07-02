@@ -50,7 +50,7 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    command: caddy reverse-proxy --from https://${MY_DOMAIN} --to http://omniroute:20128
+    entrypoint: ["sh", "-c", "echo \"$$MY_DOMAIN {\n  reverse_proxy omniroute:20128\n}\" > /Caddyfile && caddy run --config /Caddyfile"]
     ports:
       - "80:80"
       - "443:443"
