@@ -1,5 +1,5 @@
 services:
-  # 1. WireGuard Client (Đóng vai trò là cổng mạng chính)
+
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
@@ -12,8 +12,6 @@ services:
       - TZ=Asia/Ho_Chi_Minh
     volumes:
       - ./wg-client:/config
-    ports:
-      - "20128:20128"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
@@ -23,7 +21,23 @@ services:
         max-size: "10m"
         max-file: "3"
 
-# 2. Cloudflare Tunnel (tryCloudflare)
+  omniroute:
+    image: diegosouzapw/omniroute:latest
+    container_name: omniroute
+    restart: unless-stopped
+    stop_grace_period: 40s
+    environment:
+      - OMNIROUTE_PUBLIC_BASE_URL=http://e2m.my.to
+    volumes:
+      - omniroute-data:/app/data
+    ports:
+      - "20128:20128"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   cf-tunnel:
     image: cloudflare/cloudflared:latest
     container_name: cf-tunnel
@@ -37,28 +51,6 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  # 2. Ứng dụng OmniRoute
-  omniroute:
-    image: diegosouzapw/omniroute:latest
-    container_name: omniroute
-    restart: unless-stopped
-    stop_grace_period: 40s
-    depends_on:
-      cf-tunnel:
-        condition: service_started
-    ports:
-      - "20128:20128"
-    environment:
-      - OMNIROUTE_PUBLIC_BASE_URL=http://e2m.my.to
-    volumes:
-      - omniroute-data:/app/data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-  # 3. Lazydocker
   lazydocker:
     image: lazyteam/lazydocker:latest
     container_name: lazydocker
