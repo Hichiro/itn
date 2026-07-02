@@ -28,12 +28,12 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=20128
-      - OMNIROUTE_PUBLIC_BASE_URL=https://${MY_DOMAIN}
+      - OMNIROUTE_PUBLIC_BASE_URL=https://e2m.my.to
       - TRUST_PROXY=true
     volumes:
       - omniroute-data:/app/data
     ports:
-      - "20128:20128"
+      - "20128"
     deploy:
       resources:
         limits:
@@ -53,8 +53,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "20128"
-      - "18800"
+      - "20128:20128"
+      - "18800:18800"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
