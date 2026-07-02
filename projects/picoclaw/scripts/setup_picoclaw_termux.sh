@@ -1,136 +1,240 @@
 #!/bin/bash
 
-# Hàm tiện ích: Ghi cấu hình tự động bật SSH vào .bashrc nếu chưa có
-enable_ssh_autostart() {
-    if ! grep -q 'sshd' ~/.bashrc; then
-        cat << 'SSH_BOOT' >> ~/.bashrc
+# ========================================================
+# HÀM TIỆN ÍCH: TỰ ĐỘNG KHỞI ĐỘNG
+# ========================================================
 
+enable_ssh_autostart() {
+    sed -i '/# Tự động chạy SSH/,/fi/d' ~/.bashrc
+    cat << 'SSH_BOOT' >> ~/.bashrc
 # Tự động chạy SSH khi mở Termux nếu chưa chạy
-if command -v sshd >/dev/null 2>&1 && ! pgrep -x "sshd" > /dev/null; then 
+if command -v sshd >/dev/null 2>&1 && ! pgrep -x "sshd" > /dev/null; then
     sshd
 fi
 SSH_BOOT
-        echo "Da thiet lap tu dong khoi dong SSH cung Termux."
+    echo "✓ Đã thiết lập tự động khởi động SSH."
+}
+
+enable_picoclaw_core_autostart() {
+    sed -i '/# Tự động khởi động PicoClaw Core/,/fi/d' ~/.bashrc
+    cat << 'CORE_BOOT' >> ~/.bashrc
+# Tự động khởi động PicoClaw Core
+if [ -f "$HOME/go/bin/picoclaw" ] && ! pgrep -f "picoclaw" > /dev/null; then
+    TZ="$USER_TZ" nohup "$HOME/go/bin/picoclaw" onboard --port 18800 > /dev/null 2>&1 &
+    echo "[PicoClaw Core] Khởi động"
+fi
+CORE_BOOT
+    echo "✓ Đã thiết lập tự động khởi động PicoClaw Core."
+}
+
+enable_picoclaw_launcher_autostart() {
+    sed -i '/# Tự động khởi động PicoClaw Launcher/,/fi/d' ~/.bashrc
+    cat << 'LAUNCHER_BOOT' >> ~/.bashrc
+# Tự động khởi động PicoClaw Launcher (WebUI)
+if [ -f "$HOME/go/bin/picoclaw-launcher" ] && ! pgrep -f "picoclaw-launcher" > /dev/null; then
+    TZ="Asia/Ho_Chi_Minh" nohup "$HOME/go/bin/picoclaw-launcher" --public --port 18800 -no-browser > /dev/null 2>&1 &
+    echo "[PicoClaw Launcher] Khởi động WebUI (port 18800, public mode)"
+fi
+LAUNCHER_BOOT
+    echo "✓ Đã thiết lập tự động khởi động PicoClaw Launcher."
+}
+
+check_for_update() {
+    local repo_path=$1
+    local hash_file="$HOME/.picoclaw/$2"
+    local remote_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
+    if [ -z "$remote_sha" ] || [ "$remote_sha" == "null" ]; then return 0; fi
+    local local_sha=""
+    [ -f "$hash_file" ] && local_sha=$(cat "$hash_file")
+    if [ "$remote_sha" != "$local_sha" ]; then
+        echo "$remote_sha"
+        return 1
+    else
+        return 0
     fi
 }
 
-echo "=== 1. KIEM TRA VA CAU HINH SSH ==="
+download_direct() {
+    local url=$1
+    local final_path=$2
+    local hash_file=$3
+    local tmp_path="${final_path}.tmp"
+    
+    echo "Đang tải..."
+    if curl -fsSL "$url" -o "$tmp_path"; then
+        # QUAN TRỌNG: Ép quyền thực thi ngay lập tức
+        chmod 755 "$tmp_path"
+        mv -f "$tmp_path" "$final_path"
+        
+        local filename=$(basename "$final_path")
+        local repo_path="projects/picoclaw/$filename"
+        local new_sha=$(curl -s "https://api.github.com/repos/Hichiro/itn/main/contents/$repo_path" | jq -r '.sha')
+        echo "$new_sha" > "$hash_file"
+        return 0
+    else
+        echo "❌ Lỗi: Tải thất bại."
+        [ -f "$tmp_path" ] && rm -f "$tmp_path"
+        return 1
+    fi
+}
+
+ask_confirm() {
+    local prompt=$1
+    local default=$2
+    local def_char="n"
+    [ "$default" == "Y" ] && def_char="Y"
+    read -p "$prompt [$def_char/${def_char#?}]: " choice </dev/tty
+    if [[ -z "$choice" ]]; then echo "$default"; else echo "$choice"; fi
+}
+
+# ========================================================
+# CHƯƠNG TRÌNH CHÍNH
+# ========================================================
+
+echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
+# Đảm bảo thư mục tồn tại
+mkdir -p $HOME/go/bin $HOME/.picoclaw
 touch ~/.bashrc
+
+if ! command -v jq >/dev/null 2>&1; then
+    pkg install jq -y
+fi
+
+USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
+[ -z "$USER_TZ" ] && [ -L /etc/localtime ] && USER_TZ=$(readlink /etc/localtime | sed 's#.*/zoneinfo/##')
+[ -z "$USER_TZ" ] && USER_TZ="Asia/Ho_Chi_Minh"
+
+# ====================== 1. SSH ======================
+echo "=== 1. KIỂM TRA VÀ CẤU HÌNH SSH ==="
 if pgrep -x "sshd" > /dev/null; then
-    echo "Dich vu SSH hien dang hoat dong binh thuong."
+    echo "✓ SSH đang chạy."
+    read -p "Bạn có muốn đổi mật khẩu SSH không? [y/N]: " change_pwd </dev/tty
+    if [[ "$change_pwd" =~ ^[Yy]$ ]]; then
+        success=false
+        for i in {1..3}; do
+            echo "Lần thử $i/3: Nhập mật khẩu mới (2 lần):"
+            passwd </dev/tty
+            if [ $? -eq 0 ]; then success=true; break; fi
+        done
+        [ "$success" = false ] && echo "⚠️ Thất bại 3 lần. Bỏ qua."
+    fi
     enable_ssh_autostart
 else
-    echo "Canh bao: Dich vu SSH hien tai KHONG hoat dong."
-    read -p "Ban co muon kich hoat va su dung SSH khong? (y/n): " choice </dev/tty
-    if [[ "$choice" == [Yy] ]]; then
-        if ! command -v sshd >/dev/null 2>&1; then
-            echo "Dang cap nhat kho ung dung va cai dat openssh..."
-            pkg update -y -o Dpkg::Options::="--force-confnew" && pkg install openssh -y
-        fi
-        echo "Thiet lap/Cap nhat mat khau dang nhap SSH cho Termux:"
+    echo "SSH chưa chạy."
+    if [[ $(ask_confirm "Bạn có muốn kích hoạt SSH không?" "N") =~ ^[Yy]$ ]]; then
+        pkg install openssh -y
         chsh -s bash
-        passwd </dev/tty
+        success=false
+        for i in {1..3}; do
+            echo "Lần thử $i/3: Thiết lập mật khẩu (2 lần):"
+            passwd </dev/tty
+            if [ $? -eq 0 ]; then success=true; break; fi
+        done
         sshd
-        echo "Da kich hoat dich vu SSH thanh cong."
         enable_ssh_autostart
-    else
-        echo "Da bo qua cau hinh SSH theo yeu cau."
     fi
 fi
 
-echo "=== 2. KHOI TAO DUONG DAN HE THONG PICOCLAW ==="
-mkdir -p $HOME/go/bin
-mkdir -p $HOME/.picoclaw
-
-echo "=== 3. KIEM TRA VA TAI PHIEN BAN PICOCLAW MOI NHAT ==="
-echo "Dang doc ma commit tu GitHub cua ban..."
-MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/last_build_commit.txt" | tr -d '\r\n ' )
-LOCAL_COMMIT=$(cat $HOME/.picoclaw/last_build_commit.txt 2>/dev/null || echo "")
-NEED_UPDATE=false
-
-if [ -z "$MY_REMOTE_COMMIT" ]; then
-    echo "Canh bao: Khong the doc file last_build_commit.txt tu GitHub."
-    read -p "Ban co muon ep buoc tai lai/cai dat file binary khong? (y/n): " force_choice </dev/tty
-    if [[ "$force_choice" == [Yy] ]]; then
-        NEED_UPDATE=true
-    fi
-elif [ "$MY_REMOTE_COMMIT" = "$LOCAL_COMMIT" ] && [ -f "$HOME/go/bin/picoclaw" ]; then
-    echo "Ban dang su dung ban build PicoClaw moi nhat (${LOCAL_COMMIT:0:7}). Khong can tai lai."
-else
-    echo "Phat hien ban build PicoClaw moi tren GitHub!"
-    echo "   - Ban hien tai tren may: ${LOCAL_COMMIT:-none}"
-    echo "   - Ban moi tren GitHub  : ${MY_REMOTE_COMMIT:0:7}"
-    
-    read -p "Ban co muon cai dat/cap nhat phien ban nay khong? (y/n): " update_choice </dev/tty
-    if [[ "$update_choice" == [Yy] ]]; then
-        NEED_UPDATE=true
-    fi
-fi
-
-if [ "$NEED_UPDATE" = true ]; then
-    echo "Dang dung cac tien trinh PicoClaw cu de giai phong file..."
-    pkill -f "picoclaw gateway" > /dev/null 2>&1
-    killall picoclaw > /dev/null 2>&1
-    sleep 1 
-
-    echo "Dang tai file binary picoclaw tu GitHub..."
-    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" -o $HOME/go/bin/picoclaw
-
-    if [ $? -eq 0 ] && [ -s "$HOME/go/bin/picoclaw" ]; then
-        echo "Tai file binary PicoClaw thanh cong!"
-        if [ ! -z "$MY_REMOTE_COMMIT" ]; then
-            echo "$MY_REMOTE_COMMIT" > $HOME/.picoclaw/last_build_commit.txt
+# ====================== 2. PICOCLAW CORE ======================
+echo "=== 2. KIỂM TRA PICOCLAW CORE ==="
+core_exists=false
+if [ -f "$HOME/go/bin/picoclaw" ]; then
+    if ! check_for_update "projects/picoclaw/picoclaw" ".core_sha" > /dev/null; then
+        if [[ $(ask_confirm "Có bản cập nhật cho Core. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
+            download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"
         fi
-    else
-        echo "Loi: Khong the tai file tu GitHub hoac file tai ve bi rong."
-        exit 1
     fi
+    core_exists=true
+    enable_picoclaw_core_autostart
 else
-    echo "Da bo qua buoc tai/cap nhat phien ban."
+    if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Core không?" "N") =~ ^[Yy]$ ]]; then
+        if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/go/bin/picoclaw" "$HOME/.picoclaw/.core_sha"; then
+            core_exists=true
+            enable_picoclaw_core_autostart
+        fi
+    fi
 fi
 
-echo "=== 4. CAP QUYEN VA DONG BO PATH ==="
-chmod +x $HOME/go/bin/picoclaw
+# ====================== 3. PICOCLAW LAUNCHER ======================
+if [ "$core_exists" = true ]; then
+    echo "=== 3. KIỂM TRA PICOCLAW LAUNCHER ==="
+    if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+        if ! check_for_update "projects/picoclaw/picoclaw-launcher" ".launcher_sha" > /dev/null; then
+            if [[ $(ask_confirm "Có bản cập nhật cho Launcher. Cập nhật?" "Y") =~ ^[Yy]$ ]]; then
+                download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"
+            fi
+        fi
+        enable_picoclaw_launcher_autostart
+    else
+        if [[ $(ask_confirm "Bạn có muốn cài đặt Launcher (WebUI) không?" "N") =~ ^[Yy]$ ]]; then
+            if download_direct "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/go/bin/picoclaw-launcher" "$HOME/.picoclaw/.launcher_sha"; then
+                enable_picoclaw_launcher_autostart
+            fi
+        fi
+    fi
+fi
+
+# Cập nhật PATH và áp dụng ngay cho session hiện tại
+export PATH="$HOME/go/bin:$PATH"
 if ! grep -q 'go/bin' ~/.bashrc; then
     echo 'export PATH="$HOME/go/bin:$PATH"' >> ~/.bashrc
 fi
-export PATH="$HOME/go/bin:$PATH"
 
-echo "=== 5. CAU HINH MUI GIO (TIMEZONE) BROWSER ==="
-echo "Dang tu dong kiem tra mui gio he thong..."
-USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
-if [ -z "$USER_TZ" ] && [ -L /etc/localtime ]; then
-    USER_TZ=$(readlink /etc/localtime | sed 's#.*/zoneinfo/##')
+# ====================== KHỞI ĐỘNG VÀ KIỂM TRA ======================
+echo "=== 4. KHỞI ĐỘNG DỊC VỤ ==="
+pkill -f "picoclaw" 2>/dev/null
+sleep 1
+
+# Xác định file sẽ chạy
+RUN_BIN=""
+if [ -f "$HOME/go/bin/picoclaw-launcher" ]; then
+    RUN_BIN="$HOME/go/bin/picoclaw-launcher"
+    CMD="--public --port 18800 -no-browser"
+    NAME="PicoClaw Launcher"
+elif [ -f "$HOME/go/bin/picoclaw" ]; then
+    RUN_BIN="$HOME/go/bin/picoclaw"
+    CMD="onboard --port 18800"
+    NAME="PicoClaw Core"
 fi
-if [ -z "$USER_TZ" ]; then
-    USER_TZ="Asia/Ho_Chi_Minh"
-fi
-echo "-> Da phat hien mui gio he thong: $USER_TZ"
 
-echo "=== 6. THIET LAP TU DONG KHOI DONG PICOCLAW ==="
-# Giải pháp an toàn: Dùng sed xóa chính xác dựa vào chuỗi định danh, tránh xóa nhầm khối lệnh khác
-sed -i '/# Tự động khởi động PicoClaw/,/fi/d' ~/.bashrc
+if [ -n "$RUN_BIN" ]; then
+    # KIỂM TRA CUỐI CÙNG: File có tồn tại và có quyền chạy không?
+    if [ ! -x "$RUN_BIN" ]; then
+        echo "⚠️ Đang sửa lỗi quyền thực thi cho $RUN_BIN..."
+        chmod +x "$RUN_BIN"
+    fi
 
-cat << PICOCLAW_BOOT >> ~/.bashrc
-# Tự động khởi động PicoClaw gateway ngầm nếu đã có file config.json và chưa chạy
-if [ -f "\$HOME/.picoclaw/config.json" ] && ! pgrep -f "picoclaw gateway" > /dev/null; then
-    TZ="$USER_TZ" nohup picoclaw gateway > /dev/null 2>&1 &
-fi
-PICOCLAW_BOOT
-echo "Da thiet lap cau hinh tu dong khoi dong PicoClaw kem mui gio cung Termux."
-
-# KHỞI CHẠY NGAY NẾU ĐỦ ĐIỀU KIỆN
-if [ -f "$HOME/.picoclaw/config.json" ]; then
-    if ! pgrep -f "picoclaw gateway" > /dev/null; then
-        echo "Dang kich hoat PicoClaw gateway chay ngam voi mui gio $USER_TZ..."
-        TZ="$USER_TZ" nohup picoclaw gateway > /dev/null 2>&1 &
+    echo "Đang khởi động $NAME..."
+    # Sử dụng đường dẫn tuyệt đối để tránh lỗi "Command not found"
+    if [ "$NAME" == "PicoClaw Launcher" ]; then
+        TZ="Asia/Ho_Chi_Minh" nohup "$RUN_BIN" $CMD > /dev/null 2>&1 &
     else
-        echo "PicoClaw gateway dang chay ngam roi. (De ap dung mui gio moi vui long khoi dong lai Termux)."
+        TZ="$USER_TZ" nohup "$RUN_BIN" $CMD > /dev/null 2>&1 &
+    fi
+
+    sleep 2
+    if pgrep -f $(basename "$RUN_BIN") > /dev/null; then
+        echo "✓ $NAME khởi động THÀNH CÔNG!"
+    else
+        echo "❌ $NAME khởi động THẤT BẠI!"
+        echo "Nguyên nhân có thể là: File binary không tương thích với CPU của máy hoặc Port 18800 bị chiếm."
     fi
 else
-    echo "Lưu ý: Bạn cần cấu hình file '~/.picoclaw/config.json' và '~/.picoclaw/.security.yml' để khởi chạy dịch vụ."
+    echo "Không có dịch vụ nào để khởi động."
 fi
 
+# ====================== LẤY IP & KẾT THÚC ======================
+LOCAL_IP=$(ifconfig wlan0 2>/dev/null | grep 'inet ' | awk '{print $2}' | sed 's/addr://')
+[ -z "$LOCAL_IP" ] && LOCAL_IP=$(hostname -I | awk '{print $1}')
+[ -z "$LOCAL_IP" ] && LOCAL_IP="Không xác định"
+
+echo ""
 echo "================================================="
-echo " CÀI ĐẶT MỚI PICOCLAW HOÀN TẤT THÀNH CÔNG!"
+echo "          HOÀN TẤT CÀI ĐẶT!"
+echo "================================================="
+echo "• IP Máy của bạn: $LOCAL_IP"
+echo "• Web UI: http://$LOCAL_IP:18800"
+echo "================================================="
+echo "👉 Vui lòng chạy lệnh sau để áp dụng thay đổi:"
+echo "   source ~/.bashrc"
 echo "================================================="
