@@ -39,19 +39,19 @@ services:
         max-file: "3"
 
   cf-tunnel:
-      image: cloudflare/cloudflared:latest
-      container_name: cf-tunnel
-      restart: unless-stopped
-      command: tunnel --no-autoupdate --metrics 0.0.0.0:55555 --url http://omniroute:20128
-      ports:
-        - "55555:55555"
-      depends_on:
-        - omniroute
-      logging:
-        driver: "json-file"
-        options:
-          max-size: "10m"
-          max-file: "3"
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:55555 --url http://omniroute:20128
+    ports:
+      - "55555:55555"
+    depends_on:
+      - omniroute
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   lazydocker:
     image: lazyteam/lazydocker:latest
