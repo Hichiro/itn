@@ -44,11 +44,12 @@ download_binary() {
     local url=$1
     local dest=$2
     echo "Đang tải $dest..."
+    # Sử dụng -L để theo dõi redirect của GitHub
     if curl -fsSL "$url" -o "$dest"; then
         chmod +x "$dest"
         return 0
     else
-        echo "❌ Lỗi: Tải $dest thất bại. Vui lòng kiểm tra kết nối mạng."
+        echo "❌ Lỗi: Tải $dest thất bại. Vui lòng kiểm tra kết nối mạng hoặc Link GitHub."
         return 1
     fi
 }
@@ -70,7 +71,8 @@ ask_confirm() {
 # ========================================================
 
 echo "=== Cài đặt & Cấu hình các dịch vụ Termux ==="
-mkdir -p $HOME/go/bin $HOME/.picoclaw /tmp
+# Thay /tmp bằng $HOME/tmp để tránh lỗi quyền truy cập trong Termux
+mkdir -p $HOME/go/bin $HOME/.picoclaw $HOME/tmp
 touch ~/.bashrc
 
 # Phát hiện múi giờ
@@ -82,12 +84,10 @@ USER_TZ=$(getprop persist.sys.timezone 2>/dev/null)
 echo "=== 1. KIỂM TRA VÀ CẤU HÌNH SSH ==="
 if pgrep -x "sshd" > /dev/null; then
     echo "✓ SSH đang chạy."
-    # Hỏi đổi mật khẩu (mặc định là Không)
     read -p "Bạn có muốn đổi mật khẩu SSH không? [y/N]: " change_pwd </dev/tty
     if [[ "$change_pwd" =~ ^[Yy]$ ]]; then
         echo "---"
         echo "Vui lòng nhập mật khẩu mới 2 lần:"
-        # ÉP ĐỌC TỪ TTY ĐỂ TRÁNH LỖI EMPTY PASSWORD
         passwd </dev/tty 
         if [ $? -eq 0 ]; then
             echo "✓ Đã đổi mật khẩu thành công."
@@ -104,7 +104,6 @@ else
         chsh -s bash
         echo "---"
         echo "Thiết lập mật khẩu cho lần đầu (nhập 2 lần):"
-        # ÉP ĐỌC TỪ TTY ĐỂ TRÁNH LỖI EMPTY PASSWORD
         passwd </dev/tty
         sshd
         enable_ssh_autostart
@@ -122,9 +121,10 @@ if pgrep -f "picoclaw" > /dev/null || [ -f "$HOME/go/bin/picoclaw" ]; then
     enable_picoclaw_core_autostart
 else
     if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Core không?") =~ ^[Yy]$ ]]; then
-        cd /tmp || exit
-        if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "/tmp/picoclaw"; then
-            cp -f /tmp/picoclaw $HOME/go/bin/picoclaw
+        # Chuyển vào thư mục tạm trong HOME
+        cd $HOME/tmp || exit
+        if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" "$HOME/tmp/picoclaw"; then
+            cp -f "$HOME/tmp/picoclaw" $HOME/go/bin/picoclaw
             echo "✓ Đã cài PicoClaw Core"
             core_exists=true
             enable_picoclaw_core_autostart
@@ -140,9 +140,9 @@ if [ "$core_exists" = true ]; then
         enable_picoclaw_launcher_autostart
     else
         if [[ $(ask_confirm "Bạn có muốn cài đặt PicoClaw Launcher (WebUI) không?") =~ ^[Yy]$ ]]; then
-            cd /tmp || exit
-            if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "/tmp/picoclaw-launcher"; then
-                cp -f /tmp/picoclaw-launcher $HOME/go/bin/picoclaw-launcher
+            cd $HOME/tmp || exit
+            if download_binary "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw-launcher" "$HOME/tmp/picoclaw-launcher"; then
+                cp -f "$HOME/tmp/picoclaw-launcher" $HOME/go/bin/picoclaw-launcher
                 echo "✓ Đã cài PicoClaw Launcher (WebUI)"
                 enable_picoclaw_launcher_autostart
             fi
