@@ -49,7 +49,7 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    command: caddy reverse-proxy --from ${MY_DOMAIN} --to host.docker.internal:20128
+    command: caddy reverse-proxy --from ${MY_DOMAIN} --to http://host.docker.internal:20128
     ports:
       - "80:80"
       - "443:443"
