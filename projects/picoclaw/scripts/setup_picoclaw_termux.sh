@@ -44,7 +44,7 @@ mkdir -p $HOME/.picoclaw
 
 echo "=== 3. KIEM TRA VA TAI PHIEN BAN PICOCLAW MOI NHAT ==="
 echo "Dang doc ma commit tu GitHub cua ban..."
-MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/last_build_commit.txt" | tr -d '\r\n ' )
+MY_REMOTE_COMMIT=$(curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/last_build_commit.txt" | tr -d '\r\n ' )
 LOCAL_COMMIT=$(cat $HOME/.picoclaw/last_build_commit.txt 2>/dev/null || echo "")
 NEED_UPDATE=false
 
@@ -74,7 +74,7 @@ if [ "$NEED_UPDATE" = true ]; then
     sleep 1 
 
     echo "Dang tai file binary picoclaw tu GitHub..."
-    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/picoclaw/picoclaw" -o $HOME/go/bin/picoclaw
+    curl -fsSL "https://raw.githubusercontent.com/Hichiro/itn/main/projects/picoclaw/picoclaw" -o $HOME/go/bin/picoclaw
 
     if [ $? -eq 0 ] && [ -s "$HOME/go/bin/picoclaw" ]; then
         echo "Tai file binary PicoClaw thanh cong!"
