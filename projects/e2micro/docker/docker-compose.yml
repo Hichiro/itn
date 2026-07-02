@@ -50,11 +50,13 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    entrypoint: ["sh", "-c", "echo \"e2m.my.to {\n  reverse_proxy omniroute:20128\n}\" > /Caddyfile && caddy run --config /Caddyfile"]
     ports:
       - "80:80"
       - "443:443"
+      - "20128:20128"
+      - "18800:18800"
     volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
     logging:
