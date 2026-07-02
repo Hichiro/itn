@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 40s
     environment:
-      - OMNIROUTE_PUBLIC_BASE_URL=http://e2m.my.to
+      - OMNIROUTE_PUBLIC_BASE_URL=https://e2m.my.to
     volumes:
       - omniroute-data:/app/data
     ports:
@@ -42,7 +42,7 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cf-tunnel
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    command: command: tunnel --no-autoupdate --metrics 0.0.0.0:55555 --url http://omniroute:20128
     depends_on:
       - omniroute
     logging:
