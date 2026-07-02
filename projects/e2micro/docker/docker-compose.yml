@@ -41,16 +41,18 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  caddy:
+caddy:
     image: caddy:latest
     container_name: caddy
     restart: unless-stopped
     depends_on:
       - omniroute
-    command: caddy reverse-proxy --from ${MY_DOMAIN} --to omniroute:20128
+    command: caddy reverse-proxy --from ${MY_DOMAIN} --to host.docker.internal:20128
     ports:
       - "80:80"
       - "443:443"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - caddy_data:/data
       - caddy_config:/config
