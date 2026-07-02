@@ -47,11 +47,11 @@ services:
     restart: unless-stopped
     depends_on:
       - omniroute
-    command: caddy reverse-proxy --from ${MY_DOMAIN} --to omniroute:20128
     ports:
       - "80:80"
       - "443:443"
     volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
 
