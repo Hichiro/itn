@@ -23,20 +23,33 @@ services:
         max-size: "10m"
         max-file: "3"
 
+# 2. Cloudflare Tunnel (tryCloudflare)
+  cf-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cf-tunnel
+    restart: unless-stopped
+    command: tunnel --url http://omniroute:20128
+    depends_on:
+      - omniroute
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   # 2. Ứng dụng OmniRoute
   omniroute:
     image: diegosouzapw/omniroute:latest
     container_name: omniroute
     restart: unless-stopped
     stop_grace_period: 40s
-    network_mode: "service:wireguard"
-    # (Bỏ phần ports: "20128:20128" ở đây vì đã chuyển sang dịch vụ wireguard ở trên)
     depends_on:
-      wireguard:
+      cf-tunnel:
         condition: service_started
+    ports:
+      - "20128:20128"
     environment:
-      # Thay bằng IP WireGuard mà Router ở nhà cấp cho máy ảo GCP
-      - OMNIROUTE_PUBLIC_BASE_URL=http://10.6.0.3:20128
+      - OMNIROUTE_PUBLIC_BASE_URL=http://e2m.my.to
     volumes:
       - omniroute-data:/app/data
     logging:
