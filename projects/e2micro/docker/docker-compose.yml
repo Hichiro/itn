@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 40s
     environment:
-      - OMNIROUTE_PUBLIC_BASE_URL=${MY_DOMAIN}
+      - OMNIROUTE_PUBLIC_BASE_URL=e2m.my.to
     volumes:
       - omniroute-data:/app/data
     ports:
@@ -38,20 +38,20 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  cf-tunnel:
-    image: cloudflare/cloudflared:latest
-    container_name: cf-tunnel
+  caddy:
+    image: caddy:latest
+    container_name: caddy
     restart: unless-stopped
-    command: tunnel --no-autoupdate --metrics 0.0.0.0:55555 --url http://omniroute:20128
-    ports:
-      - "55555:55555"
     depends_on:
       - omniroute
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    command: caddy reverse-proxy --from e2m.my.to --to omniroute:20128
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
 
   lazydocker:
     image: lazyteam/lazydocker:latest
@@ -66,3 +66,5 @@ services:
 volumes:
   omniroute-data:
   lazydocker-config:
+  caddy_data:
+  caddy_config:
