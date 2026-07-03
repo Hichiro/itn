@@ -20,12 +20,13 @@ dcompose() {
       docker/compose-bin:latest compose "$@"
 }
 
-# === TỐI ƯU DAEMON.JSON ===
+# === TỐI ƯU DAEMON.JSON (an toàn) ===
 echo "--> Kiểm tra & tối ưu Docker daemon..."
 DAEMON_FILE="/etc/docker/daemon.json"
 
 if [ ! -f "$DAEMON_FILE" ]; then
-    sudo tee "$DAEMON_FILE" > /dev/null <<EOF
+    echo "→ Tạo file daemon.json mới"
+    sudo tee "$DAEMON_FILE" > /dev/null <<'EOF'
 {
   "log-driver": "json-file",
   "log-opts": {
@@ -39,20 +40,22 @@ if [ ! -f "$DAEMON_FILE" ]; then
 }
 EOF
 else
-    # Merge với file hiện có
-    sudo python3 - <<EOF
+    echo "→ Merge vào file daemon.json hiện có"
+    sudo python3 - <<'PYEOF'
 import json
-with open('$DAEMON_FILE', 'r') as f:
-    data = json.load(f)
-
+try:
+    with open('/etc/docker/daemon.json', 'r') as f:
+        data = json.load(f)
+except:
+    data = {}
 data.setdefault('log-driver', 'json-file')
 opts = data.setdefault('log-opts', {})
 opts.update({'max-size': '10m', 'max-file': '3'})
 data['memory'] = '800m'
-
-with open('$DAEMON_FILE', 'w') as f:
+with open('/etc/docker/daemon.json', 'w') as f:
     json.dump(data, f, indent=2)
-EOF
+print("Merge thành công")
+PYEOF
 fi
 
 sudo systemctl restart docker
@@ -85,18 +88,13 @@ echo "--> Dọn rác..."
 docker image prune -f
 docker system prune -f --volumes 2>/dev/null || true
 
-echo "========================================="
-echo " HOÀN TẤT!"
-echo "========================================="
-dcompose ps
-
-# Tự động tạo lệnh phím tắt 'lzd' cho hệ thống nếu chưa có
+# Alias lazydocker
 if ! grep -q "alias lzd=" ~/.bashrc; then
     echo "alias lzd='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker:ro lazyteam/lazydocker:latest'" >> ~/.bashrc
     source ~/.bashrc
 fi
 
 echo "========================================="
-echo " ĐÃ CẬP NHẬT VÀ DỌN SẠCH HỆ THỐNG!"
+echo " HOÀN TẤT!"
 echo "========================================="
 dcompose ps
