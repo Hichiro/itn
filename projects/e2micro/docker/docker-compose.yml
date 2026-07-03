@@ -79,7 +79,7 @@ services:
       retries: 3
       start_period: 40s
     volumes:
-      - ./omniroute-data:/app/data
+      - omniroute-data:/app/data
     deploy:
       resources:
         limits:
