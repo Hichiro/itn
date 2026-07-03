@@ -11,13 +11,14 @@ APP_DIR="$HOME/apps"
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
-# Hàm dcompose đã sửa (ổn định hơn)
+# Hàm dcompose
 dcompose() {
     docker run --rm \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -v "$PWD:$PWD" \
       -w "$PWD" \
       --user $(id -u):$(id -g) \
+      -e DOCKER_HOST=unix:///var/run/docker.sock \
       docker/compose-bin:latest compose "$@"
 }
 
@@ -34,8 +35,8 @@ else
 fi
 
 # Pull & Up
-echo "--> Khởi chạy container..."
-dcompose pull --quiet
+echo "--> Khởi chạy container... (có thể mất 1-2 phút)"
+dcompose pull
 
 if [ "$UPDATE" = true ]; then
     dcompose up -d --remove-orphans
