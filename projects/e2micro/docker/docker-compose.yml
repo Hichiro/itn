@@ -142,6 +142,7 @@ networks:
     driver: bridge
 
 volumes:
+  omniroute-data:
   lazydocker-config:
   caddy_data:
   caddy_config:
