@@ -4,7 +4,7 @@ services:
     container_name: picoclaw
     restart: unless-stopped
     ports:
-      - "18800:18800"
+      - "18800"
     volumes:
       - ~/.picoclaw:/root/.picoclaw
     depends_on:
