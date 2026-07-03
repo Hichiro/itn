@@ -6,7 +6,7 @@ services:
     ports:
       - "18800"
     volumes:
-      - ~/.picoclaw:/root/.picoclaw
+      - ~/.picoclaw:/.picoclaw
     depends_on:
       - python
     deploy:
