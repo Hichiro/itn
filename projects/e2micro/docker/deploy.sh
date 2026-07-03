@@ -4,7 +4,7 @@ set -e
 GITHUB_RAW_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/docker/docker-compose.yml"
 
 echo "========================================="
-echo " TRIỂN KHAI & TỐI ƯU RAM DOCKER"
+echo " TRIỂN KHAI DOCKER"
 echo "========================================="
 
 APP_DIR="$HOME/apps"
@@ -19,47 +19,6 @@ dcompose() {
       -w "$PWD" \
       docker/compose-bin:latest compose "$@"
 }
-
-# === TỐI ƯU DAEMON.JSON (an toàn) ===
-echo "--> Kiểm tra & tối ưu Docker daemon..."
-DAEMON_FILE="/etc/docker/daemon.json"
-
-if [ ! -f "$DAEMON_FILE" ]; then
-    echo "→ Tạo file daemon.json mới"
-    sudo tee "$DAEMON_FILE" > /dev/null <<'EOF'
-{
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "10m",
-    "max-file": "3"
-  },
-  "memory": "800m",
-  "live-restore": true,
-  "storage-driver": "overlay2",
-  "mtu": 1460
-}
-EOF
-else
-    echo "→ Merge vào file daemon.json hiện có"
-    sudo python3 - <<'PYEOF'
-import json
-try:
-    with open('/etc/docker/daemon.json', 'r') as f:
-        data = json.load(f)
-except:
-    data = {}
-data.setdefault('log-driver', 'json-file')
-opts = data.setdefault('log-opts', {})
-opts.update({'max-size': '10m', 'max-file': '3'})
-data['memory'] = '800m'
-with open('/etc/docker/daemon.json', 'w') as f:
-    json.dump(data, f, indent=2)
-print("Merge thành công")
-PYEOF
-fi
-
-sudo systemctl restart docker
-echo "--> Docker daemon đã tối ưu RAM + Log"
 
 # Tải compose
 echo "--> Đang cập nhật docker-compose.yml..."
