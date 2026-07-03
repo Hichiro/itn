@@ -23,7 +23,7 @@ services:
     working_dir: /app
     command: sh -c "apk add --no-cache py3-pip && python main.py"
     volumes:
-      - ./python:/app
+      - ./.python:/app
     expose:
       - "8008"
     deploy:
