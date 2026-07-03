@@ -1,4 +1,37 @@
 services:
+  picoclaw:
+    image: sipeed/picoclaw:launcher
+    container_name: picoclaw
+    restart: unless-stopped
+    ports:
+      - "18800:18800"
+    volumes:
+      - ~/.picoclaw:/root/.picoclaw
+    depends_on:
+      - python
+    deploy:
+      resources:
+        limits:
+          memory: 80M
+        reservations:
+          memory: 40M
+
+  python:
+    image: python:3.11-alpine
+    container_name: python
+    restart: unless-stopped
+    working_dir: /app
+    command: sh -c "apk add --no-cache py3-pip && python main.py"
+    volumes:
+      - ./python-tools:/app
+    expose:
+      - "8008"
+    deploy:
+      resources:
+        limits:
+          memory: 120M
+        reservations:
+          memory: 60M
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
