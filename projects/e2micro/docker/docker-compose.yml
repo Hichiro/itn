@@ -1,6 +1,6 @@
 services:
   picoclaw:
-    image: sipeed/picoclaw:latest
+    image: sipeed/picoclaw:launcher
     container_name: picoclaw
     restart: unless-stopped
     ports:
