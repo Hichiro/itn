@@ -7,7 +7,7 @@ echo "========================================="
 echo " TRIỂN KHAI DOCKER"
 echo "========================================="
 
-APP_DIR="$HOME/apps"
+APP_DIR="$HOME"
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
