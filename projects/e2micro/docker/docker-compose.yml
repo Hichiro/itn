@@ -6,7 +6,7 @@ services:
     ports:
       - "18800"
     volumes:
-      - /home/nvkyvn/.picoclaw:/root/.picoclaw
+      - ./.picoclaw:/root/.picoclaw
     depends_on:
       - python
     deploy:
