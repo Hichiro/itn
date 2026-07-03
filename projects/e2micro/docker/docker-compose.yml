@@ -12,7 +12,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 80M          # Rất chặt
+          memory: 80M
         reservations:
           memory: 40M
 
@@ -21,7 +21,7 @@ services:
     container_name: python
     restart: unless-stopped
     working_dir: /app
-    command: python main.py
+    command: sh -c "apk add --no-cache py3-pip && python main.py"
     volumes:
       - ./python-tools:/app
     expose:
