@@ -11,13 +11,12 @@ APP_DIR="$HOME/apps"
 mkdir -p "$APP_DIR"
 cd "$APP_DIR"
 
-# Hàm nhẹ
 dcompose() {
     docker run --rm \
       -v /var/run/docker.sock:/var/run/docker.sock \
       -v "$PWD:$PWD" \
       -w "$PWD" \
-      docker/compose-bin:latest compose "$@"
+      docker:cli docker compose "$@"
 }
 
 # Tải compose
