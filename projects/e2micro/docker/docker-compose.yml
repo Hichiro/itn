@@ -7,7 +7,7 @@ services:
     networks:
       - home-network
     ports:
-      - "18800"
+      - "18800:18800"
     volumes:
       - ./.picoclaw:/root/.picoclaw
     depends_on:
