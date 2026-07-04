@@ -25,11 +25,7 @@ services:
     container_name: python
     restart: unless-stopped
     working_dir: /app
-    command: >
-      sh -c "
-      if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi;
-      python main.py || tail -f /dev/null
-      "
+    command: python main.py
     networks:
       - home-network
     volumes:
