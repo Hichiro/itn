@@ -3,7 +3,7 @@ services:
     image: sipeed/picoclaw:launcher
     container_name: picoclaw
     restart: unless-stopped
-    command: -console -lang en -port 18800 -no-browser
+    command: -public -console -lang en -port 18800 -no-browser
     networks:
       - home-network
     ports:
