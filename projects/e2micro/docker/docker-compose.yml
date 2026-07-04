@@ -20,6 +20,29 @@ services:
         reservations:
           memory: 40M
 
+  python:
+    image: python:3.11-alpine
+    container_name: python
+    restart: unless-stopped
+    working_dir: /app
+    command: >
+      sh -c "
+      if [ -f requirements.txt ]; then pip install --no-cache-dir -r requirements.txt; fi;
+      python main.py || tail -f /dev/null
+      "
+    networks:
+      - home-network
+    volumes:
+      - ./.python:/app
+    expose:
+      - "8008"
+    deploy:
+      resources:
+        limits:
+          memory: 120M
+        reservations:
+          memory: 60M
+
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
@@ -103,6 +126,7 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
+    command: sh -lc 'caddy fmt --overwrite /etc/caddy/Caddyfile && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile'
     deploy:
       resources:
         limits:
