@@ -10,8 +10,6 @@ services:
       - "18800"
     volumes:
       - ./.picoclaw:/root/.picoclaw
-    depends_on:
-      - python
     environment:
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
@@ -21,23 +19,6 @@ services:
           memory: 80M
         reservations:
           memory: 40M
-    
-
-  python:
-    image: python:3.11-alpine
-    container_name: python
-    restart: unless-stopped
-    working_dir: /app
-    command: tail -f /dev/null
-    networks:
-      - home-network
-    volumes:
-      - ./.python:/app
-    environment:
-      - LANG=C.UTF-8
-      - LC_ALL=C.UTF-8
-    expose:
-      - "8008"
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
