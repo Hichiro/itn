@@ -15,6 +15,13 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
+    deploy:
+      resources:
+        limits:
+          memory: 80M
+        reservations:
+          memory: 40M
+    
 
   python:
     image: python:3.11-alpine
@@ -30,12 +37,6 @@ services:
       - LC_ALL=C.UTF-8
     expose:
       - "8008"
-    deploy:
-      resources:
-        limits:
-          memory: 120M
-        reservations:
-          memory: 60M
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
