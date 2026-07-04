@@ -43,10 +43,28 @@ fi
 
 # Dọn dẹp
 echo "--> Dọn rác..."
-echo "--> Dang tu dong xoa tat ca Networks thua..."
+echo "--> Dang tu dong xoa tat ca Networks khong dung..."
 docker network prune -f
-echo "--> Dang tu dong xoa tat ca Images thua (ngoai tru cong cu he thong)..."
-docker image prune -a -f --filter "reference!=docker" --filter "reference!=*lazydocker*"
+echo "--> Dang tu dong xoa tat ca Images khong dung (ngoai tru cong cu he thong)..."
+# Lay danh sach tat ca Image dang co tren may, dinh dang theo kieu "Repository:Tag|ID"
+docker images --format "{{.Repository}}:{{.Tag}}|{{.ID}}" | while read -r line; do
+    repo_tag=$(echo "$line" | cut -d'|' -f1)
+    img_id=$(echo "$line" | cut -d'|' -f2)
+    
+    # Neu ten image co chua "docker" hoac "lazydocker" thi bo qua khong xoa
+    if [[ "$repo_tag" =~ "docker" ]] || [[ "$repo_tag" =~ "lazydocker" ]]; then
+        continue
+    fi
+    
+    # Kiem tra xem Image nay co dang duoc container nao su dung khong
+    # Neu khong co container nao dung, xoa am tham
+    if [ -z "$(docker ps -a -q --filter=ancestor="$img_id")" ]; then
+        docker rmi -f "$img_id" 2>/dev/null || true
+    fi
+done
+
+echo "--> Dang tu dong xoa tat ca Networks khong dung..."
+docker network prune -f
 echo "--> Kiem tra va quet cac Volume dang o trang thai thua:"
 UNUSED_VOLUMES=$(docker volume ls -q -f dangling=true)
 if [ -z "$UNUSED_VOLUMES" ]; then
