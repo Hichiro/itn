@@ -46,16 +46,7 @@ echo "--> Dọn rác..."
 echo "--> Dang tu dong xoa tat ca Networks thua..."
 docker network prune -f
 echo "--> Dang tu dong xoa tat ca Images thua (ngoai tru cong cu he thong)..."
-# Loc lay tat ca ID cua cac image thuc su khong dung den
-UNUSED_IMGS=$(docker images -q --filter "dangling=false" && docker images -q --filter "dangling=true")
-for img_id in $UNUSED_IMGS; do
-    # Kiem tra xem Image co phai la docker:cli hoac lazydocker hay khong
-    is_system=$(docker images --format "{{.Repository}}" | grep -E "$img_id" | grep -E "docker|lazydocker" || true)
-    if [ -z "$is_system" ]; then
-        # Neu khong phai cong cu he thong thi tien hanh xoa am tham
-        docker rmi "$img_id" 2>/dev/null || true
-    fi
-done
+docker image prune -a -f --filter "reference!=docker" --filter "reference!=*lazydocker*"
 echo "--> Kiem tra va quet cac Volume dang o trang thai thua:"
 UNUSED_VOLUMES=$(docker volume ls -q -f dangling=true)
 if [ -z "$UNUSED_VOLUMES" ]; then
