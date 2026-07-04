@@ -43,8 +43,10 @@ fi
 
 # Dọn dẹp
 echo "--> Dọn rác..."
-echo "--> Dang tu dong xoa tat ca Images thua..."
-docker image prune -a -f
+echo "--> Dang tu dong xoa tat ca Images thua (ngoai tru cong cu he thong)..."
+docker image prune -a -f --filter "label!=org.opencontainers.image.title=Docker CLI" \
+                         --filter "label!=maintainer=LazyTeam" \
+                         2>/dev/null || true
 echo "--> Dang tu dong xoa tat ca Networks thua..."
 docker network prune -f
 echo "--> Kiem tra va quet cac Volume dang o trang thai thua:"
