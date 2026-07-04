@@ -20,25 +20,6 @@ services:
         reservations:
           memory: 40M
 
-  python:
-    image: python:3.11-alpine
-    container_name: python
-    restart: unless-stopped
-    working_dir: /app
-    command: python main.py
-    networks:
-      - home-network
-    volumes:
-      - ./.python:/app
-    expose:
-      - "8008"
-    deploy:
-      resources:
-        limits:
-          memory: 120M
-        reservations:
-          memory: 60M
-
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
