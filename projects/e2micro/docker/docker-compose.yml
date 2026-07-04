@@ -12,6 +12,9 @@ services:
       - ./.picoclaw:/root/.picoclaw
     depends_on:
       - python
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     deploy:
       resources:
         limits:
@@ -29,6 +32,9 @@ services:
       - home-network
     volumes:
       - ./.python:/app
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     expose:
       - "8008"
     deploy:
@@ -77,6 +83,8 @@ services:
       - PORT=20128
       - OMNIROUTE_PUBLIC_BASE_URL=https://e2m.my.to
       - TRUST_PROXY=true
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:20128/health || exit 1"]
       interval: 30s
@@ -116,6 +124,9 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
+    environment:
+      - LANG=C.UTF-8
+      - LC_ALL=C.UTF-8
     deploy:
       resources:
         limits:
