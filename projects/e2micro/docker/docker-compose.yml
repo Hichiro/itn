@@ -103,7 +103,7 @@ services:
     environment:
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
-    command: sh -lc 'caddy fmt --overwrite /etc/caddy/Caddyfile && caddy run --config /etc/caddy/Caddyfile --adapter caddyfile'
+    command: sh -c "caddy fmt --overwrite /etc/caddy/Caddyfile && exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile"
     deploy:
       resources:
         limits:
