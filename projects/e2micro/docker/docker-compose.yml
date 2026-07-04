@@ -4,9 +4,7 @@ services:
     container_name: picoclaw
     restart: unless-stopped
     command: -public -console -lang en -port 18800 -no-browser
-    networks:
-      - home-network
-    ports:
+    expose:
       - "18800"
     volumes:
       - ./.picoclaw:/root/.picoclaw
@@ -19,11 +17,14 @@ services:
           memory: 80M
         reservations:
           memory: 40M
+    networks:
+      - home-network
 
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
     container_name: wireguard
     privileged: true
+    network_mode: "host"
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
@@ -33,14 +34,7 @@ services:
       - TZ=Asia/Ho_Chi_Minh
     volumes:
       - ./wg-client:/config
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv4.ip_forward=1
     restart: unless-stopped
-    networks:
-      - home-network
-    ports:
-      - "51820:51820/udp"
     deploy:
       resources:
         limits:
@@ -77,7 +71,7 @@ services:
           memory: 384M
     networks:
       - home-network
-    ports:
+    expose:
       - "20128"
     dns:
       - 1.1.1.1
@@ -131,6 +125,8 @@ services:
       resources:
         limits:
           memory: 60M
+    networks:
+      - home-network
 
 networks:
   home-network:
