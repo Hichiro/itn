@@ -43,8 +43,30 @@ fi
 
 # Dọn dẹp
 echo "--> Dọn rác..."
-docker image prune -f
-docker system prune -f --volumes 2>/dev/null || true
+echo "--> Dang tu dong xoa tat ca Images thua..."
+docker image prune -a -f
+echo "--> Dang tu dong xoa tat ca Networks thua..."
+docker network prune -f
+echo "--> Kiem tra va quet cac Volume dang o trang thai thua:"
+UNUSED_VOLUMES=$(docker volume ls -q -f dangling=true)
+if [ -z "$UNUSED_VOLUMES" ]; then
+    echo "--> Khong co Volume thua nao can don dep."
+else
+    for vol_name in $UNUSED_VOLUMES; do
+        echo "-----------------------------------------"
+        echo "Canh bao: Tim thay Volume khong gan voi container nao: $vol_name"
+        read -p "Ban co chac chan muon XOA Volume nay khong? (y/N): " choice
+        case "$choice" in 
+            [yY][eE][sS]|[yY]) 
+                echo "--> Dang xoa Volume: $vol_name..."
+                docker volume rm "$vol_name"
+                ;;
+            *)
+                echo "--> Bo qua, giu lai Volume."
+                ;;
+        esac
+    done
+fi
 
 # Alias lazydocker
 if ! grep -q "alias lzd=" ~/.bashrc; then
