@@ -59,6 +59,7 @@ services:
       - TRUST_PROXY=true
       - LANG=C.UTF-8
       - LC_ALL=C.UTF-8
+    network_mode: "service:wireguard"
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://127.0.0.1:20128/health || exit 1"]
       interval: 30s
@@ -72,8 +73,6 @@ services:
       resources:
         limits:
           memory: 512M
-    networks:
-      - home-network
     expose:
       - "20128"
     dns:
