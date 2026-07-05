@@ -75,8 +75,6 @@ services:
           memory: 512M
     expose:
       - "20128"
-    dns:
-      - 1.1.1.1
     logging:
       driver: "json-file"
       options:
