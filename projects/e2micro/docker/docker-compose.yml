@@ -17,6 +17,7 @@ services:
           memory: 80M
         reservations:
           memory: 40M
+      oom_score_adj: -800
     networks:
       - home-network
 
@@ -39,6 +40,7 @@ services:
       resources:
         limits:
           memory: 80M
+      oom_score_adj: -200
     logging:
       driver: "json-file"
       options:
@@ -69,6 +71,7 @@ services:
       resources:
         limits:
           memory: 384M
+      oom_score_adj: -600
     networks:
       - home-network
     expose:
@@ -104,6 +107,7 @@ services:
       resources:
         limits:
           memory: 100M
+      oom_score_adj: -200
     logging:
       driver: "json-file"
       options:
@@ -125,6 +129,7 @@ services:
       resources:
         limits:
           memory: 60M
+      oom_score_adj: 200
     networks:
       - home-network
 
