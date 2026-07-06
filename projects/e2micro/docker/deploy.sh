@@ -33,7 +33,7 @@ fi
 
 # Pull & Up
 echo "--> Khởi chạy container..."
-dcompose pull --quiet
+dcompose pull #--quiet
 
 if [ "$UPDATE" = true ]; then
     dcompose up -d --remove-orphans
