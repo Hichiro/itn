@@ -58,7 +58,7 @@ services:
       - PORT=20128
       - NODE_ENV=production
     expose:
-      - "18800"
+      - "20128"
     volumes:
       - ./.9router:/app/data
     oom_score_adj: -600
