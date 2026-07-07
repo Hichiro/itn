@@ -57,14 +57,12 @@ services:
       - PORT=20128
     network_mode: "service:wireguard"
     volumes:
-      - ./.9router:/app/data"
+      - ./.9router:/app/data
     oom_score_adj: -600
     deploy:
       resources:
         limits:
           memory: 384M
-    expose:
-      - "20128"
     logging:
       driver: "json-file"
       options:
@@ -75,8 +73,6 @@ services:
     image: caddy:latest
     container_name: caddy
     restart: unless-stopped
-    depends_on:
-      - omniroute
     ports:
       - "80:80"
       - "443:443"
@@ -125,7 +121,6 @@ networks:
     driver: bridge
 
 volumes:
-  omniroute-data:
   lazydocker-config:
   caddy_data:
   caddy_config:
