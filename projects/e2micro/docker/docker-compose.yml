@@ -70,8 +70,6 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    networks:
-      - home-network
 
   caddy:
     image: caddy:latest
