@@ -57,7 +57,7 @@ services:
       - HOST=0.0.0.0
       - PORT=20128
       - NODE_ENV=production
-      - NEXT_PUBLIC_BASE_URL=http://localhost:20128
+      - NEXT_PUBLIC_BASE_URL=http://e2m.my.to:20128
     network_mode: "service:wireguard"
     volumes:
       - ./.9router:/app/data
