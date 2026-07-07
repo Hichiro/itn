@@ -54,7 +54,7 @@ services:
     container_name: 9router
     restart: unless-stopped
     environment:
-      - DATA_DIR: /app/data
+      - DATA_DIR=/app/data
       - HOST=0.0.0.0
       - PORT=20128
     network_mode: "service:wireguard"
