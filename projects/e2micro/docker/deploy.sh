@@ -5,8 +5,7 @@ echo "========================================="
 echo " TRIEN KHAI DOCKER"
 echo "========================================="
 
-# Chuyen ve lam viec tai thu muc goc
-APP_DIR="/"
+APP_DIR="$HOME"
 cd "$APP_DIR"
 
 # Kiem tra neu chua co file docker-compose.yml thi bao loi va tao file trong
