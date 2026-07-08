@@ -12,7 +12,6 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - PEERS=3
       - TZ=Asia/Ho_Chi_Minh
     volumes:
       - ./wireguard:/config
