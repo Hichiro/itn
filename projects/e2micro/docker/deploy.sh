@@ -1,15 +1,20 @@
 #!/bin/bash
 set -e
 
-GITHUB_RAW_URL="https://raw.githubusercontent.com/Hichiro/itn/refs/heads/main/projects/e2micro/docker/docker-compose.yml"
-
 echo "========================================="
-echo " TRIỂN KHAI DOCKER"
+echo " TRIEN KHAI DOCKER"
 echo "========================================="
 
-APP_DIR="$HOME"
-mkdir -p "$APP_DIR"
+# Chuyen ve lam viec tai thu muc goc
+APP_DIR="/"
 cd "$APP_DIR"
+
+# Kiem tra neu chua co file docker-compose.yml thi bao loi va tao file trong
+if [ ! -f "docker-compose.yml" ]; then
+    echo "[Error] Khong tim thay file docker-compose.yml tai thu muc goc ($APP_DIR)!"
+    echo "--> Dang tu dong tao file docker-compose.yml trong..."
+    touch docker-compose.yml
+fi
 
 dcompose() {
     docker run --rm \
@@ -19,45 +24,23 @@ dcompose() {
       docker:cli docker compose "$@"
 }
 
-# Tải compose
-echo "--> Đang cập nhật docker-compose.yml..."
-curl -sSL "$GITHUB_RAW_URL" -o docker-compose.yml.new
-
-if ! cmp -s docker-compose.yml docker-compose.yml.new 2>/dev/null; then
-    mv docker-compose.yml.new docker-compose.yml
-    UPDATE=true
-else
-    rm docker-compose.yml.new
-    UPDATE=false
-fi
-
 # Pull & Up
-echo "--> Khởi chạy container..."
-dcompose pull #--quiet
+echo "--> Khoi chay container..."
+dcompose pull
+dcompose up -d --remove-orphans
 
-if [ "$UPDATE" = true ]; then
-    dcompose up -d --remove-orphans
-else
-    dcompose up -d --remove-orphans --no-recreate
-fi
-
-# Dọn dẹp
-echo "--> Dọn rác..."
-echo "--> Dang tu dong xoa tat ca Networks khong dung..."
-docker network prune -f
+# Don dep
+echo "--> Don rac..."
 echo "--> Dang tu dong xoa tat ca Images khong dung (ngoai tru cong cu he thong)..."
-# Lay danh sach tat ca Image dang co tren may, dinh dang theo kieu "Repository:Tag|ID"
+
 docker images --format "{{.Repository}}:{{.Tag}}|{{.ID}}" | while read -r line; do
     repo_tag=$(echo "$line" | cut -d'|' -f1)
     img_id=$(echo "$line" | cut -d'|' -f2)
     
-    # Neu ten image co chua "docker" hoac "lazydocker" thi bo qua khong xoa
     if [[ "$repo_tag" =~ "docker" ]] || [[ "$repo_tag" =~ "lazydocker" ]]; then
         continue
     fi
     
-    # Kiem tra xem Image nay co dang duoc container nao su dung khong
-    # Neu khong co container nao dung, xoa am tham
     if [ -z "$(docker ps -a -q --filter=ancestor="$img_id")" ]; then
         docker rmi -f "$img_id" 2>/dev/null || true
     fi
@@ -65,6 +48,7 @@ done
 
 echo "--> Dang tu dong xoa tat ca Networks khong dung..."
 docker network prune -f
+
 echo "--> Kiem tra va quet cac Volume dang o trang thai thua:"
 UNUSED_VOLUMES=$(docker volume ls -q -f dangling=true)
 if [ -z "$UNUSED_VOLUMES" ]; then
@@ -73,9 +57,9 @@ else
     for vol_name in $UNUSED_VOLUMES; do
         echo "-----------------------------------------"
         echo "Canh bao: Tim thay Volume khong gan voi container nao: $vol_name"
-        read -p "Ban co chac chan muon XOA Volume nay khong? (y/N): " choice
-        case "$choice" in 
-            [yY][eE][sS]|[yY]) 
+        read -p "Ban co chac chan muon XOA Volume nay khong? (y/N): " choice </dev/tty
+        case "$choice" in
+            [yY][eE][sS]|[yY])
                 echo "--> Dang xoa Volume: $vol_name..."
                 docker volume rm "$vol_name"
                 ;;
@@ -87,12 +71,25 @@ else
 fi
 
 # Alias lazydocker
-if ! grep -q "alias lzd=" ~/.bashrc; then
-    echo "alias lzd='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker:ro lazyteam/lazydocker:latest'" >> ~/.bashrc
-    source ~/.bashrc
+NEED_RELOAD=false
+if [ -f "$HOME/.bashrc" ]; then
+    if ! grep -q "alias lzd=" "$HOME/.bashrc"; then
+        echo "alias lzd='docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker:/var/lib/docker:ro lazyteam/lazydocker:latest'" >> "$HOME/.bashrc"
+        NEED_RELOAD=true
+    fi
 fi
 
 echo "========================================="
-echo " HOÀN TẤT!"
+echo " HOAN TAT!"
 echo "========================================="
 dcompose ps
+
+# Hien thi thong bao nap lai bashrc neu co thay doi alias
+if [ "$NEED_RELOAD" = true ]; then
+    echo ""
+    echo "--------------------------------------------------------"
+    echo "[INFO] Da them alias 'lzd' vao ~/.bashrc."
+    echo "De su dung ngay lap tuc, hay chay lenh sau:"
+    echo "source ~/.bashrc"
+    echo "--------------------------------------------------------"
+fi
